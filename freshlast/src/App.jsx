@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from './lib/supabaseClient';
+import AuthModal from './components/AuthModal/AuthModal';
 
 import './App.css'
 
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY);
-
 export default function App() {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [claims, setClaims] = useState(null);
 
-  const params = new URLSearchParams(window.location.search);
-  const hasTokenHash = params.get("token_hash");
+    const [isAuthOpen, setIsAuthOpen] = useState(false)
 
-  const [verifying, setVerifying] = useState(!!hasTokenHash);
+    const [claims, setClaims] = useState(null);
+
+
+    const params = new URLSearchParams(window.location.search);
+    const hasTokenHash = params.get("token_hash");
+
+    const [verifying, setVerifying] = useState(!!hasTokenHash);
     const [authError, setAuthError] = useState(null);
     const [authSuccess, setAuthSuccess] = useState(false);
+
     useEffect(() => {
         // Check if we have token_hash in URL (magic link callback)
         const params = new URLSearchParams(window.location.search);
@@ -49,27 +49,12 @@ export default function App() {
         } = supabase.auth.onAuthStateChange(() => {
             supabase.auth.getClaims().then(({ data: { claims } }) => {
                 setClaims(claims);
+                if (claims) setIsAuthOpen(false)
             });
         });
         return () => subscription.unsubscribe();
     }, []);
-    const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
 
-    const { data, error } = isSignUp 
-      ? await supabase.auth.signUp({ email, password })
-      : await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      alert(error.message);
-    } else {
-      if (isSignUp && !data.session) {
-        alert("Check your email for a confirmation link!");
-      } 
-    }
-    setLoading(false);
-  };
     const handleLogout = async () => {
         await supabase.auth.signOut();
         setClaims(null);
@@ -124,47 +109,19 @@ export default function App() {
             </div>
         );
     }
-    // Show login form
-    return (
-      <div>
-          <h1>{isSignUp ? "Create Account" : "Sign In"}</h1>
-          <p>
-              {isSignUp 
-                  ? "Enter an email and password to get started." 
-                  : "Enter your credentials to access your account."}
-          </p>
 
-          <form onSubmit={handleSubmit}>
-              <input
-                  type="email"
-                  placeholder="Your email"
-                  value={email}
-                  required
-                  onChange={(e) => setEmail(e.target.value)}
-              />
-              <input
-                  type="password"
-                  placeholder="Your password"
-                  value={password}
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-              />
-              
-              <button disabled={loading}>
-                  {loading ? "Processing..." : (isSignUp ? "Sign Up" : "Log In")}
-              </button>
-          </form>
+    // login form 
 
-          <hr />
-          
-          <p>{isSignUp ? "Already have an account?" : "Don't have an account?"}</p>
-          <button 
-              type="button" 
-              onClick={() => setIsSignUp(!isSignUp)} 
-              style={{ background: 'none', border: 'none', color: 'blue', cursor: 'pointer', textDecoration: 'underline' }}
-          >
-              {isSignUp ? "Switch to Log In" : "Switch to Sign Up"}
-          </button>
-      </div>
-  );
+    return(
+        <div>
+        <button onClick={() => setIsAuthOpen(true)}>
+            Press Me
+        </button>
+
+        <AuthModal 
+            isOpen={isAuthOpen} 
+            onClose={() => setIsAuthOpen(false)} 
+        />
+        </div>
+)
 }

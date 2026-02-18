@@ -1,0 +1,46 @@
+/* The background that covers the entire screen */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; 
+  backdrop-filter: blur(4px); 
+}
+/* The actual white box in the middle */
+.modal-content {
+  background-color: white;
+  padding: 1rem 2.5rem 2.5rem 2.5rem;
+  border-radius: 12px;
+  border: 2px solid black;
+  width: 60%;
+  max-width: 450px;
+  position: relative; /* Allows positioning of the close button */
+  color: #333333;
+  height: auto;          /* Let the box grow with the content */
+  max-height: 90vh;      /* Prevent it from being taller than the screen */
+  overflow-y: auto;      /* Add a scrollbar only if the screen is tiny */
+  display: flex;
+  flex-direction: column;
+}
+
+/* A simple styling for that "X" button you have */
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-button:hover {
+  color: #000;
+}
