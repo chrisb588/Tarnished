@@ -37,18 +37,6 @@ export default function AuthForm() {
             {/*for signing up*/}
             {isSignUp ? (
                 <>
-                  <p>first name*</p>
-                  <input 
-                    type="text" 
-                    placeholder="First name"
-                    required
-                  />
-                  <p>last name*</p>
-                  <input 
-                    type="text" 
-                    placeholder="Last name"
-                    required
-                  />
                   <p>email address*</p>
                   <input
                       type="email"

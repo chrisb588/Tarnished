@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabaseClient';
 import AuthModal from './components/AuthModal/AuthModal';
+import ListingItem from './components/ListingItem/ListingItem';
 
 import './App.css'
 
@@ -114,6 +115,7 @@ export default function App() {
 
     return(
         <div>
+        <ListingItem/>
         <button onClick={() => setIsAuthOpen(true)}>
             Press Me
         </button>

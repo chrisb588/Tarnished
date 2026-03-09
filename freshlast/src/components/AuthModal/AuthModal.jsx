@@ -4,7 +4,7 @@ import AuthForm from "../AuthForm/authForm";
 
 import './Authmodal.css'
 
-export default function AuthModal({ isOpen, onClose, supabase }) {
+export default function AuthModal({ isOpen, onClose}) {
 
 
   if (!isOpen) return null; // Don't render anything if closed

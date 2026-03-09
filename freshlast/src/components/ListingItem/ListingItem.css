@@ -1,0 +1,45 @@
+.listing-border {
+    border: solid black 2px;
+    border-radius: 7px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.listing-image {
+    aspect-ratio: 4 / 3;
+    border-top: solid black 2px;
+    border-bottom: solid black 2px;
+    overflow: hidden; 
+    width: 100%;      
+}
+
+.listing-image img {
+    object-fit: cover; 
+    display: block;
+}
+
+.edit-button{
+    background-color: white;
+    color: black;
+    width: 85%;
+    border: solid black 1px;
+    border-radius: 350px;
+    align-self: center;
+}
+
+.listing-info{
+    width: 80%;
+    margin-left: 10px;
+    text-align: left;
+}
+
+.listing-name{
+    font-weight: bold;
+    text-align: left;
+}
+
+
+
+.quantity{
+    text-align: left;
+}
