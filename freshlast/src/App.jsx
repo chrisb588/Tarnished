@@ -3,15 +3,15 @@ import { supabase } from './lib/supabaseClient';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import CreateListing from './pages/CreateListing/CreateListing';
+import ChangePassword from './pages/ChangePassword/ChangePassword';
 
 import './App.css'
 
 export default function App() {
 
     const [isAuthOpen, setIsAuthOpen] = useState(false)
-
     const [claims, setClaims] = useState(null);
-
+    const [needsPasswordChange, setNeedsPasswordChange] = useState(false);
 
     const params = new URLSearchParams(window.location.search);
     const hasTokenHash = params.get("token_hash");
@@ -20,13 +20,21 @@ export default function App() {
     const [authError, setAuthError] = useState(null);
     const [authSuccess, setAuthSuccess] = useState(false);
 
+    const checkPasswordFlag = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && user.user_metadata?.password_changed === false) {
+            setNeedsPasswordChange(true);
+        } else {
+            setNeedsPasswordChange(false);
+        }
+    };
+
     useEffect(() => {
         // Check if we have token_hash in URL (magic link callback)
         const params = new URLSearchParams(window.location.search);
         const token_hash = params.get("token_hash");
         const type = params.get("type");
         if (token_hash) {
-            // Verify the OTP token
             supabase.auth.verifyOtp({
                 token_hash,
                 type: type || "email",
@@ -35,23 +43,28 @@ export default function App() {
                     setAuthError(error.message);
                 } else {
                     setAuthSuccess(true);
-                    // Clear URL params
                     window.history.replaceState({}, document.title, "/");
                 }
                 setVerifying(false);
             });
         }
-        // Check for existing session using getClaims
+
         supabase.auth.getClaims().then(({ data: { claims } }) => {
             setClaims(claims);
+            if (claims) checkPasswordFlag();
         });
-        // Listen for auth changes
+
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange(() => {
             supabase.auth.getClaims().then(({ data: { claims } }) => {
                 setClaims(claims);
-                if (claims) setIsAuthOpen(false)
+                if (claims) {
+                    setIsAuthOpen(false);
+                    checkPasswordFlag();
+                } else {
+                    setNeedsPasswordChange(false);
+                }
             });
         });
         return () => subscription.unsubscribe();
@@ -60,8 +73,9 @@ export default function App() {
     const handleLogout = async () => {
         await supabase.auth.signOut();
         setClaims(null);
+        setNeedsPasswordChange(false);
     };
-    // Show verification state
+
     if (verifying) {
         return (
             <div>
@@ -71,7 +85,6 @@ export default function App() {
             </div>
         );
     }
-    // Show auth error
     if (authError) {
         return (
             <div>
@@ -89,7 +102,6 @@ export default function App() {
             </div>
         );
     }
-    // Show auth success (briefly before claims load)
     if (authSuccess && !claims) {
         return (
             <div>
@@ -99,7 +111,9 @@ export default function App() {
             </div>
         );
     }
-    // If user is logged in, show welcome screen
+    if (claims && needsPasswordChange) {
+        return <ChangePassword />;
+    }
     if (claims) {
         return (
             <div>
@@ -112,15 +126,12 @@ export default function App() {
         );
     }
 
-    // login form 
-
-    return(
+    return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/create" element={<CreateListing/>} />
+                <Route path="/create" element={<CreateListing />} />
             </Routes>
         </BrowserRouter>
-
-)
+    );
 }
