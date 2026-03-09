@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabaseClient';
-import AuthModal from './components/AuthModal/AuthModal';
-import ListingItem from './components/ListingItem/ListingItem';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import CreateListing from './pages/CreateListing';
+import Home from './pages/Home/Home';
+import CreateListing from './pages/CreateListing/CreateListing';
 
 import './App.css'
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import ListingItem from '../components/ListingItem/ListingItem';
-import AuthModal from '../components/AuthModal/AuthModal';
+import ListingItem from '../../components/ListingItem/ListingItem';
+import AuthModal from '../../components/AuthModal/AuthModal';
 import { Link } from 'react-router-dom';
 
-import '../App.css'
+import '../../App.css'
 
 export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
