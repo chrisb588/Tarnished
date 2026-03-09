@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabaseClient';
 import AuthModal from './components/AuthModal/AuthModal';
 import ListingItem from './components/ListingItem/ListingItem';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import CreateListing from './pages/CreateListing';
 
 import './App.css'
 
@@ -114,16 +117,12 @@ export default function App() {
     // login form 
 
     return(
-        <div>
-        <ListingItem/>
-        <button onClick={() => setIsAuthOpen(true)}>
-            Press Me
-        </button>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/create" element={<CreateListing/>} />
+            </Routes>
+        </BrowserRouter>
 
-        <AuthModal 
-            isOpen={isAuthOpen} 
-            onClose={() => setIsAuthOpen(false)} 
-        />
-        </div>
 )
 }
