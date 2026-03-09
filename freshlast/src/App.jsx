@@ -8,8 +8,6 @@ import './App.css'
 
 export default function App() {
 
-    const [isAuthOpen, setIsAuthOpen] = useState(false)
-
     const [claims, setClaims] = useState(null);
 
 
@@ -21,6 +19,8 @@ export default function App() {
     const [authSuccess, setAuthSuccess] = useState(false);
 
     useEffect(() => {
+        if (!supabase) return; // Skip auth if Supabase not configured
+        
         // Check if we have token_hash in URL (magic link callback)
         const params = new URLSearchParams(window.location.search);
         const token_hash = params.get("token_hash");
@@ -58,7 +58,9 @@ export default function App() {
     }, []);
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
+        if (supabase) {
+            await supabase.auth.signOut();
+        }
         setClaims(null);
     };
     // Show verification state
@@ -99,19 +101,6 @@ export default function App() {
             </div>
         );
     }
-    // If user is logged in, show welcome screen
-    if (claims) {
-        return (
-            <div>
-                <h1>Welcome!</h1>
-                <p>You are logged in as: {claims.email}</p>
-                <button onClick={handleLogout}>
-                    Sign Out
-                </button>
-            </div>
-        );
-    }
-
     // login form 
 
     return(

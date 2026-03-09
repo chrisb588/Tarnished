@@ -13,6 +13,12 @@ export default function AuthForm() {
     event.preventDefault();
     setLoading(true);
 
+    if (!supabase) {
+      alert("Supabase not configured. Please check environment variables.");
+      setLoading(false);
+      return;
+    }
+
     // Decide which Supabase function to call
     const { data, error } = isSignUp 
       ? await supabase.auth.signUp({ email, password })
