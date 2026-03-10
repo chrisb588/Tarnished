@@ -18,16 +18,11 @@ export default function AuthForm() {
       return;
     }
 
-    // Decide which Supabase function to call
-    const { data, error } = isSignUp 
-      ? await supabase.auth.signUp({ email, password })
-      : await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       alert(error.message);
-    } else {
-      alert("Success!");
-    }
+    } 
     setLoading(false);
   };
 
