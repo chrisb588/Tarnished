@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { supabase } from "../../lib/supabaseClient";
-import AuthForm from "../AuthForm/authForm";
+import AuthForm from "../AuthForm/AuthForm";
 
-import './Authmodal.css'
+import './AuthModal.css'
 
 export default function AuthModal({ isOpen, onClose}) {
 

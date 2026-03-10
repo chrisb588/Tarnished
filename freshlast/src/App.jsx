@@ -30,6 +30,8 @@ export default function App() {
     };
 
     useEffect(() => {
+        if (!supabase) return; // Skip auth if Supabase not configured
+        
         // Check if we have token_hash in URL (magic link callback)
         const params = new URLSearchParams(window.location.search);
         const token_hash = params.get("token_hash");
@@ -71,7 +73,9 @@ export default function App() {
     }, []);
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
+        if (supabase) {
+            await supabase.auth.signOut();
+        }
         setClaims(null);
         setNeedsPasswordChange(false);
     };

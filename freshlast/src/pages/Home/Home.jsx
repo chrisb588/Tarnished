@@ -1,41 +1,59 @@
 import React, { useState } from 'react';
-import ListingItem from '../../components/ListingItem/ListingItem';
 import AuthModal from '../../components/AuthModal/AuthModal';
+import ListingItem from '../../components/ListingItem/ListingItem';
 import { Link } from 'react-router-dom';
+import "./Home.css";
 
 import '../../App.css'
 
 export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-  return (
-    <div className="home-container">
-      {/* 1. Your Header or Logo could go here */}
-      <h1>Marketplace</h1>
+  // Array of 4 listing items
+  const listings = [1, 2, 3, 4];
 
-    <Link to="/create" className="floating-add-btn">
-            + Sell Item
-        </Link>
+    return (
+    <>
+      {/* Header */}
+      <header className="header">
+        <div className="logo">LOGO</div>
 
-      {/* 2. Your Grid of Items */}
-      <div className="listing-grid">
-        <ListingItem />
-        {/* You'll eventually map over multiple items here */}
+        <div className="header-icons">
+          <button className="icon-btn">🔔</button>
+          <button className="icon-btn">👤</button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="main-content">
+
+        {/* Welcome */}
+        <div className="welcome-section">
+          <h1 className="welcome-title">Welcome Back, Vendor!</h1>
+          <p className="welcome-subtitle">
+            Here you can see your active listings.
+          </p>
+        </div>
+
+        {/* Add Listing */}
+        <div className="add-listing-container">
+          <Link to="/create" className="add-listing-btn">
+            + Add new listing
+          </Link>
+        </div>
+
+        {/* Products */}
+        <div className="products-grid">
+          {listings.map((id) => (
+            <ListingItem key={id} />
+          ))}
+        </div>
       </div>
 
-      {/* 3. The Action Button */}
-      <button 
-        className="auth-trigger-btn" 
-        onClick={() => setIsAuthOpen(true)}
-      >
-        Sign In to Sell
-      </button>
-
-      {/* 4. The Modal (remains hidden until state is true) */}
-      <AuthModal 
-        isOpen={isAuthOpen} 
-        onClose={() => setIsAuthOpen(false)} 
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
       />
-    </div>
+    </>
   );
 }
