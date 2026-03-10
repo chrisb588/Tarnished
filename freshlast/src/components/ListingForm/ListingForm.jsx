@@ -1,16 +1,17 @@
 import './ListingForm.css'
+import addimgicon from "../../assets/testImg.png"
+
 export default function ListingForm(){
     return(
         <div className="create-container">
-            <p>
-                <span>Create New Listing</span>
-                <br></br>
-                <span>paragraph and words</span>
-            </p>
+            <div className="preface">
+                <h4>Create New Listing</h4>
+                <p>Add a new product to your stall.</p>
+            </div>
             <div className="info-container">
                 <p>product photo</p>
                 <div className="img-container">
-                    <p>image container</p>
+                    <img src={addimgicon} className ="addimgicon"/>
                 </div>
             </div>
             <div className="info-container">

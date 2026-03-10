@@ -1,6 +1,4 @@
 .create-container{
-    border: solid black 2px;
-    border-radius: 3px;
     display: flex;
     flex-direction: column;
     width: 80vw;
@@ -11,15 +9,42 @@
 .img-container{
     border: solid black 2px;
     border-radius: 3px;
-    width: 90%;
-    height: 40%;
+    width: 80%;
+    height: 30vh;
+    overflow: hidden;
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.img-container img{
+    aspect-ratio: 1/1;
+    height: 100px;
+    width: 100px;
 }
 .info-container{
     border: solid black 2px;
+    border-radius: 5px;
     width: 90%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding-bottom: 10px;
+    text-align: left;
+}
+.info-container h4{
+    text-align: left;
+}
+.preface{
+    display: flex;
+    width: 90%;
+    flex-direction: column;
+    align-self: flex-start;
+    text-align: left;
+    margin-left: 50px;
+    margin-bottom: -15px;
+}
+.preface h4{
+    margin-bottom: -15px;
 }
