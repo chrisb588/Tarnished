@@ -1,5 +1,9 @@
 .venv/
+*.env
 
 # Claude Code
 .claude/
 CLAUDE.md
+
+# Zed
+.zed/
