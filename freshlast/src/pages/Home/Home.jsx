@@ -21,6 +21,12 @@ export default function Home() {
         <div className="header-icons">
           <button className="icon-btn">🔔</button>
           <button className="icon-btn">👤</button>
+          <button 
+            className="auth-trigger-btn" 
+            onClick={() => setIsAuthOpen(true)}
+          >
+          Log In to Sell
+          </button>
         </div>
       </header>
 
