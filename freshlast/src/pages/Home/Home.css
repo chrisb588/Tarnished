@@ -216,3 +216,10 @@ body {
   background-color: #f9f9f9;
   border-color: #999;
 }
+
+.auth-trigger-btn{
+  background-color: #AAE3A6;
+  color: black;
+  font-weight: bold;
+  border-radius: 30px;
+}
