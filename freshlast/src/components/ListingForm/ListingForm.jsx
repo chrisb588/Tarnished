@@ -2,26 +2,16 @@ import { useState } from 'react';
 import './ListingForm.css'
 import addimgicon from "../../assets/testImg.png"
 
-export default function ListingForm(){
-    const [formData, setFormData] = useState({
-    name: "",
-    quantity: 0,
-    unit: "",
-    originalprice: 0,
-    discountedprice: 0,
-    });
+/*
+Quality Assurance:
+1.) Make sure that discounted price is lower than original price
+2.) Make sure that customer cannot enter empty data/all fields are filled
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value
-        }))
-    }
-
+*/
+export default function ListingForm  ({formData, setFormData, handleChange}) {
     const handleStepper = (change) => {
         setFormData((prev) => {
-            const newQuantity = prev.quantity + change;
+            const newQuantity = parseInt(prev.quantity) + change;
 
             if (newQuantity < 0) return prev;
 
@@ -32,6 +22,13 @@ export default function ListingForm(){
 
         })
     }
+
+    const blockInvalidChar = (e) => {
+        // Prevent '-', '+', and 'e' (exponential notation)
+        if (['-', '+', 'e', 'E'].includes(e.key)) {
+            e.preventDefault();
+        }
+    };
 
     return(
         <div className="create-container">
@@ -64,6 +61,7 @@ export default function ListingForm(){
                         className="formInput"
                         value={formData.name}
                         onChange={handleChange}
+                        required
                         />
                     <div className="quantityDiv">
                         <div className="quantityWrapper">
@@ -72,6 +70,7 @@ export default function ListingForm(){
                             <div className="quantityStepper">
                                 <button 
                                 className="stepper-button"
+                                type="button"
                                 onClick={() => handleStepper(-1)}>-</button>
                                 <input 
                                     type="number" 
@@ -79,11 +78,15 @@ export default function ListingForm(){
                                     id="quantity"
                                     min="0"
                                     placeholder="0.00"
+                                    step="0.01"
                                     value={formData.quantity}
                                     onChange={handleChange}
+                                    onKeyDown={blockInvalidChar}
+                                    required
                                     />
                                 <button 
                                 className="stepper-button"
+                                type="button"
                                 onClick={() => handleStepper(+1)}>+</button>
                             </div>
                         </div>
@@ -94,6 +97,7 @@ export default function ListingForm(){
                                 id="unit"
                                 value={formData.unit}
                                 onChange={handleChange}
+                                required
                                 >
                                 <option value="kg">kg</option>
                                 <option value="lbs">lbs</option>
@@ -118,7 +122,9 @@ export default function ListingForm(){
                             name="originalprice"
                             id="originalprice"
                             min="0"
+                            step="0.01"
                             placeholder="0.00"
+                            required
                         />
                     </div>
                     <div className="pricing">
@@ -131,7 +137,9 @@ export default function ListingForm(){
                         onChange={handleChange}
                         id="discountedprice"
                         min="0"
+                        step="0.01"
                         placeholder="0.00"
+                        required
                     />
                     </div>
                 </div>

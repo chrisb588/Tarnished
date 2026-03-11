@@ -4,6 +4,9 @@
     align-items: center;
     gap: 10px;
 }
+#form{
+    width: 100%;
+}
 .button-div{
     width: calc(70vw * 0.9);
     display: flex;
@@ -18,4 +21,13 @@
 }
 .delete-button{
     width: 30%;
+}
+
+@media screen and (max-width: 600) {
+    .main-body{
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        left: 3px;
+    }    
 }
