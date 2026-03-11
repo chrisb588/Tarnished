@@ -1,0 +1,152 @@
+.create-container{
+    display: flex;
+    flex-direction: column;
+    width: 70vw;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.img-container{
+    border: solid black 2px;
+    border-radius: 3px;
+    width: 25%;
+    height: 30vh;
+    overflow: hidden;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.img-container img{
+    aspect-ratio: 1/1;
+    height: 100px;
+    width: 100px;
+}
+.info-container-photo{
+    border: solid black 2px;
+    border-radius: 5px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+    text-align: left;
+}
+.info-container{
+    border: solid black 2px;
+    border-radius: 5px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding-bottom: 10px;
+    text-align: left;
+}
+.info-container h4{
+    text-align: left;
+    margin-bottom: -15px;
+}
+.info-container input[type="text"]{
+    background-color: white;
+    color: black;
+    height: 40px;
+    width: 100%;
+    border-radius: 5px;
+    border: black 2px solid;
+}
+.info-preface{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-self: flex-start;
+    text-align: left;
+    margin-left: 20px;
+    margin-bottom: -15px;
+}
+.info-preface h4{
+    text-align: left;
+    margin-bottom: -15px;
+}
+.preface{
+    display: flex;
+    width: 90%;
+    flex-direction: column;
+    align-self: flex-start;
+    text-align: left;
+    margin-left: 50px;
+    margin-bottom: -15px;
+}
+.preface h4{
+    margin-bottom: -15px;
+}
+.descriptionInput{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    width: fit-content;
+    height: fit-content;
+}
+.quantityDiv{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+.quantityWrapper{
+    height: 50px;
+}
+.quantityWrapper input[type="number"]{
+    background-color: white;
+    color: black;
+    border: black 2px solid;
+    border-radius: 2px; 
+}
+.quantityStepper{
+    display: flex;
+    gap: 10px;
+}
+.stepper-button{
+    background-color: white;
+    color: black;
+    border: black 2px solid;
+    border-radius: 2px;
+    aspect-ratio: 1/1;
+}
+.unitWrapper{
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.unitWrapper select{
+    background-color: white;
+    color: black;
+    border: black 2px solid;
+    border-radius: 2px;
+    width: 50px;
+    height: 50px;
+}
+.priceInput{
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    gap: 30px;
+}
+.priceInput input{
+    background-color: white;
+    color: black;
+    border: black 2px solid;
+    border-radius: 2px;
+    height: 30px;
+    width: 100%;       
+}
+.pricing{
+    width: 90%;
+}
+
+@media screen and (max-width: 600px) {
+    .create-container{
+        width: 50vw;
+    }
+}
