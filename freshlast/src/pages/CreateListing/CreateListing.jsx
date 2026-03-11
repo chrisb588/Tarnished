@@ -27,6 +27,19 @@ export default function CreateListing(){
 
     const handleSubmit = (e) => {
         e.preventDefault(); // for now
+
+        const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice"]
+        const isMissingFields = requiredFields.some(field => formData[field] === "");
+
+
+        if (formData.discountedprice >= formData.originalprice) {
+            alert("Discounted price can't be higher than or equal to original price!")
+            return;
+        }
+        if (isMissingFields) {
+                alert("All fields are required! Please check your inputs.");
+                return;
+            }        
         console.log("Submitting Data:", formData);
         // Add your API call here (e.g., fetch or axios)
         navigate('/');
