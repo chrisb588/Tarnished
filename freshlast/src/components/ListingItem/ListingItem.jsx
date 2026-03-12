@@ -1,34 +1,36 @@
-import testImg from '../../assets/testImg.png';
+import { useNavigate } from 'react-router-dom';
 import './ListingItem.css'
 
-export default function ListingItem() {
-  return (
-    <div className = "listing-border">
+export default function ListingItem({ listing }) {
+  const navigate = useNavigate();
 
-        <div className = "listing-image">
-            <img src = {testImg}></img>
+  return (
+    <div className="listing-border">
+
+        <div className="listing-image">
+            {listing.image && <img src={listing.image} alt={listing.name} />}
         </div>
         <div className='listing-info'>
             <p>
                 <span className='listing-name'>
-                    Listing Name
+                    {listing.name}
                 </span>
                 <br></br>
                 <span className='original-price'>
-                    Original Price    
-                    </span> 
+                    ₱{listing.original_price}
+                    </span>
                 &nbsp;|&nbsp;
                 <span className='discounted-price'>
-                    Price Now
+                    ₱{listing.discounted_price}
                 </span>
                 <br></br>
                 <span className='quantity'>
-                    Quantity
+                    {listing.quantity} {listing.unit}
                 </span>
             </p>
         </div>
-        <button className = "edit-button">
-            Edit 
+        <button className="edit-button" onClick={() => navigate(`/edit/${listing.id}`)}>
+            Edit
         </button>
     </div>
   );

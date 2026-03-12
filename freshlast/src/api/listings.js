@@ -34,4 +34,49 @@ const createListing = async (
   });
 };
 
-export { createListing };
+const getListingsByMerchant = async (merchantId) => {
+  const response = await apiClient.get(`/listings?merchant_id=${merchantId}`);
+  return response.data;
+};
+
+const getListingById = async (listingId) => {
+  const response = await apiClient.get(`/listing/${listingId}`);
+  return response.data;
+};
+
+const updateListing = async (
+  listingId,
+  merchantId,
+  name,
+  originalPrice,
+  discountedPrice,
+  image,
+  unit,
+  quantity,
+) => {
+  let imagePath = image;
+
+  if (image instanceof File) {
+    const relativePath = `listings/${crypto.randomUUID()}`;
+    const fullPath = `${merchantId}/${relativePath}`;
+    const { error } = await supabase.storage.from("media").upload(fullPath, image);
+    if (error) throw error;
+    imagePath = relativePath;
+  }
+
+  return apiClient.put(`/listing/${listingId}`, {
+    merchant_id: merchantId,
+    name,
+    original_price: originalPrice,
+    discounted_price: discountedPrice,
+    image: imagePath,
+    unit,
+    quantity,
+  });
+};
+
+const deleteListing = async (listingId) => {
+  return apiClient.delete(`/listing/${listingId}`);
+};
+
+export { createListing, getListingsByMerchant, getListingById, updateListing, deleteListing };

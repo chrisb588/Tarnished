@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthModal from '../../components/AuthModal/AuthModal';
 import ListingItem from '../../components/ListingItem/ListingItem';
 import { Link } from 'react-router-dom';
+import { supabase } from '../../lib/supabaseClient';
+import { getListingsByMerchant } from '../../api/listings';
 import "./Home.css";
 
 import '../../App.css'
 
 export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [listings, setListings] = useState([]);
 
-  // Array of 4 listing items
-  const listings = [1, 2, 3, 4];
+  useEffect(() => {
+    const fetchListings = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const data = await getListingsByMerchant(user.id);
+      setListings(data);
+    };
+    fetchListings();
+  }, []);
 
     return (
     <>
@@ -21,8 +31,8 @@ export default function Home() {
         <div className="header-icons">
           <button className="icon-btn">🔔</button>
           <button className="icon-btn">👤</button>
-          <button 
-            className="auth-trigger-btn" 
+          <button
+            className="auth-trigger-btn"
             onClick={() => setIsAuthOpen(true)}
           >
           Log In to Sell
@@ -50,8 +60,8 @@ export default function Home() {
 
         {/* Products */}
         <div className="products-grid">
-          {listings.map((id) => (
-            <ListingItem key={id} />
+          {listings.map((listing) => (
+            <ListingItem key={listing.id} listing={listing} />
           ))}
         </div>
       </div>
