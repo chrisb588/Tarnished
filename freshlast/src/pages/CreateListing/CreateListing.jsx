@@ -25,7 +25,8 @@ export const validateForm = (formData) => {
 }
 
 export default function CreateListing(){
-    const [isCreating, setIsCreating] = useState(true);
+    const { id } = useParams();
+    const isCreating = !id;
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate()
 
@@ -90,46 +91,40 @@ export default function CreateListing(){
         }
     }
 
-    const validate = () => {
-        const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice"];
-        const isMissingFields = requiredFields.some(field => formData[field] === "");
-        if (formData.discountedprice >= formData.originalprice) {
-            alert("Discounted price can't be higher than or equal to original price!");
-            return false;
-        }
-        if (isMissingFields) {
-            alert("All fields are required! Please check your inputs.");
-            return false;
-        }
-        return true;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validate()) return;
+        if (!validateForm(formData)) return;
 
-        if (isCreating) {
-            await createListing(
-                merchantId,
-                formData.name,
-                formData.originalprice,
-                null,
-                formData.unit,
-                formData.quantity,
-            );
-        } else {
-            await updateListing(
-                id,
-                merchantId,
-                formData.name,
-                formData.originalprice,
-                formData.discountedprice,
-                existingImagePath,
-                formData.unit,
-                formData.quantity,
-            );
+        setIsSubmitting(true);
+        try {
+            if (isCreating) {
+                await createListing(
+                    merchantId,
+                    formData.name,
+                    formData.originalprice,
+                    formData.discountedprice,
+                    formData.unit,
+                    formData.quantity,
+                );
+            } else {
+                await updateListing(
+                    id,
+                    merchantId,
+                    formData.name,
+                    formData.originalprice,
+                    formData.discountedprice,
+                    existingImagePath,
+                    formData.unit,
+                    formData.quantity,
+                );
+            }
+            navigate('/');
+        } catch (error) {
+            console.error("Failed:", error.message);
+            alert("Error: " + error.message);
+        } finally {
+            setIsSubmitting(false);
         }
-        navigate('/');
     };
 
     const handleDelete = async (e) => {
