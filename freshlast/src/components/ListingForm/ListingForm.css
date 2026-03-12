@@ -10,17 +10,14 @@
     border: solid black 2px;
     border-radius: 3px;
     width: 25%;
-    height: 30vh;
+    height: 100%;
+    aspect-ratio: 3/4;
     overflow: hidden;
     margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 .img-container img{
-    aspect-ratio: 1/1;
-    height: 100px;
-    width: 100px;
+    height: 100%;
+    width: 100%;
 }
 .info-container-photo{
     border: solid black 2px;
