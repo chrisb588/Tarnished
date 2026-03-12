@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; 
 import ListingForm from '../../components/ListingForm/ListingForm';
@@ -10,32 +10,55 @@ export default function CreateListing(){
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
+        image: null,
         name: "",
-        quantity: "",
+        quantity: 0,
         unit: "kg",
-        originalprice: "",
-        discountedprice: "",
+        originalprice: 0,
+        discountedprice: 0
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        // Add your logic here to block negatives (as discussed before)
-        const finalValue = value.startsWith('-') ? 0 : value;
+        const { name, value, type } = e.target;
+        let finalValue = value
 
-        setFormData((prev) => ({ ...prev, [name]: finalValue }));
+        if (type === 'number') {
+            finalValue = value === "" ? "" : parseFloat(value);
+            
+            if (finalValue < 0) finalValue = 0;
+        }
+
+        setFormData((prev) => ({ 
+            ...prev, 
+            [name]: finalValue 
+        }));
     };
+
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0]
+                
+        if (file) {
+            setFormData((prev) => ({
+                ...prev,
+                image: file
+            }))
+        }
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault(); // for now
 
-        const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice"]
-        const isMissingFields = requiredFields.some(field => formData[field] === "");
+        const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
+        const isMissingFields = requiredFields.some(field => formData[field] === "" || null);
 
+        console.log(formData)
 
         if (formData.discountedprice >= formData.originalprice) {
             alert("Discounted price can't be higher than or equal to original price!")
             return;
         }
+        //if image is not there
+
         if (isMissingFields) {
                 alert("All fields are required! Please check your inputs.");
                 return;
@@ -45,6 +68,7 @@ export default function CreateListing(){
         navigate('/');
     };
 
+
     return(
         <div>
             <Link to="/" className="floating-add-btn">
@@ -52,7 +76,11 @@ export default function CreateListing(){
                 </Link>
 
             <form className='main-body'>
-                <ListingForm formData={formData} setFormData={setFormData} handleChange={handleChange}/>
+                <ListingForm 
+                formData={formData} 
+                setFormData={setFormData} 
+                handleChange={handleChange}
+                handleFileUpload={handleFileUpload}/>
 
                 {isCreating ? (
                     <div className='button-div'>

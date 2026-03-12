@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './ListingForm.css'
 import addimgicon from "../../assets/testImg.png"
 
@@ -8,10 +8,30 @@ Quality Assurance:
 2.) Make sure that customer cannot enter empty data/all fields are filled
 
 */
-export default function ListingForm  ({formData, setFormData, handleChange}) {
+export default function ListingForm  ({formData, setFormData, handleChange, handleFileUpload}) {
+    const [previewURL, setPreviewURL] = useState(null)
+
+    // for cleanup of memory in uploading images
+    useEffect(() => {
+        // If there's no image, don't do anything
+        if (!formData.image) {
+            setPreviewURL(null);
+            return;
+        }
+
+        const objectUrl = URL.createObjectURL(formData.image);
+        setPreviewURL(objectUrl);
+
+        // cleanup
+        return () => {
+            URL.revokeObjectURL(objectUrl);
+        };
+    }, [formData.image]); 
+
     const handleStepper = (change) => {
         setFormData((prev) => {
             const newQuantity = parseInt(prev.quantity) + change;
+
 
             if (newQuantity < 0) return prev;
 
@@ -30,6 +50,10 @@ export default function ListingForm  ({formData, setFormData, handleChange}) {
         }
     };
 
+    const imagePreview = formData.image 
+        ? URL.createObjectURL(formData.image)
+        : addimgicon;
+
     return(
         <div className="create-container">
             <div className="preface">
@@ -40,10 +64,17 @@ export default function ListingForm  ({formData, setFormData, handleChange}) {
                 <div className="info-preface">
                     <h4>Product photo</h4>
                     <p>Please add a photo for your product</p>
-                    {/*Do photo logic here soon*/}
                 </div>
                 <div className="img-container">
-                    <img src={addimgicon} className ="addimgicon"/>
+                    <label htmlFor="image-input" style={{ cursor: 'pointer' }}>
+                    <img src={previewURL || addimgicon} alt="Preview" />
+                    </label>
+                    <input 
+                    type="file" 
+                    id="image-input"
+                    onChange={handleFileUpload}
+                    accept="image/*"
+                    style={{display: 'none'}}></input>
                 </div>
             </div>
             <div className="info-container">
