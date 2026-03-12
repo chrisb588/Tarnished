@@ -2,11 +2,31 @@ import React, { useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; 
 import ListingForm from '../../components/ListingForm/ListingForm';
-
+import { createListing } from '../../api/listings'
 
 import './CreateListing.css'
+
+export const validateForm = (formData) => {
+    const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
+    const isMissingFields = requiredFields.some(field => formData[field] === "" || formData[field] === null);
+
+    console.log(formData)
+
+    if (Number(formData.discountedprice) >= Number(formData.originalprice)) {
+        alert("Discounted price can't be higher than or equal to original price!")
+        return false;
+    }
+    if (isMissingFields) {
+        alert("All fields are required! Please check your inputs.");
+        return false;
+    }        
+
+    return true
+}
+
 export default function CreateListing(){
     const [isCreating, setIsCreating] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
@@ -45,27 +65,39 @@ export default function CreateListing(){
         }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault(); // for now
 
-        const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
-        const isMissingFields = requiredFields.some(field => formData[field] === "" || null);
+        const isValid = validateForm(formData)
 
-        console.log(formData)
-
-        if (formData.discountedprice >= formData.originalprice) {
-            alert("Discounted price can't be higher than or equal to original price!")
-            return;
+        if (!isValid) {
+            return
         }
-        //if image is not there
 
-        if (isMissingFields) {
-                alert("All fields are required! Please check your inputs.");
-                return;
-            }        
-        console.log("Submitting Data:", formData);
-        // Add your API call here (e.g., fetch or axios)
-        navigate('/');
+        setIsSubmitting(true)
+        try {
+            const response = await createListing(
+                currentMerchantId, 
+                formData.name,
+                formData.originalprice,
+                formData.discountedprice,
+                formData.image,
+                formData.unit,
+                formData.quantity,
+            );
+
+            console.log("Upload successful:", response);
+            alert("Listing created successfully!");
+            navigate('/');
+
+            } catch (error) {
+                console.error("Upload failed:", error.message);
+                alert("Error creating listing: " + error.message);
+            } finally {
+                setIsSubmitting(false);
+            }
+
+
     };
 
 

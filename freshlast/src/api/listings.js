@@ -4,11 +4,11 @@ import { supabase } from "../lib/supabaseClient";
 const createListing = async (
   merchantId,
   name,
-  price,
+  originalprice,
+  discountedprice,
   image, // Assume for now that this is an image file
   unit,
   quantity,
-  expirationDetails,
 ) => {
   const relativePath = `listings/${crypto.randomUUID()}`;
   const imagePath = `${merchantId}/${relativePath}`;
@@ -26,11 +26,11 @@ const createListing = async (
   return apiClient.post("/listing", {
     merchant_id: merchantId,
     name: name,
-    price: price,
+    originalprice: originalprice,
+    discountedprice: discountedprice,
     image: relativePath,
     unit: unit,
     quantity: quantity,
-    expiration_details: expirationDetails,
   });
 };
 
