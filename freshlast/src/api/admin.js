@@ -1,20 +1,24 @@
 import apiClient from "../lib/apiClient";
 
-// Create Merchant API Endpoint
-// merchant is expected to be a json object with ff. fields:
-// {
-//   name: string
-//   latitude: number
-//   longitude: number
-//   start_operating_time: time
-//   end_operating_time: time
-//   operating_days: array containing one or more of the ff: "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-//   location: string
-// }
-const createMerchant = async (email, merchant) => {
+const createMerchant = async (
+  email,
+  name,
+  latitude,
+  longitude,
+  start_operating_time, // should be only time
+  end_operating_time, // should be only time
+  operating_days, // should be an array consisting of exclusively "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+  location,
+) => {
   return await apiClient.post(`/admin/create`, {
-    email: email,
-    merchant: merchant,
+    email,
+    name,
+    latitude,
+    longitude,
+    start_operating_time,
+    end_operating_time,
+    operating_days,
+    location,
   });
 };
 
