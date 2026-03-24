@@ -6,7 +6,7 @@ router = APIRouter()
 
 
 # Create listing
-@router.post("")
+@router.post("", tags=["Listings"])
 async def create_listing(listing: Listing):
     payload = listing.model_dump(mode="json")
     data = supabase.table("listing").insert(payload).execute()
@@ -15,7 +15,7 @@ async def create_listing(listing: Listing):
 
 
 # Get listings by merchant
-@router.get("")
+@router.get("", tags=["Listings"])
 async def get_listings(merchant_id: str):
     data = (
         supabase.table("listing").select("*").eq("merchant_id", merchant_id).execute()
@@ -24,14 +24,14 @@ async def get_listings(merchant_id: str):
 
 
 # Get single listing
-@router.get("/{listing_id}")
+@router.get("/{listing_id}", tags=["Listings"])
 async def get_listing(listing_id: str):
     data = supabase.table("listing").select("*").eq("id", listing_id).execute()
     return data.data[0] if data.data else None
 
 
 # Edit listing
-@router.put("/{listing_id}")
+@router.put("/{listing_id}", tags=["Listings"])
 async def update_listing(listing_id: str, listing: Listing):
     payload = listing.model_dump(mode="json")
     data = supabase.table("listing").update(payload).eq("id", listing_id).execute()
@@ -39,7 +39,7 @@ async def update_listing(listing_id: str, listing: Listing):
 
 
 # Delete listing
-@router.delete("/{listing_id}")
+@router.delete("/{listing_id}", tags=["Listings"])
 async def delete_listing(listing_id: str):
     data = supabase.table("listing").delete().eq("id", listing_id).execute()
     return data.data

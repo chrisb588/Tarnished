@@ -13,7 +13,8 @@ from models.profile import Merchant
 router = APIRouter()
 
 
-@router.post("/create", response_model=ResponseModel)
+# Create a merchant account
+@router.post("/create", response_model=ResponseModel, tags=["Admin"])
 def create_merchant(payload: CreateMerchantRequestPayloadModel):
     try:
         generated_password = passgen.passgen(length=8)
