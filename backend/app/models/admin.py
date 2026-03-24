@@ -9,6 +9,7 @@ class CreateMerchantRequestPayloadModel(BaseModel):
     name: str
     latitude: float
     longitude: float
+    location_photo: str
     start_operating_time: time
     end_operating_time: time
     operating_days: list[Weekday]

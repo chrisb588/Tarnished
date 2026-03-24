@@ -36,6 +36,7 @@ def create_merchant(payload: CreateMerchantRequestPayloadModel):
                     name=payload.name,
                     latitude=payload.latitude,
                     longitude=payload.longitude,
+                    location_photo=payload.location_photo,
                     start_operating_time=payload.start_operating_time,
                     end_operating_time=payload.end_operating_time,
                     operating_days=payload.operating_days,
@@ -65,6 +66,6 @@ def create_merchant(payload: CreateMerchantRequestPayloadModel):
 
 
 # Delete a merchant account
-@router.delete("/{id}")
+@router.delete("/delete/{id}", tags=["Admin"])
 def delete_merchant(id: str):
     supabase.auth.admin.delete_user(id)
