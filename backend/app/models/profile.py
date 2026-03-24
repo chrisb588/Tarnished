@@ -1,18 +1,8 @@
-from datetime import datetime
-from enum import Enum
+from datetime import time
 from uuid import UUID
 
+from models.enums.weekday import Weekday
 from pydantic import BaseModel
-
-
-class Weekday(Enum):
-    SUNDAY = "Sunday"
-    MONDAY = "Monday"
-    TUESDAY = "Tuesday"
-    WEDNESDAY = "Wednesday"
-    THURSDAY = "Thursday"
-    FRIDAY = "Friday"
-    SATRUDAY = "Saturday"
 
 
 class Merchant(BaseModel):
@@ -21,7 +11,7 @@ class Merchant(BaseModel):
     latitude: float
     longitude: float
     location_photo: str | None = None
-    start_operating_time: datetime
-    end_operating_time: datetime
+    start_operating_time: time
+    end_operating_time: time
     operating_days: list[Weekday]
     location: str
