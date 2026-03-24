@@ -22,7 +22,7 @@ const createListing = async (
     throw error;
   }
 
-  return apiClient.post("/listing", {
+  return apiClient.post("/listings", {
     merchant_id: merchantId,
     name: name,
     originalprice: originalprice,
@@ -39,7 +39,7 @@ const getListingsByMerchant = async (merchantId) => {
 };
 
 const getListingById = async (listingId) => {
-  const response = await apiClient.get(`/listing/${listingId}`);
+  const response = await apiClient.get(`/listings/${listingId}`);
   return response.data;
 };
 
@@ -63,7 +63,7 @@ const updateListing = async (
     if (error) throw error;
   }
 
-  return apiClient.put(`/listing/${listingId}`, {
+  return apiClient.put(`/listings/${listingId}`, {
     merchant_id: merchantId,
     name,
     original_price: originalPrice,
@@ -75,7 +75,7 @@ const updateListing = async (
 };
 
 const deleteListing = async (listingId) => {
-  return apiClient.delete(`/listing/${listingId}`);
+  return apiClient.delete(`/listings/${listingId}`);
 };
 
 export {
