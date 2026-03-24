@@ -1,0 +1,28 @@
+.container {
+    width: 80vw;
+}
+.dashboard {
+    border: 3px solid black;
+    padding: 0px 2rem 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+}
+.user-list{
+    border: 3px solid black;
+    min-height: 40vh;
+    padding: 30px 20px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.user{
+    border: 3px solid black;    
+    height: 5em;
+}
+.add-vendor-btn{
+    margin-top: 1rem;
+    flex-grow: 1;
+    height: 4rem;
+}

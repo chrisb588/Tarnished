@@ -103,6 +103,7 @@ export default function CreateListing(){
                     formData.name,
                     formData.originalprice,
                     formData.discountedprice,
+                    formData.image,
                     formData.unit,
                     formData.quantity,
                 );

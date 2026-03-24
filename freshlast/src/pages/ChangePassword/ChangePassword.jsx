@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 
+import './ChangePassword.css'
+
 export default function ChangePassword() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -24,10 +26,12 @@ export default function ChangePassword() {
   };
 
   return (
-    <div>
+    <div
+    className='password-div'>
       <h1>Set Your Password</h1>
       <p>This is your first login. Please set a new password before continuing.</p>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}
+      className='change-pass-form'>
         <p>new password</p>
         <input
           type="password"

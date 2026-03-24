@@ -137,6 +137,7 @@ export default function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/create" element={<CreateListing />} />
                 <Route path="/edit/:id" element={<CreateListing />} />
+                <Route path="/changePass" element={<ChangePassword />} />
                 <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
         </BrowserRouter>
