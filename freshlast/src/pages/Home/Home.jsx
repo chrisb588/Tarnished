@@ -31,6 +31,11 @@ export default function Home() {
         <div className="header-icons">
           <button className="icon-btn">🔔</button>
           <button className="icon-btn">👤</button>
+          <div className="icon-btn">
+          <Link to="/admin" className="add-listing-btn">
+          ⚙️
+          </Link>
+          </div>
           <button
             className="auth-trigger-btn"
             onClick={() => setIsAuthOpen(true)}

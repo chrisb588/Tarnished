@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import CreateListing from './pages/CreateListing/CreateListing';
 import ChangePassword from './pages/ChangePassword/ChangePassword';
+import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 
 import './App.css'
 
@@ -136,6 +137,7 @@ export default function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/create" element={<CreateListing />} />
                 <Route path="/edit/:id" element={<CreateListing />} />
+                <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
         </BrowserRouter>
     );
