@@ -13,9 +13,11 @@ load_dotenv()
 app = FastAPI(title=config.app_name)
 
 # Add routes
-app.include_router(listings_router, prefix="/api")
-app.include_router(profile_router, prefix="/api")
-app.include_router(admin_router, prefix="/api")
+API_PREFIX = "/api"
+
+app.include_router(listings_router, prefix=f"{API_PREFIX}/listings")
+app.include_router(profile_router, prefix=f"{API_PREFIX}/profile")
+app.include_router(admin_router, prefix=f"{API_PREFIX}/admin")
 
 # Add CORS Middleware
 origins = os.getenv("ORIGINS")
