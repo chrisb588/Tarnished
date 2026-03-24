@@ -8,7 +8,7 @@ import "./Home.css";
 
 import '../../App.css'
 
-export default function Home() {
+export default function Home({ onLogout }) {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [listings, setListings] = useState([]);
 
@@ -31,12 +31,15 @@ export default function Home() {
         <div className="header-icons">
           <button className="icon-btn">🔔</button>
           <button className="icon-btn">👤</button>
-          <button
-            className="auth-trigger-btn"
-            onClick={() => setIsAuthOpen(true)}
-          >
-          Log In to Sell
-          </button>
+          {onLogout ? (
+            <button className="auth-trigger-btn" onClick={onLogout}>
+              Sign Out
+            </button>
+          ) : (
+            <button className="auth-trigger-btn" onClick={() => setIsAuthOpen(true)}>
+              Log In to Sell
+            </button>
+          )}
         </div>
       </header>
 

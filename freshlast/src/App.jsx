@@ -120,13 +120,13 @@ export default function App() {
     }
     if (claims) {
         return (
-            <div>
-                <h1>Welcome!</h1>
-                <p>You are logged in as: {claims.email}</p>
-                <button onClick={handleLogout}>
-                    Sign Out
-                </button>
-            </div>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Home onLogout={handleLogout} />} />
+                    <Route path="/create" element={<CreateListing />} />
+                    <Route path="/edit/:id" element={<CreateListing />} />
+                </Routes>
+            </BrowserRouter>
         );
     }
 

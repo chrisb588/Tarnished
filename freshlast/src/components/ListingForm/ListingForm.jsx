@@ -8,14 +8,14 @@ Quality Assurance:
 2.) Make sure that customer cannot enter empty data/all fields are filled
 
 */
-export default function ListingForm  ({formData, setFormData, handleChange, handleFileUpload}) {
+export default function ListingForm  ({formData, setFormData, handleChange, handleFileUpload, existingPreviewURL = null}) {
     const [previewURL, setPreviewURL] = useState(null)
 
     // for cleanup of memory in uploading images
     useEffect(() => {
         // If there's no image, don't do anything
         if (!formData.image) {
-            setPreviewURL(null);
+            setPreviewURL(existingPreviewURL || null); // Bug 4 support
             return;
         }
 
@@ -50,10 +50,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
         }
     };
 
-    const imagePreview = formData.image 
-        ? URL.createObjectURL(formData.image)
-        : addimgicon;
-
+    // Bug 3 fixed
     return(
         <div className="create-container">
             <div className="preface">
