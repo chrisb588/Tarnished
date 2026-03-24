@@ -1,6 +1,5 @@
 # API ROUTES ACCESSIBLE ON THE ADMIN CLIENT
 
-import json
 from uuid import UUID
 
 import passgen
@@ -63,3 +62,9 @@ def create_merchant(payload: CreateMerchantRequestPayloadModel):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Error occurred when trying to clean up users table on failed create_merchant call",
             )
+
+
+# Delete a merchant account
+@router.delete("/{id}")
+def delete_merchant(id: str):
+    supabase.auth.admin.delete_user(id)
