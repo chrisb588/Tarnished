@@ -17,27 +17,19 @@ const updateProfile = async (
   operating_days,
   location,
 ) => {
-  let imagePath = location_photo;
-
+  const formData = new FormData();
+  formData.append("id", id);
+  formData.append("name", name);
+  formData.append("latitude", latitude);
+  formData.append("longitude", longitude);
   if (location_photo instanceof File) {
-    const imagePath = `${id}/profile/${crypto.randomUUID()}`;
-    const { error } = await supabase.storage
-      .from("media")
-      .upload(imagePath, location_photo);
-    if (error) throw error;
+    formData.append("location_photo", location_photo);
   }
-
-  return apiClient.put(`/profile/${id}`, {
-    id,
-    name,
-    latitude,
-    longitude,
-    location_photo: imagePath,
-    start_operating_time,
-    end_operating_time,
-    operating_days,
-    location,
-  });
+  formData.append("start_operating_time", start_operating_time);
+  formData.append("end_operating_time", end_operating_time);
+  formData.append("operating_days", JSON.stringify(operating_days));
+  formData.append("location", location);
+  return await apiClient.put(`/profile/${id}`, formData);
 };
 
 export { getProfile, updateProfile };
