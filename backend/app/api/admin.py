@@ -45,7 +45,9 @@ async def create_merchant(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
     user_id = create_response.user.id
-    image_path = f"{user_id}/profile/{uuid4()}"
+    image_path = supabase_admin.storage.from_("media").get_public_url(
+        f"{user_id}/profile/{uuid4()}"
+    )
 
     try:
         image_bytes = await location_photo.read()
