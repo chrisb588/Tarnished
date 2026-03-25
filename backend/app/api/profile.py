@@ -33,7 +33,13 @@ async def update_listing(
     try:
         parsed_days = [Weekday(day) for day in json.loads(operating_days)]
     except json.JSONDecodeError:
-        parsed_days = [Weekday(day.strip()) for day in operating_days.split(",")]
+        try:
+            parsed_days = [Weekday(day.strip()) for day in operating_days.split(",")]
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Invalid data format for operating days field. It should be an array containing 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', and/or 'Saturday'",
+            )
 
     merchant_result = (
         supabase.table("merchant")
