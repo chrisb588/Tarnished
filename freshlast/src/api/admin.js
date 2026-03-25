@@ -1,5 +1,4 @@
 import apiClient from "../lib/apiClient";
-import { supabase } from "../lib/supabaseClient";
 
 const createMerchant = async (
   email,
@@ -12,40 +11,18 @@ const createMerchant = async (
   operating_days, // should be an array consisting of exclusively "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
   location,
 ) => {
-  const response = await apiClient.post(`/admin/create`, {
-    email,
-    name,
-    latitude,
-    longitude,
-    start_operating_time,
-    end_operating_time,
-    operating_days,
-    location,
-  });
+  const formData = new FormData();
+  formData.append("email", email);
+  formData.append("name", name);
+  formData.append("latitude", latitude);
+  formData.append("longitude", longitude);
+  formData.append("location_photo", location_photo);
+  formData.append("start_operating_time", start_operating_time);
+  formData.append("end_operating_time", end_operating_time);
+  formData.append("operating_days", JSON.stringify(operating_days));
+  formData.append("location", location);
 
-  const imagePath = `${response["uuid"]}/profile/${crypto.randomUUID()}`;
-
-  // This assumes that image is a single file
-  // TODO: Modify upload function to handle multiple images
-  const { error } = await supabase.storage
-    .from("media")
-    .upload(imagePath, location_photo);
-
-  if (error) {
-    throw error;
-  }
-
-  return apiClient.put(`/profile/${response["uuid"]}`, {
-    id: response["uuid"],
-    name,
-    latitude,
-    longitude,
-    location_photo: imagePath,
-    start_operating_time,
-    end_operating_time,
-    operating_days,
-    location,
-  });
+  return await apiClient.post(`/admin/create`, formData);
 };
 
 const deleteMerchant = async (id) => {

@@ -1,71 +1,99 @@
 # API ROUTES ACCESSIBLE ON THE ADMIN CLIENT
 
-from uuid import UUID
+import json
+from datetime import time
+from uuid import UUID, uuid4
 
 import passgen
-from core.supabase import supabase
-from fastapi import APIRouter, HTTPException, status
-from models.admin import CreateMerchantRequestPayloadModel
+from core.supabase import supabase_admin
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from models.enums.weekday import Weekday
 from models.profile import Merchant
+from pydantic import EmailStr
 
 router = APIRouter()
 
 
 # Create a merchant account
 @router.post("/create", tags=["Admin"])
-def create_merchant(payload: CreateMerchantRequestPayloadModel):
+async def create_merchant(
+    email: EmailStr = Form(...),
+    name: str = Form(...),
+    latitude: float = Form(...),
+    longitude: float = Form(...),
+    start_operating_time: time = Form(...),
+    end_operating_time: time = Form(...),
+    operating_days: str = Form(...),
+    location: str = Form(...),
+    location_photo: UploadFile = File(...),
+):
+    try:
+        parsed_days = [Weekday(day) for day in json.loads(operating_days)]
+    except json.JSONDecodeError:
+        parsed_days = [Weekday(day.strip()) for day in operating_days.split(",")]
+
     try:
         generated_password = passgen.passgen(length=8)
-
-        create_response = supabase.auth.admin.create_user(
+        create_response = supabase_admin.auth.admin.create_user(
             {
-                "email": payload.email,
+                "email": email,
                 "password": generated_password,
                 "email_confirm": True,
             }
         )
     except Exception as e:
-        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+    user_id = create_response.user.id
+    image_path = f"{user_id}/profile/{uuid4()}"
+
+    try:
+        image_bytes = await location_photo.read()
+        supabase_admin.storage.from_("media").upload(
+            image_path,
+            image_bytes,
+            file_options={"content-type": location_photo.content_type},
+        )
+    except Exception as e:
+        supabase_admin.auth.admin.delete_user(user_id)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
     try:
         (
-            supabase.table("merchant")
+            supabase_admin.table("merchant")
             .insert(
                 Merchant(
-                    id=UUID(create_response.user.id),
-                    name=payload.name,
-                    latitude=payload.latitude,
-                    longitude=payload.longitude,
-                    location_photo=payload.location_photo,
-                    start_operating_time=payload.start_operating_time,
-                    end_operating_time=payload.end_operating_time,
-                    operating_days=payload.operating_days,
-                    location=payload.location,
+                    id=UUID(user_id),
+                    name=name,
+                    latitude=latitude,
+                    longitude=longitude,
+                    location_photo=image_path,
+                    start_operating_time=start_operating_time,
+                    end_operating_time=end_operating_time,
+                    operating_days=parsed_days,
+                    location=location,
                 ).model_dump(mode="json")
             )
             .execute()
         )
-
         return {
-            "uuid": create_response.user.id,
-            "email": payload.email,
+            "uuid": user_id,
+            "email": email,
             "temp_password": generated_password,
         }
-
     except Exception as e:
-        # Deletes the user when it is created
         try:
-            supabase.auth.admin.delete_user(create_response.user.id)
-
-            return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-        except Exception as e:
-            return HTTPException(
+            supabase_admin.storage.from_("media").remove([image_path])
+            supabase_admin.auth.admin.delete_user(user_id)
+        except Exception as cleanup_error:
+            raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Error occurred when trying to clean up users table on failed create_merchant call",
+                detail=f"FATAL: Failed to clean up resources after merchant insert failure: {cleanup_error}",
             )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 # Delete a merchant account
 @router.delete("/delete/{id}", tags=["Admin"])
 def delete_merchant(id: str):
-    supabase.auth.admin.delete_user(id)
+    supabase_admin.auth.admin.delete_user(id)
