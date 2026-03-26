@@ -114,7 +114,7 @@ export default function App() {
     /* //TEMP - remove when done testing
     return (
         <BrowserRouter>
-            <CreateProfile />
+            <EditProfile onSave={() => {}} onLogout={() => {}} />
         </BrowserRouter>
     );
     */
