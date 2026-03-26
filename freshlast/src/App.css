@@ -1,19 +1,28 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: left;
 }
+
 body {
-  background-color: white;
-  color: black;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 p {
-  color: black;
+  color: var(--color-text);
 }
 
 h1 {
-  color: black;
+  color: var(--color-text);
+}
+
+button {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+button:hover {
+  background-color: var(--color-primary-hover);
 }

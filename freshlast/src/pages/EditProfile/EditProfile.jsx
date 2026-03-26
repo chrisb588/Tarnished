@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
+import VendorHeader from '../../components/VendorHeader/VendorHeader'
 import './EditProfile.css'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -9,23 +10,26 @@ export default function EditProfile({ onSave, onLogout }) {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [photoPreview, setPhotoPreview] = useState(null)
+  const fileInputRef = useRef(null)
 
   const [formData, setFormData] = useState({
     stallName: '',
     marketLocation: '',
     phoneNumber: '',
-    operatingHoursStart: '05:00',
-    operatingHoursEnd: '19:00',
+    operatingHoursStart: '',
+    operatingHoursEnd: '',
     operatingDays: []
   })
 
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!supabase) return
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
       const { data } = await supabase
-        .from('profiles')             // ← your table name
+        .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single()
@@ -35,10 +39,11 @@ export default function EditProfile({ onSave, onLogout }) {
           stallName: data.stall_name || '',
           marketLocation: data.market_location || '',
           phoneNumber: data.phone_number || '',
-          operatingHoursStart: data.operating_hours_start || '05:00',
-          operatingHoursEnd: data.operating_hours_end || '19:00',
+          operatingHoursStart: data.operating_hours_start || '',
+          operatingHoursEnd: data.operating_hours_end || '',
           operatingDays: data.operating_days || []
         })
+        if (data.stall_photo) setPhotoPreview(data.stall_photo)
       }
     }
     fetchProfile()
@@ -58,6 +63,13 @@ export default function EditProfile({ onSave, onLogout }) {
     }))
   }
 
+  const handlePhotoClick = () => fileInputRef.current?.click()
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0]
+    if (file) setPhotoPreview(URL.createObjectURL(file))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -69,10 +81,12 @@ export default function EditProfile({ onSave, onLogout }) {
 
     setIsLoading(true)
 
+    if (!supabase) { setIsLoading(false); return }
+
     const { data: { user } } = await supabase.auth.getUser()
 
     const { error: dbError } = await supabase
-      .from('profiles')             // ← your table name
+      .from('profiles')
       .upsert({
         id: user.id,
         stall_name: formData.stallName,
@@ -85,120 +99,112 @@ export default function EditProfile({ onSave, onLogout }) {
 
     setIsLoading(false)
 
-    if (dbError) {
-      setError(dbError.message)
-      return
-    }
+    if (dbError) { setError(dbError.message); return }
 
-    onSave?.()             // tell App.jsx profile is now complete
+    onSave?.()
     navigate('/dashboard')
   }
 
   return (
-    <div className="complete-profile">
-      <div className="complete-profile__container">
-        <h1 className="complete-profile__title">Complete your Profile</h1>
+    <div className="edit-profile">
+      <VendorHeader onLogout={onLogout} />
 
-        <form className="complete-profile__form" onSubmit={handleSubmit}>
-          {error && <div className="complete-profile__error">{error}</div>}
+      <div className="edit-profile__container">
+        <h1 className="edit-profile__title">Set Up Your Profile</h1>
+        <p className="edit-profile__subtitle">
+          Review your details below. If everything looks good, just hit Save — or make any changes before continuing.
+        </p>
 
-          <div className="complete-profile__field">
-            <label className="complete-profile__label complete-profile__label--required" htmlFor="stallName">
+        <form className="edit-profile__form" onSubmit={handleSubmit}>
+          {error && <div className="edit-profile__error">{error}</div>}
+
+          {/* Stall Photo */}
+          <div className="edit-profile__field">
+            <label className="edit-profile__label edit-profile__label--required">
+              Stall Photo
+            </label>
+            <div className="edit-profile__photo-box" onClick={handlePhotoClick}>
+              {photoPreview ? (
+                <img src={photoPreview} alt="Stall" className="edit-profile__photo-preview" />
+              ) : (
+                <div className="edit-profile__photo-placeholder">
+                  <span className="edit-profile__photo-icon">🖼️</span>
+                  <span>Click to upload photo</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handlePhotoChange}
+            />
+          </div>
+
+          {/* Stall Name */}
+          <div className="edit-profile__field">
+            <label className="edit-profile__label edit-profile__label--required" htmlFor="stallName">
               Stall Name
             </label>
-            <input
-              id="stallName"
-              name="stallName"
-              type="text"
-              className="complete-profile__input"
-              value={formData.stallName}
-              onChange={handleChange}
-            />
+            <input id="stallName" name="stallName" type="text"
+              className="edit-profile__input"
+              value={formData.stallName} onChange={handleChange} />
           </div>
 
-          <div className="complete-profile__field">
-            <label className="complete-profile__label complete-profile__label--required" htmlFor="marketLocation">
+          {/* Market Location */}
+          <div className="edit-profile__field">
+            <label className="edit-profile__label edit-profile__label--required" htmlFor="marketLocation">
               Market Location / Section
             </label>
-            <input
-              id="marketLocation"
-              name="marketLocation"
-              type="text"
-              className="complete-profile__input"
-              value={formData.marketLocation}
-              onChange={handleChange}
-            />
+            <input id="marketLocation" name="marketLocation" type="text"
+              className="edit-profile__input"
+              value={formData.marketLocation} onChange={handleChange} />
           </div>
 
-          <div className="complete-profile__field">
-            <label className="complete-profile__label complete-profile__label--required" htmlFor="phoneNumber">
+          {/* Phone Number */}
+          <div className="edit-profile__field">
+            <label className="edit-profile__label edit-profile__label--required" htmlFor="phoneNumber">
               Phone Number
             </label>
-            <input
-              id="phoneNumber"
-              name="phoneNumber"
-              type="tel"
-              className="complete-profile__input"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-            />
+            <input id="phoneNumber" name="phoneNumber" type="tel"
+              className="edit-profile__input"
+              value={formData.phoneNumber} onChange={handleChange} />
           </div>
 
-          <div className="complete-profile__field">
-            <label className="complete-profile__label complete-profile__label--required">
+          {/* Operating Hours */}
+          <div className="edit-profile__field">
+            <label className="edit-profile__label edit-profile__label--required">
               Operating Hours
             </label>
-            <div className="complete-profile__hours">
-              <input
-                name="operatingHoursStart"
-                type="time"
-                className="complete-profile__time-input"
-                value={formData.operatingHoursStart}
-                onChange={handleChange}
-              />
-              <input
-                name="operatingHoursEnd"
-                type="time"
-                className="complete-profile__time-input"
-                value={formData.operatingHoursEnd}
-                onChange={handleChange}
-              />
+            <div className="edit-profile__hours">
+              <input name="operatingHoursStart" type="time"
+                className="edit-profile__time-input"
+                value={formData.operatingHoursStart} onChange={handleChange} />
+              <input name="operatingHoursEnd" type="time"
+                className="edit-profile__time-input"
+                value={formData.operatingHoursEnd} onChange={handleChange} />
             </div>
           </div>
 
-          <div className="complete-profile__field">
-            <label className="complete-profile__label complete-profile__label--required">
+          {/* Operating Days */}
+          <div className="edit-profile__field">
+            <label className="edit-profile__label edit-profile__label--required">
               Operating Days
             </label>
-            <div className="complete-profile__days">
+            <div className="edit-profile__days">
               {DAYS.map(day => (
-                <button
-                  key={day}
-                  type="button"
-                  className={`complete-profile__day-btn ${formData.operatingDays.includes(day) ? 'complete-profile__day-btn--active' : ''}`}
-                  onClick={() => toggleDay(day)}
-                >
+                <button key={day} type="button"
+                  className={`edit-profile__day-btn ${formData.operatingDays.includes(day) ? 'edit-profile__day-btn--active' : ''}`}
+                  onClick={() => toggleDay(day)}>
                   {day}
                 </button>
               ))}
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="complete-profile__submit"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Saving...' : 'Save Profile'}
-          </button>
-
-          <button
-            type="button"
-            className="complete-profile__submit"
-            style={{ marginTop: '8px', background: '#888' }}
-            onClick={onLogout}
-          >
-            Sign Out
+          <button type="submit" className="edit-profile__submit" disabled={isLoading}>
+            {isLoading ? 'Saving...' : 'Save changes'}
           </button>
         </form>
       </div>

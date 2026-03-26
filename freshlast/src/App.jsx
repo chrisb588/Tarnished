@@ -11,7 +11,7 @@ import EditProfile from './pages/EditProfile/EditProfile';
 import './App.css'
 
 export default function App() {
-    const [session, setSession] = useState(undefined); // undefined = still loading
+    const [session, setSession] = useState(undefined);
     const [needsPasswordChange, setNeedsPasswordChange] = useState(false);
     const [profileComplete, setProfileComplete] = useState(false);
     const [verifying, setVerifying] = useState(false);
@@ -28,8 +28,8 @@ export default function App() {
     const checkProfileComplete = async (user) => {
         if (!user) return;
         const { data } = await supabase
-            .from('profiles')               // ← your table name
-            .select('stall_name, market_location, phone_number') // ← your columns
+            .from('profiles')
+            .select('stall_name, market_location, phone_number')
             .eq('id', user.id)
             .single();
 
@@ -39,7 +39,7 @@ export default function App() {
 
     useEffect(() => {
         if (!supabase) {
-            setSession(null); // Supabase not configured, unblock the app
+            setSession(null);
             return;
         }
 
@@ -57,7 +57,6 @@ export default function App() {
                 .finally(() => setVerifying(false));
         }
 
-        // Initial session check — THIS is the fix
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session ?? null);
             if (session?.user) {
@@ -66,7 +65,6 @@ export default function App() {
             }
         });
 
-        // Listen for login/logout
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session ?? null);
             if (session?.user) {
@@ -88,7 +86,6 @@ export default function App() {
         setProfileComplete(false);
     };
 
-    // Still loading session
     if (session === undefined || verifying) {
         return <div style={{ display: 'grid', placeItems: 'center', height: '100vh' }}>Loading...</div>;
     }
@@ -104,12 +101,18 @@ export default function App() {
         );
     }
 
-    // Hard gate: must change password first
     if (session && needsPasswordChange) {
         return <ChangePassword />;
     }
 
     const isLoggedIn = !!session;
+
+    // TEMP - remove when done testing
+    return (
+        <BrowserRouter>
+            <EditProfile onSave={() => {}} onLogout={() => {}} />
+        </BrowserRouter>
+    );
 
     return (
         <BrowserRouter>
