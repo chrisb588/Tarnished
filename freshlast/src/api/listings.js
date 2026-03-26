@@ -1,36 +1,26 @@
 import apiClient from "../lib/apiClient";
-import { supabase } from "../lib/supabaseClient";
 
 const createListing = async (
   merchantId,
   name,
-  originalprice,
-  discountedprice,
+  originalPrice,
+  discountedPrice,
   image, // Assume for now that this is an image file
   unit,
   quantity,
 ) => {
-  const imagePath = `${merchantId}/listings/${crypto.randomUUID()}`;
-
-  // This assumes that image is a single file
-  // TODO: Modify upload function to handle multiple images
-  const { error } = await supabase.storage
-    .from("media")
-    .upload(imagePath, image);
-
-  if (error) {
-    throw error;
+  const formData = new FormData();
+  formData.append("merchant_id", merchantId);
+  formData.append("name", name);
+  formData.append("original_price", originalPrice);
+  formData.append("discounted_price", discountedPrice);
+  if (image instanceof File) {
+    formData.append("image", image);
   }
+  formData.append("unit", unit);
+  formData.append("quantity", quantity);
 
-  return apiClient.post("/listing", {
-    merchant_id: merchantId,
-    name: name,
-    originalprice: originalprice,
-    discountedprice: discountedprice,
-    image: imagePath,
-    unit: unit,
-    quantity: quantity,
-  });
+  return apiClient.post("/listings", formData);
 };
 
 const getListingsByMerchant = async (merchantId) => {
@@ -39,7 +29,7 @@ const getListingsByMerchant = async (merchantId) => {
 };
 
 const getListingById = async (listingId) => {
-  const response = await apiClient.get(`/listing/${listingId}`);
+  const response = await apiClient.get(`/listings/${listingId}`);
   return response.data;
 };
 
@@ -53,29 +43,22 @@ const updateListing = async (
   unit,
   quantity,
 ) => {
-  let imagePath = image;
-
+  const formData = new FormData();
+  formData.append("merchant_id", merchantId);
+  formData.append("name", name);
+  formData.append("original_price", originalPrice);
+  formData.append("discounted_price", discountedPrice);
   if (image instanceof File) {
-    const imagePath = `${merchantId}/listings/${crypto.randomUUID()}`;
-    const { error } = await supabase.storage
-      .from("media")
-      .upload(imagePath, image);
-    if (error) throw error;
+    formData.append("image", image);
   }
+  formData.append("unit", unit);
+  formData.append("quantity", quantity);
 
-  return apiClient.put(`/listing/${listingId}`, {
-    merchant_id: merchantId,
-    name,
-    original_price: originalPrice,
-    discounted_price: discountedPrice,
-    image: imagePath,
-    unit,
-    quantity,
-  });
+  return apiClient.put(`/listings/${listingId}`, formData);
 };
 
 const deleteListing = async (listingId) => {
-  return apiClient.delete(`/listing/${listingId}`);
+  return apiClient.delete(`/listings/${listingId}`);
 };
 
 export {

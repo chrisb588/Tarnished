@@ -30,6 +30,7 @@ export default function App() {
     });
     return () => subscription.unsubscribe();
   }, []);
+<<<<<<< HEAD
 
     const checkProfileComplete = async (user) => {
         if (!user) return;
@@ -105,10 +106,17 @@ export default function App() {
                 </button>
             </div>
         );
+=======
+
+  const handleLogout = async () => {
+    if (supabase) {
+      await supabase.auth.signOut();
+>>>>>>> brillos-image-upload-on-listings
     }
     setClaims(null);
     setNeedsPasswordChange(false);
   };
+<<<<<<< HEAD
 
     if (session && needsPasswordChange) {
         return <ChangePassword />;
@@ -187,5 +195,66 @@ export default function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
+=======
+
+  if (verifying) {
+    return (
+      <div>
+        <h1>Authentication</h1>
+        <p>Confirming your magic link...</p>
+        <p>Loading...</p>
+      </div>
+>>>>>>> brillos-image-upload-on-listings
     );
+  }
+  if (authError) {
+    return (
+      <div>
+        <h1>Authentication</h1>
+        <p>✗ Authentication failed</p>
+        <p>{authError}</p>
+        <button
+          onClick={() => {
+            setAuthError(null);
+            window.history.replaceState({}, document.title, "/");
+          }}
+        >
+          Return to login
+        </button>
+      </div>
+    );
+  }
+  if (authSuccess && !claims) {
+    return (
+      <div>
+        <h1>Authentication</h1>
+        <p>✓ Authentication successful!</p>
+        <p>Loading your account...</p>
+      </div>
+    );
+  }
+  if (claims && needsPasswordChange) {
+    return <ChangePassword />;
+  }
+  // if (claims) {
+  //     return (
+  //         <div>
+  //             <h1>Welcome!</h1>
+  //             <p>You are logged in as: {claims.email}</p>
+  //             <button onClick={handleLogout}>
+  //                 Sign Out
+  //             </button>
+  //         </div>
+  //     );
+  // }
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create" element={<CreateListing />} />
+        <Route path="/edit/:id" element={<CreateListing />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
