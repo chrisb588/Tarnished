@@ -30,6 +30,7 @@ async def update_listing(
     location: str = Form(...),
     location_photo: UploadFile = File(None),
 ):
+    # Parse operating days string as an array
     try:
         parsed_days = [Weekday(day) for day in json.loads(operating_days)]
     except json.JSONDecodeError:
@@ -41,6 +42,7 @@ async def update_listing(
                 detail="Invalid data format for operating days field. It should be an array containing 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', and/or 'Saturday'",
             )
 
+    # Get current merchant entry
     merchant_result = (
         supabase.table("merchant")
         .select("location_photo")
@@ -48,47 +50,60 @@ async def update_listing(
         .single()
         .execute()
     )
-    old_image_path = (
+
+    # Retrieve image URL from merchant entry
+    old_image_url = (
         merchant_result.data["location_photo"] if merchant_result.data else None
     )
+    image_url = old_image_url
 
-    image_path = old_image_path
+    # If the vendors wants to update the image, upload that image to the bucket
+    new_image_path = None
     if location_photo is not None:
-        image_path = f"{id}/profile/{uuid4()}"
+        # Construct path of new image
+        new_image_path = f"{id}/profile/{uuid4()}"
+
         try:
             image_bytes = await location_photo.read()
             supabase.storage.from_("media").upload(
-                image_path,
+                new_image_path,
                 image_bytes,
                 file_options={"content-type": location_photo.content_type},
             )
+
+            # Construct URL of new image
+            image_url = supabase.storage.from_("media").get_public_url(new_image_path)
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
     try:
-        parsed_days = [Weekday(day) for day in json.loads(operating_days)]
-    except json.JSONDecodeError:
-        parsed_days = [Weekday(day.strip()) for day in operating_days.split(",")]
-
-    public_url = supabase.storage.from_("media").get_public_url(image_path)
-
-    try:
+        # Perform update operation
         payload = Merchant(
             id=UUID(id),
             name=name,
             latitude=latitude,
             longitude=longitude,
-            location_photo=image_path,
+            location_photo=image_url,
             start_operating_time=start_operating_time,
             end_operating_time=end_operating_time,
             operating_days=parsed_days,
             location=location,
         ).model_dump(mode="json")
         data = supabase.table("merchant").update(payload).eq("id", id).execute()
-        if location_photo is not None and old_image_path:
+
+        # Whenever the image is updated, remove the old image from the bucket
+        if new_image_path is not None and old_image_url is not None:
+            # Retrieve the image path of the old image URL
+            old_image_path = "/".join(
+                old_image_url.split("/storage/v1/object/public/media/")[1:]
+            )
+
             supabase.storage.from_("media").remove([old_image_path])
-        return {**data.data[0], "location_photo": public_url}
+
+        return data.data[0]
     except Exception as e:
-        if location_photo is not None:
-            supabase.storage.from_("media").remove([image_path])
+        # Cleanup any uploaded image upon error
+        if new_image_path is not None:
+            supabase.storage.from_("media").remove([new_image_path])
+
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
