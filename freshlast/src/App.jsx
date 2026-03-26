@@ -10,7 +10,7 @@ import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 import EditProfile from './pages/EditProfile/EditProfile';
 import CreateProfile from './pages/CreateProfile/CreateProfile';
 
-import './App.css'
+import "./App.css";
 
 
 export default function App() {
@@ -24,9 +24,12 @@ export default function App() {
         if (user?.user_metadata?.password_changed === false) {
             setNeedsPasswordChange(true);
         } else {
-            setNeedsPasswordChange(false);
+          setNeedsPasswordChange(false);
         }
-    };
+      });
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
     const checkProfileComplete = async (user) => {
         if (!user) return;
@@ -103,6 +106,9 @@ export default function App() {
             </div>
         );
     }
+    setClaims(null);
+    setNeedsPasswordChange(false);
+  };
 
     if (session && needsPasswordChange) {
         return <ChangePassword />;

@@ -10,8 +10,7 @@ const createListing = async (
   unit,
   quantity,
 ) => {
-  const relativePath = `listings/${crypto.randomUUID()}`;
-  const imagePath = `${merchantId}/${relativePath}`;
+  const imagePath = `${merchantId}/listings/${crypto.randomUUID()}`;
 
   // This assumes that image is a single file
   // TODO: Modify upload function to handle multiple images
@@ -28,7 +27,7 @@ const createListing = async (
     name: name,
     originalprice: originalprice,
     discountedprice: discountedprice,
-    image: relativePath,
+    image: imagePath,
     unit: unit,
     quantity: quantity,
   });
@@ -57,11 +56,11 @@ const updateListing = async (
   let imagePath = image;
 
   if (image instanceof File) {
-    const relativePath = `listings/${crypto.randomUUID()}`;
-    const fullPath = `${merchantId}/${relativePath}`;
-    const { error } = await supabase.storage.from("media").upload(fullPath, image);
+    const imagePath = `${merchantId}/listings/${crypto.randomUUID()}`;
+    const { error } = await supabase.storage
+      .from("media")
+      .upload(imagePath, image);
     if (error) throw error;
-    imagePath = relativePath;
   }
 
   return apiClient.put(`/listing/${listingId}`, {
@@ -79,4 +78,10 @@ const deleteListing = async (listingId) => {
   return apiClient.delete(`/listing/${listingId}`);
 };
 
-export { createListing, getListingsByMerchant, getListingById, updateListing, deleteListing };
+export {
+  createListing,
+  getListingsByMerchant,
+  getListingById,
+  updateListing,
+  deleteListing,
+};
