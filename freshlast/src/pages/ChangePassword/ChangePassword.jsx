@@ -32,18 +32,20 @@ export default function ChangePassword() {
       <p>This is your first login. Please set a new password before continuing.</p>
       <form onSubmit={handleSubmit}
       className='change-pass-form'>
-        <p>new password</p>
+        <label for="newpass">New Password</label>
         <input
           type="password"
+          id="newpass"
           placeholder="New password"
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
         />
-        <p>confirm password</p>
+        <label for="confirmpass">Confirm Password</label>
         <input
           type="password"
           placeholder="Confirm password"
+          id="confirmpass"
           value={confirm}
           required
           onChange={(e) => setConfirm(e.target.value)}
