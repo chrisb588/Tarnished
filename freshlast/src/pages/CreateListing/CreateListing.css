@@ -1,3 +1,4 @@
+
 .main-body{
     display: flex;
     flex-direction: column;
@@ -8,26 +9,40 @@
     width: 100%;
 }
 .button-div{
-    width: calc(70vw * 0.9);
+    width: 100%;
     display: flex;
     gap: 20px;
-    height: 100%;
+    height: 3rem;
+    box-sizing: border-box;
 }
 .create-button{
     width: 100%;
+    border: solid black 2px ;
+}
+.create-button:hover {
+    cursor: pointer;
 }
 .save-edit-button{
     width: 80%;
 }
+.save-edit-button{
+    cursor: pointer;
+}
 .delete-button{
     width: 30%;
 }
+.delete-button{
+    cursor: pointer;
+}
 
-@media screen and (max-width: 600) {
-    .main-body{
-        display: flex;
-        flex-direction: column;
-        align-items: left;
-        left: 3px;
-    }    
+@media only screen and (max-width: 450px) {
+    #root {
+        padding: 1rem;
+    }
+    .main-container {
+        width: 100%;
+    }
+    .main-body {
+        min-width: 95%;
+    }
 }

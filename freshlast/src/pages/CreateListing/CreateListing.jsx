@@ -137,7 +137,7 @@ export default function CreateListing(){
 
 
     return (
-        <div>
+        <div className='main-container'>
             <Link to="/" className="floating-add-btn">
                 <p>Back to home</p>
             </Link>
