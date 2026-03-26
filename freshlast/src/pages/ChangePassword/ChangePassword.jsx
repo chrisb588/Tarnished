@@ -26,34 +26,36 @@ export default function ChangePassword() {
   };
 
   return (
-    <div
-    className='password-div'>
-      <h1>Set Your Password</h1>
-      <p>This is your first login. Please set a new password before continuing.</p>
-      <form onSubmit={handleSubmit}
-      className='change-pass-form'>
-        <label for="newpass">New Password</label>
-        <input
-          type="password"
-          id="newpass"
-          placeholder="New password"
-          value={password}
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <label for="confirmpass">Confirm Password</label>
-        <input
-          type="password"
-          placeholder="Confirm password"
-          id="confirmpass"
-          value={confirm}
-          required
-          onChange={(e) => setConfirm(e.target.value)}
-        />
-        <button disabled={loading}>
-          {loading ? "Saving..." : "Set Password"}
-        </button>
-      </form>
+    <div className='password-root-wrapper'>
+      <div
+      className='password-div'>
+        <h1>Set Your Password</h1>
+        <p>This is your first login. Please set a new password before continuing.</p>
+        <form onSubmit={handleSubmit}
+        className='change-pass-form'>
+          <label for="newpass">New Password</label>
+          <input
+            type="password"
+            id="newpass"
+            placeholder="New password"
+            value={password}
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <label for="confirmpass">Confirm Password</label>
+          <input
+            type="password"
+            placeholder="Confirm password"
+            id="confirmpass"
+            value={confirm}
+            required
+            onChange={(e) => setConfirm(e.target.value)}
+          />
+          <button disabled={loading}>
+            {loading ? "Saving..." : "Set Password"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
