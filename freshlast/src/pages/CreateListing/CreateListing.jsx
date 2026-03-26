@@ -56,6 +56,7 @@ export default function CreateListing(){
                         unit: listing.unit,
                         originalprice: listing.original_price,
                         discountedprice: listing.discounted_price,
+                        image: listing.image,
                     });
                     setExistingImagePath(listing.image);
                 }
@@ -114,7 +115,7 @@ export default function CreateListing(){
                     formData.name,
                     formData.originalprice,
                     formData.discountedprice,
-                    existingImagePath,
+                    formData.image instanceof File ? formData.image : existingImagePath,
                     formData.unit,
                     formData.quantity,
                 );
