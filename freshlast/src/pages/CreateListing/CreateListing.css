@@ -32,9 +32,13 @@
 }
 .delete-button{
     width: 30%;
-}
-.delete-button{
     cursor: pointer;
+    background-color: red;
+    color: white;
+    border: none;
+}
+.delete-button:hover {
+    background-color: darkred;
 }
 
 @media only screen and (max-width: 450px) {
