@@ -108,12 +108,12 @@ export default function App() {
 
     const isLoggedIn = !!session;
 
-    // TEMP - remove when done testing
-    //return (
-    //    <BrowserRouter>
-    //        <EditProfile onSave={() => {}} onLogout={() => {}} />
-    //    </BrowserRouter>
-    //);
+     //TEMP - remove when done testing
+    return (
+        <BrowserRouter>
+            <EditProfile onSave={() => {}} onLogout={() => {}} />
+        </BrowserRouter>
+    );
 
     return (
         <BrowserRouter>

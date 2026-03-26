@@ -31,8 +31,7 @@ export default function AdminDashboard(){
                 </div>
                 <button
                 className='add-vendor-btn'>
-                    {/*Here, make it a modal after*/}
-                    Add New Vendor
+                    test
                 </button>
             </div>
 
