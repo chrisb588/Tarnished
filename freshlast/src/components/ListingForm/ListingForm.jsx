@@ -13,9 +13,13 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
 
     // for cleanup of memory in uploading images
     useEffect(() => {
-        // If there's no image, don't do anything
         if (!formData.image) {
-            setPreviewURL(existingPreviewURL || null); // Bug 4 support
+            setPreviewURL(existingPreviewURL || null);
+            return;
+        }
+
+        if (!(formData.image instanceof File)) {
+            setPreviewURL(formData.image); // already a URL string from existing listing
             return;
         }
 
@@ -26,7 +30,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
         return () => {
             URL.revokeObjectURL(objectUrl);
         };
-    }, [formData.image]); 
+    }, [formData.image]);
 
     const handleStepper = (change) => {
         setFormData((prev) => {
