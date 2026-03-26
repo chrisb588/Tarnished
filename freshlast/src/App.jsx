@@ -8,8 +8,10 @@ import CreateListing from './pages/CreateListing/CreateListing';
 import ChangePassword from './pages/ChangePassword/ChangePassword';
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 import EditProfile from './pages/EditProfile/EditProfile';
+import CreateProfile from './pages/CreateProfile/CreateProfile';
 
 import './App.css'
+
 
 export default function App() {
     const [session, setSession] = useState(undefined);
@@ -108,13 +110,15 @@ export default function App() {
 
     const isLoggedIn = !!session;
 
-     //TEMP - remove when done testing
+    
+    /* //TEMP - remove when done testing
     return (
         <BrowserRouter>
-            <EditProfile onSave={() => {}} onLogout={() => {}} />
+            <CreateProfile />
         </BrowserRouter>
     );
-
+    */
+    
     return (
         <BrowserRouter>
             <Routes>
@@ -123,6 +127,7 @@ export default function App() {
                 <Route path="/edit/:id" element={<CreateListing />} />
                 <Route path="/changePass" element={<ChangePassword />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/createProfile" element={<CreateProfile />} />
                 {/* PUBLIC */}
                 <Route path="/" element={<OfferList />} />
 

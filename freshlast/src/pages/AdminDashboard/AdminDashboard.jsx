@@ -2,7 +2,9 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import './AdminDashboard.css'
 
 export default function AdminDashboard(){
-        return (
+const navigate = useNavigate();
+
+    return (
         <div className='container'>
             <Link to="/" className="floating-add-btn">
                 <p>Back to home</p>
@@ -18,20 +20,21 @@ export default function AdminDashboard(){
                     </div>
                     <div
                     className='user'>
-                        <p>User 1</p>
+                        <p>User 2</p>
                     </div>
                     <div
                     className='user'>
-                        <p>User 1</p>
+                        <p>User 3</p>
                     </div>
                     <div
                     className='user'>
-                        <p>User 1</p>
+                        <p>User 4</p>
                     </div>
                 </div>
                 <button
-                className='add-vendor-btn'>
-                    test
+                className='add-vendor-btn'
+                onClick={() => navigate('/createProfile')}>
+                Create Profile
                 </button>
             </div>
 

@@ -15,6 +15,12 @@ export default function VendorHeader({ onLogout }) {
           🔔
         </button>
 
+        <button className="vendor-header__icon-btn" 
+        title="AdminDashboard"
+        onClick={() => navigate('/admin')}>
+          ⚙️
+        </button>
+
         <div className="vendor-header__profile-wrapper">
           <button
             className="vendor-header__icon-btn"
