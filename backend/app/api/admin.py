@@ -27,6 +27,7 @@ async def create_merchant(
     location: str = Form(...),
     location_photo: UploadFile = File(...),
 ):
+    # Parse operating days string as an array
     try:
         parsed_days = [Weekday(day) for day in json.loads(operating_days)]
     except json.JSONDecodeError:
@@ -38,6 +39,7 @@ async def create_merchant(
                 detail="Invalid data format for operating days field. It should be an array containing 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', and/or 'Saturday'",
             )
 
+    # Create a new user for the vendor
     try:
         generated_password = passgen.passgen(length=8)
         create_response = supabase_admin.auth.admin.create_user(
@@ -51,10 +53,9 @@ async def create_merchant(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
     user_id = create_response.user.id
-    image_path = supabase_admin.storage.from_("media").get_public_url(
-        f"{user_id}/profile/{uuid4()}"
-    )
 
+    # Upload the image to the bucket
+    image_path = f"{user_id}/profile/{uuid4()}"
     try:
         image_bytes = await location_photo.read()
         supabase_admin.storage.from_("media").upload(
@@ -62,11 +63,15 @@ async def create_merchant(
             image_bytes,
             file_options={"content-type": location_photo.content_type},
         )
+
+        # Construct image URL from uploaded image
+        image_link = supabase_admin.storage.from_("media").get_public_url(image_path)
     except Exception as e:
         supabase_admin.auth.admin.delete_user(user_id)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
     try:
+        # Perform insert operation
         (
             supabase_admin.table("merchant")
             .insert(
@@ -75,7 +80,7 @@ async def create_merchant(
                     name=name,
                     latitude=latitude,
                     longitude=longitude,
-                    location_photo=image_path,
+                    location_photo=image_link,
                     start_operating_time=start_operating_time,
                     end_operating_time=end_operating_time,
                     operating_days=parsed_days,
@@ -84,12 +89,16 @@ async def create_merchant(
             )
             .execute()
         )
+
         return {
             "uuid": user_id,
             "email": email,
             "temp_password": generated_password,
         }
     except Exception as e:
+        original_error = str(e)
+
+        # Cleanup any uploaded images upon error
         try:
             supabase_admin.storage.from_("media").remove([image_path])
             supabase_admin.auth.admin.delete_user(user_id)
@@ -98,10 +107,32 @@ async def create_merchant(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"FATAL: Failed to clean up resources after merchant insert failure: {cleanup_error}",
             )
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=original_error
+        )
 
 
 # Delete a merchant account
 @router.delete("/delete/{id}", tags=["Admin"])
 def delete_merchant(id: str):
-    supabase_admin.auth.admin.delete_user(id)
+    try:
+        # Retrieve all uploaded images from the vendor
+        files = supabase_admin.storage.from_("media").list(id)
+
+        # Deletes all uploaded images
+        for folder in files:
+            folder_name = folder["name"]
+            nested = supabase_admin.storage.from_("media").list(f"{id}/{folder_name}")
+            paths = [f"{id}/{folder_name}/{file['name']}" for file in nested]
+            if paths:
+                supabase_admin.storage.from_("media").remove(paths)
+        supabase_admin.storage.from_("media").remove([f"{id}"])
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+    # Deletes the user account
+    try:
+        return supabase_admin.auth.admin.delete_user(id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
