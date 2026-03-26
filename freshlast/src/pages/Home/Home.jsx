@@ -1,80 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import AuthModal from '../../components/AuthModal/AuthModal';
 import ListingItem from '../../components/ListingItem/ListingItem';
+import VendorHeader from '../../components/VendorHeader/VendorHeader';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { getListingsByMerchant } from '../../api/listings';
 import "./Home.css";
 
-import '../../App.css'
-
-export default function Home() {
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
+export default function Home({ onLogout }) {
   const [listings, setListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchListings = async () => {
+      if (!supabase) { setIsLoading(false); return; }
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) { setIsLoading(false); return; }
       const data = await getListingsByMerchant(user.id);
-      setListings(data);
+      setListings(data || []);
+      setIsLoading(false);
     };
     fetchListings();
   }, []);
 
-    return (
-    <>
-      {/* Header */}
-      <header className="header">
-        <div className="logo">LOGO</div>
+  return (
+    <div className="dashboard">
+      <VendorHeader onLogout={onLogout} />
 
-        <div className="header-icons">
-          <button className="icon-btn">🔔</button>
-          <button className="icon-btn">👤</button>
-          <div className="icon-btn">
-          <Link to="/admin" className="add-listing-btn">
-          ⚙️
-          </Link>
-          </div>
-          <button
-            className="auth-trigger-btn"
-            onClick={() => setIsAuthOpen(true)}
-          >
-          Log In to Sell
-          </button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="main-content">
-
-        {/* Welcome */}
-        <div className="welcome-section">
-          <h1 className="welcome-title">Welcome Back, Vendor!</h1>
-          <p className="welcome-subtitle">
-            Here you can see your active listings.
-          </p>
+      <div className="dashboard__content">
+        <div className="dashboard__welcome">
+          <h1 className="dashboard__title">Welcome Back, Vendor!</h1>
+          <p className="dashboard__subtitle">Here you can see your active listings.</p>
         </div>
 
-        {/* Add Listing */}
-        <div className="add-listing-container">
-          <Link to="/create" className="add-listing-btn">
+        <div className="dashboard__actions">
+          <Link to="/create" className="dashboard__add-btn">
             + Add new listing
           </Link>
         </div>
 
-        {/* Products */}
-        <div className="products-grid">
-          {listings.map((listing) => (
-            <ListingItem key={listing.id} listing={listing} />
-          ))}
-        </div>
+        {isLoading ? (
+          <p className="dashboard__status">Loading listings...</p>
+        ) : listings.length > 0 ? (
+          <div className="dashboard__grid">
+            {listings.map((listing) => (
+              <ListingItem key={listing.id} listing={listing} showEdit={true} />
+            ))}
+          </div>
+        ) : (
+          <div className="dashboard__empty">
+            <p>You have no listings yet.</p>
+            <Link to="/create" className="dashboard__add-btn">
+              Create your first listing
+            </Link>
+          </div>
+        )}
       </div>
-
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-      />
-    </>
+    </div>
   );
 }
