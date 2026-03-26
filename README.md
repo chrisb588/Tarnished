@@ -71,6 +71,12 @@ deactivate
 **NOTE**: Ensure that you have already configured the FastAPI project before proceeding.
 Refer to [Dev Setup](#backend) for details on configuring the FastAPI project.
 
+Install Supabase CLI using `npm`
+
+```bash
+npm i # supabase CLI already listed in root package.json
+```
+
 Ensure that your virtual environment is activated
 
 **Mac/Linux**
