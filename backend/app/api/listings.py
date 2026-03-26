@@ -104,18 +104,15 @@ async def update_listing(
     image: UploadFile = File(None),
 ):
     # Get current listing entry
-    try:
-        listing_result = (
-            supabase.table("listing")
-            .select("image")
-            .eq("id", listing_id)
-            .single()
-            .execute()
-        )
-        old_image_url = listing_result.data["image"] if listing_result.data else None
-        image_url = old_image_url
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    listing_result = (
+        supabase.table("listing")
+        .select("image")
+        .eq("id", listing_id)
+        .single()
+        .execute()
+    )
+    old_image_url = listing_result.data["image"] if listing_result.data else None
+    image_url = old_image_url
 
     # Upload image to bucket if the user wants to modify the image
     new_image_path = None
