@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './ListingForm.css'
-import addimgicon from "../../assets/testImg.png"
+import addimgicon from "../../assets/add_img_icon.svg"
 
 /*
 Quality Assurance:
@@ -57,7 +57,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
     return(
         <div className="create-container">
             <div className="preface">
-                <h4>Create New Listing</h4>
+                <h1>Create New Listing</h1>
                 <p>Add a new product to your stall.</p>
             </div>
             <div className="info-container-photo">
@@ -65,7 +65,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                     <h4>Product photo</h4>
                     <p>Please add a photo for your product</p>
                 </div>
-                <div className="img-container">
+                <div className={`img-container ${previewURL ? 'has-image' : 'is-empty'}`}>
                     <label htmlFor="image-input" style={{ cursor: 'pointer' }}>
                     <img src={previewURL || addimgicon} alt="Preview" />
                     </label>
@@ -89,7 +89,6 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                         name="name"
                         id="productName"
                         placeholder="e.g. Cabbage, Carrot, etc."
-                        className="formInput"
                         value={formData.name}
                         onChange={handleChange}
                         required

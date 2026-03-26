@@ -1,49 +1,89 @@
 .create-container{
     display: flex;
     flex-direction: column;
-    width: 70vw;
-    justify-content: center;
+    min-width: 60vw;
     align-items: center;
     gap: 10px;
+    border: 2px solid black;
+    border-radius: 30px;
+    background-color: white;
+    padding: 0px 2rem 1rem;
 }
-.img-container{
-    border: solid black 2px;
-    border-radius: 3px;
-    width: 25%;
-    height: 100%;
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    margin-top: 10px;
+.preface{
+    display: block;
+    place-self: start;
 }
-.img-container img{
-    height: 100%;
-    width: 100%;
+.preface h1{
+    margin-bottom: -15px;
 }
 .info-container-photo{
     border: solid black 2px;
-    border-radius: 5px;
-    width: 90%;
+    border-radius: 30px;
+    width: 95%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     padding-bottom: 10px;
+    padding: 0px 1.5rem 1rem;
     text-align: left;
+    box-sizing: border-box;
+}
+.img-container{
+    border: solid black 2px;
+    border-radius: 30px;
+    width: 10rem;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    margin-top: 10px;
+}
+.img-container label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+.img-container.is-empty img{
+    height: 40%;
+    width: 40%;
+    object-fit: contain;
+}
+.img-container.has-image{
+    width: 100%;      /* Let it expand to the parent container's width */
+    max-width: 20rem; /* Prevents it from getting TOO big */
+    aspect-ratio: auto; /* Allow the image to dictate the shape */    
+}
+.img-container.has-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.info-preface{
+    width: 100%;
+    text-align: left;
+    margin-bottom: -5px;
+}
+.info-preface h4{
+    text-align: left;
+    font-size: 20px;
+    margin-bottom: -17.5px;
 }
 .info-container{
     border: solid black 2px;
-    border-radius: 5px;
-    width: 90%;
+    border-radius: 30px;
+    width: 95%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: start;
-    padding-bottom: 10px;
+    padding: 0px 1.5rem 10px;
     text-align: left;
+    box-sizing: border-box;
 }
 .info-container h4{
     text-align: left;
-    margin-bottom: -15px;
+    margin-bottom: -20px;
 }
 .info-container input[type="text"]{
     background-color: white;
@@ -52,32 +92,22 @@
     width: 100%;
     border-radius: 5px;
     border: black 2px solid;
+    padding: 3px 0.5rem;
+    font-size: 16px;
 }
-.info-preface{
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-self: flex-start;
-    text-align: left;
-    margin-left: 20px;
-    margin-bottom: -15px;
+.info-container input[type="text"]:focus {
+    /* This removes the default blue/black square ring */
+    outline: none; 
+    
+    /* This ensures the border stays visible and rounded */
+    border: black 2px solid; 
+    
+    /* Optional: Add a subtle glow or change border color so users 
+       know which box they are typing in (Great for UX!) */
+    border-color: #2ce257; 
+    box-shadow: 0 0 5px #13c73d;
 }
-.info-preface h4{
-    text-align: left;
-    margin-bottom: -15px;
-}
-.preface{
-    display: flex;
-    width: 90%;
-    flex-direction: column;
-    align-self: flex-start;
-    text-align: left;
-    margin-left: 50px;
-    margin-bottom: -15px;
-}
-.preface h4{
-    margin-bottom: -15px;
-}
+
 .descriptionInput{
     display: flex;
     flex-direction: column;
