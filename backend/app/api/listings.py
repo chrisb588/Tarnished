@@ -67,7 +67,7 @@ async def create_listing(
 
 
 # Get all listings
-@router.get("/listings/all")
+@router.get("/all", tags=["Listings"])
 async def get_all_listings():
     data = supabase.table("listing").select("*").execute()
     return data.data

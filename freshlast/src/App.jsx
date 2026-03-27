@@ -128,7 +128,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<OfferList session={session} onLogout={handleLogout} />} />
         <Route path="/create" element={<CreateListing />} />
         <Route path="/edit/:id" element={<CreateListing />} />
         <Route path="/changePass" element={<ChangePassword />} />
@@ -136,7 +136,7 @@ export default function App() {
         <Route path="/createProfile" element={<CreateProfile />} />
 
         {/* PUBLIC */}
-        <Route path="/offers" element={<OfferList />} />
+        <Route path="/offers" element={<OfferList session={session} onLogout={handleLogout} />} />
 
         {/* VENDOR DASHBOARD */}
         <Route
