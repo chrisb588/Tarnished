@@ -23,6 +23,11 @@ const createListing = async (
   return apiClient.post("/listings", formData);
 };
 
+const getAllListings = async () => {
+  const response = await apiClient.get('/listings/all');
+  return response.data;
+};
+
 const getListingsByMerchant = async (merchantId) => {
   const response = await apiClient.get(`/listings?merchant_id=${merchantId}`);
   return response.data;
@@ -61,10 +66,4 @@ const deleteListing = async (listingId) => {
   return apiClient.delete(`/listings/${listingId}`);
 };
 
-export {
-  createListing,
-  getListingsByMerchant,
-  getListingById,
-  updateListing,
-  deleteListing,
-};
+export { getAllListings, createListing, getListingsByMerchant, getListingById, updateListing, deleteListing };

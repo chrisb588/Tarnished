@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import AuthModal from '../../components/AuthModal/AuthModal.jsx'
-import { supabase } from '../../lib/supabaseClient'
+import { getAllListings } from '../../api/listings'
 import './OfferList.css'
 
 function SearchIcon() {
@@ -23,7 +23,7 @@ function FilterIcon() {
 
 const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Others']
 
-export default function OfferList() {
+export default function OfferList({ session, onLogout }) {
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -33,10 +33,13 @@ export default function OfferList() {
 
   useEffect(() => {
     const fetchListings = async () => {
-      if (!supabase) { setIsLoading(false); return }
       setIsLoading(true)
-      const { data, error } = await supabase.from('listings').select('*')
-      if (!error) setListings(data || [])
+      try {
+        const data = await getAllListings()
+        setListings(data || [])
+      } catch (e) {
+        console.error('Failed to fetch listings:', e)
+      }
       setIsLoading(false)
     }
     fetchListings()
@@ -74,9 +77,15 @@ export default function OfferList() {
           </button>
         </div>
 
-        <button className="offerlist__login-btn" onClick={() => setShowLoginModal(true)}>
-          Log in to Sell
-        </button>
+        {session ? (
+          <button className="offerlist__login-btn" onClick={onLogout}>
+            Log Out
+          </button>
+        ) : (
+          <button className="offerlist__login-btn" onClick={() => setShowLoginModal(true)}>
+            Log in to Sell
+          </button>
+        )}
       </header>
 
       <main className="offerlist__content">
@@ -116,7 +125,7 @@ export default function OfferList() {
         )}
       </main>
 
-      <AuthModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      <AuthModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} onSuccess={() => setShowLoginModal(false)} />
     </div>
   )
 }

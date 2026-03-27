@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabaseClient'
 
 import './AuthForm.css'
 
-export default function AuthForm() {
+export default function AuthForm({ onSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,9 @@ export default function AuthForm() {
 
     if (error) {
       alert(error.message);
-    } 
+    } else {
+      onSuccess?.();
+    }
     setLoading(false);
   };
 
@@ -47,7 +49,7 @@ export default function AuthForm() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <div className="forgot-password-container">
-          <button className="forgot-password">
+          <button type="button" className="forgot-password">
             forgot your password?
           </button>
         </div>

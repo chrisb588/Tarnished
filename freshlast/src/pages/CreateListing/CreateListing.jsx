@@ -6,7 +6,7 @@ import { createListing, updateListing, deleteListing, getListingById } from '../
 
 import './CreateListing.css'
 
-export const validateForm = (formData) => {
+const validateForm = (formData) => {
     const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
     const isMissingFields = requiredFields.some(field => formData[field] === "" || formData[field] === null);
 
