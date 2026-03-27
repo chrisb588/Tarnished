@@ -107,6 +107,12 @@ body {
   background-color: var(--color-bg);
 }
 
+.offerlist__header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 /* Main Content */
 .offerlist__content {   
   width: 100%;

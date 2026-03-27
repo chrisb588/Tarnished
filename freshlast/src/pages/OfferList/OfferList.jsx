@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import AuthModal from '../../components/AuthModal/AuthModal.jsx'
 import { getAllListings } from '../../api/listings'
@@ -78,9 +79,12 @@ export default function OfferList({ session, onLogout }) {
         </div>
 
         {session ? (
-          <button className="offerlist__login-btn" onClick={onLogout}>
-            Log Out
-          </button>
+          <div className="offerlist__header-actions">
+            <Link to="/dashboard" className="offerlist__login-btn">My Listings</Link>
+            <button className="offerlist__login-btn" onClick={onLogout}>
+              Log Out
+            </button>
+          </div>
         ) : (
           <button className="offerlist__login-btn" onClick={() => setShowLoginModal(true)}>
             Log in to Sell
