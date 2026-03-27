@@ -11,6 +11,10 @@ export default function VendorHeader({ onLogout }) {
       <div className="vendor-header__logo">LOGO</div>
 
       <div className="vendor-header__actions">
+        <button className="vendor-header__icon-btn" title="Dashboard" onClick={() => navigate('/')}>
+          🏠
+        </button>
+
         <button className="vendor-header__icon-btn" title="Notifications">
           🔔
         </button>

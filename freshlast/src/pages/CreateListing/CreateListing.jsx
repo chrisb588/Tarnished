@@ -6,7 +6,7 @@ import { createListing, updateListing, deleteListing, getListingById } from '../
 
 import './CreateListing.css'
 
-export const validateForm = (formData) => {
+const validateForm = (formData) => {
     const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
     const isMissingFields = requiredFields.some(field => formData[field] === "" || formData[field] === null);
 
@@ -56,6 +56,7 @@ export default function CreateListing(){
                         unit: listing.unit,
                         originalprice: listing.original_price,
                         discountedprice: listing.discounted_price,
+                        image: listing.image,
                     });
                     setExistingImagePath(listing.image);
                 }
@@ -114,7 +115,7 @@ export default function CreateListing(){
                     formData.name,
                     formData.originalprice,
                     formData.discountedprice,
-                    existingImagePath,
+                    formData.image instanceof File ? formData.image : existingImagePath,
                     formData.unit,
                     formData.quantity,
                 );

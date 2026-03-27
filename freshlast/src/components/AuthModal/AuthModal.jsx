@@ -2,7 +2,7 @@ import AuthForm from "../AuthForm/AuthForm";
 
 import './AuthModal.css'
 
-export default function AuthModal({ isOpen, onClose}) {
+export default function AuthModal({ isOpen, onClose, onSuccess }) {
 
 
   if (!isOpen) return null; // Don't render anything if closed
@@ -18,7 +18,7 @@ export default function AuthModal({ isOpen, onClose}) {
         </button>
 
         {/* Pass the mode down to the form */}
-        <AuthForm/>
+        <AuthForm onSuccess={onSuccess} />
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import os
 
-import api.listings as listings
+from api.admin import router as admin_router
+from api.listings import router as listings_router
+from api.profile import router as profile_router
 from core.config import config
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -11,7 +13,11 @@ load_dotenv()
 app = FastAPI(title=config.app_name)
 
 # Add routes
-app.include_router(listings.router, prefix="/api")
+API_PREFIX = "/api"
+
+app.include_router(listings_router, prefix=f"{API_PREFIX}/listings")
+app.include_router(profile_router, prefix=f"{API_PREFIX}/profile")
+app.include_router(admin_router, prefix="/api/admin")
 
 # Add CORS Middleware
 origins = os.getenv("ORIGINS")

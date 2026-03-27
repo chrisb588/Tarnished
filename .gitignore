@@ -1,5 +1,7 @@
 .venv/
 *.env
+*.env.test
+**/node_modules
 
 # Claude Code
 .claude/
