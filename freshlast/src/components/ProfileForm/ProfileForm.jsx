@@ -50,15 +50,6 @@ export default function ProfileForm({
               value={formData.emailAddress || ''} 
               onChange={handleChange} />
           </div>
-          <div className="edit-profile__field">
-            <label className="edit-profile__label edit-profile__label--required" htmlFor="password">
-              Password
-            </label>
-            <input id="password" name="password" type="password"
-              className="edit-profile__input"
-              value={formData.password || ''} 
-              onChange={handleChange} />
-          </div>
         </>
       )}
 
