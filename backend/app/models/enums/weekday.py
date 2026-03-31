@@ -2,10 +2,10 @@ from enum import Enum
 
 
 class Weekday(Enum):
-    SUNDAY = "Sunday"
-    MONDAY = "Monday"
-    TUESDAY = "Tuesday"
-    WEDNESDAY = "Wednesday"
-    THURSDAY = "Thursday"
-    FRIDAY = "Friday"
-    SATRUDAY = "Saturday"
+    SUNDAY = "Sun"
+    MONDAY = "Mon"
+    TUESDAY = "Tue"
+    WEDNESDAY = "Wed"
+    THURSDAY = "Thu"
+    FRIDAY = "Fri"
+    SATRUDAY = "Sat"
