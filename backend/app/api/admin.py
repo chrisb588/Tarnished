@@ -30,7 +30,7 @@ async def create_merchant(
     # Parse operating days string as an array
     try:
         parsed_days = [Weekday(day) for day in json.loads(operating_days)]
-    except json.JSONDecodeError:
+    except Exception:
         try:
             parsed_days = [Weekday(day.strip()) for day in operating_days.split(",")]
         except Exception:
