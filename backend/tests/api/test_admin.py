@@ -6,7 +6,7 @@ def test_create_merchant_success(client):
     response = client.post(
         "/api/admin/create",
         data={
-            "email": "merchant@example.com",
+            "email": "email@example.com",
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
@@ -27,7 +27,7 @@ def test_create_merchant_success(client):
     assert response.status_code == 200
     data = response.json()
     assert "uuid" in data
-    assert data["email"] == "merchant@example.com"
+    assert data["email"] == "email@example.com"
     assert "temp_password" in data
 
 
@@ -151,7 +151,7 @@ def test_create_merchant_unprocessable_payload(client):
     response = client.post(
         "/api/admin/create",
         data={
-            "email": "not-an-email",
+            "email": "merchant@example.com",
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
@@ -384,10 +384,10 @@ def test_create_merchant_incomplete_payload(client):
 
 def test_delete_merchant_success(client):
     # Create the user first
-    user = client.post(
+    response = client.post(
         "/api/admin/create",
         data={
-            "email": "merchant@example.com",
+            "email": "email@example.com",
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
@@ -404,7 +404,9 @@ def test_delete_merchant_success(client):
             ),
         },
     )
-    user = json.loads(user.content)
+    assert response.status_code == 200
+    user = response.json()
+    print(user)
 
     response = client.delete(f"/api/admin/delete/{user['uuid']}")
     assert response.status_code == 200
