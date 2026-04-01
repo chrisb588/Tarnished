@@ -355,6 +355,7 @@ def test_create_merchant_incomplete_payload(client):
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
+            "end_operating_time": "18:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
         },
         files={
@@ -377,6 +378,29 @@ def test_create_merchant_incomplete_payload(client):
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "location": "Cebu City",
+        },
+    )
+    assert response.status_code == 422
+
+    # No operating days
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "merchant@example.com",
+            "name": "Test Merchant",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "18:00:00",
+            "location": "Cebu City",
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
         },
     )
     assert response.status_code == 422
