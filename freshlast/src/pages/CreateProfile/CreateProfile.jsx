@@ -12,7 +12,7 @@ export default function CreateProfile() {
 
   const [formData, setFormData] = useState({
     emailAddress: '',
-    password: '',
+    password: 'example',
     stallName: '',
     marketLocation: '',
     phoneNumber: '',
@@ -27,15 +27,19 @@ export default function CreateProfile() {
     setError('')
 
     console.log("Submitting with Data:", formData);
-
+    if(!formData.emailAddress.trim()) return setError('Email Address is required')
     if (!formData.stallName.trim()) return setError('Stall Name is required')
     if (!formData.marketLocation.trim()) return setError('Market Location is required')
-    if (!formData.phoneNumber.trim()) return setError('Phone Number is required')
+    if (!formData.phoneNumber.trim()) return setError('Phone Number is required') 
+    if (!formData.operatingHoursStart.trim() || !formData.operatingHoursEnd.trim()) return setError('Please enter your operating hours.')
+    if (formData.operatingHoursStart >= formData.operatingHoursEnd) return setError('Opening time must be earlier than closing time.')
     if (formData.operatingDays.length === 0) return setError('Please select at least one operating day')
-
+    
+    /*
     setIsLoading(true)
 
     if (!supabase) { setIsLoading(false); return }
+
 
     //auth, signs up
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -76,6 +80,7 @@ export default function CreateProfile() {
     setIsLoading(false)
     onSave?.()
     navigate('/dashboard')
+    */
   }
 
   return (
