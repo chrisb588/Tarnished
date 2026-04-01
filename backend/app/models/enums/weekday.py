@@ -8,4 +8,4 @@ class Weekday(Enum):
     WEDNESDAY = "Wed"
     THURSDAY = "Thu"
     FRIDAY = "Fri"
-    SATRUDAY = "Sat"
+    SATURDAY = "Sat"
