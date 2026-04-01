@@ -1,37 +1,41 @@
-import { useRef } from 'react';
-import './ProfileForm.css'
+import { useRef } from "react";
+import "./ProfileForm.css";
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export default function ProfileForm({ 
+export default function ProfileForm({
   isCreating,
-  formData, 
-  setFormData, 
-  photoPreview, 
-  setPhotoPreview, 
-  error, 
-  isLoading, 
-  onSubmit 
+  formData,
+  setFormData,
+  setPhoto,
+  photoPreview,
+  setPhotoPreview,
+  error,
+  isLoading,
+  onSubmit,
 }) {
   const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const toggleDay = (day) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       operatingDays: prev.operatingDays.includes(day)
-        ? prev.operatingDays.filter(d => d !== day)
-        : [...prev.operatingDays, day]
+        ? prev.operatingDays.filter((d) => d !== day)
+        : [...prev.operatingDays, day],
     }));
   };
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
-    if (file) setPhotoPreview(URL.createObjectURL(file));
+    if (file) {
+      setPhoto(file);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
   };
 
   return (
@@ -42,13 +46,20 @@ export default function ProfileForm({
       {isCreating && (
         <>
           <div className="edit-profile__field">
-            <label className="edit-profile__label edit-profile__label--required" htmlFor="emailAddress">
+            <label
+              className="edit-profile__label edit-profile__label--required"
+              htmlFor="emailAddress"
+            >
               Email Address
             </label>
-            <input id="emailAddress" name="emailAddress" type="email"
+            <input
+              id="emailAddress"
+              name="emailAddress"
+              type="email"
               className="edit-profile__input"
-              value={formData.emailAddress || ''} 
-              onChange={handleChange} />
+              value={formData.emailAddress || ""}
+              onChange={handleChange}
+            />
           </div>
         </>
       )}
@@ -58,9 +69,16 @@ export default function ProfileForm({
         <label className="edit-profile__label edit-profile__label--required">
           Stall Photo
         </label>
-        <div className="edit-profile__photo-box" onClick={() => fileInputRef.current?.click()}>
+        <div
+          className="edit-profile__photo-box"
+          onClick={() => fileInputRef.current?.click()}
+        >
           {photoPreview ? (
-            <img src={photoPreview} alt="Stall" className="edit-profile__photo-preview" />
+            <img
+              src={photoPreview}
+              alt="Stall"
+              className="edit-profile__photo-preview"
+            />
           ) : (
             <div className="edit-profile__photo-placeholder">
               <span className="edit-profile__photo-icon">🖼️</span>
@@ -72,39 +90,60 @@ export default function ProfileForm({
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handlePhotoChange}
         />
       </div>
 
       {/* Stall Name */}
       <div className="edit-profile__field">
-        <label className="edit-profile__label edit-profile__label--required" htmlFor="stallName">
+        <label
+          className="edit-profile__label edit-profile__label--required"
+          htmlFor="stallName"
+        >
           Stall Name
         </label>
-        <input id="stallName" name="stallName" type="text"
+        <input
+          id="stallName"
+          name="stallName"
+          type="text"
           className="edit-profile__input"
-          value={formData.stallName} onChange={handleChange} />
+          value={formData.stallName}
+          onChange={handleChange}
+        />
       </div>
 
       {/* Market Location */}
       <div className="edit-profile__field">
-        <label className="edit-profile__label edit-profile__label--required" htmlFor="marketLocation">
+        <label
+          className="edit-profile__label edit-profile__label--required"
+          htmlFor="marketLocation"
+        >
           Market Location / Section
         </label>
-        <input id="marketLocation" name="marketLocation" type="text"
+        <input
+          id="marketLocation"
+          name="marketLocation"
+          type="text"
           className="edit-profile__input"
-          value={formData.marketLocation} onChange={handleChange} />
+          value={formData.marketLocation}
+          onChange={handleChange}
+        />
       </div>
 
       {/* Phone Number */}
       <div className="edit-profile__field">
-        <label className="edit-profile__label edit-profile__label--required" htmlFor="phoneNumber">
+        <label
+          className="edit-profile__label edit-profile__label--required"
+          htmlFor="phoneNumber"
+        >
           Phone Number
         </label>
         <input id="phoneNumber" name="phoneNumber" type="number"
           className="edit-profile__input"
-          value={formData.phoneNumber} onChange={handleChange} />
+          value={formData.phoneNumber}
+          onChange={handleChange}
+        />
       </div>
 
       {/* Operating Hours */}
@@ -113,12 +152,20 @@ export default function ProfileForm({
           Operating Hours
         </label>
         <div className="edit-profile__hours">
-          <input name="operatingHoursStart" type="time"
+          <input
+            name="operatingHoursStart"
+            type="time"
             className="edit-profile__time-input"
-            value={formData.operatingHoursStart} onChange={handleChange} />
-          <input name="operatingHoursEnd" type="time"
+            value={formData.operatingHoursStart}
+            onChange={handleChange}
+          />
+          <input
+            name="operatingHoursEnd"
+            type="time"
             className="edit-profile__time-input"
-            value={formData.operatingHoursEnd} onChange={handleChange} />
+            value={formData.operatingHoursEnd}
+            onChange={handleChange}
+          />
         </div>
       </div>
 
@@ -128,21 +175,31 @@ export default function ProfileForm({
           Operating Days
         </label>
         <div className="edit-profile__days">
-          {DAYS.map(day => (
-            <button key={day} type="button"
-              className={`edit-profile__day-btn ${formData.operatingDays.includes(day) ? 'edit-profile__day-btn--active' : ''}`}
-              onClick={() => toggleDay(day)}>
+          {DAYS.map((day) => (
+            <button
+              key={day}
+              type="button"
+              className={`edit-profile__day-btn ${formData.operatingDays.includes(day) ? "edit-profile__day-btn--active" : ""}`}
+              onClick={() => toggleDay(day)}
+            >
               {day}
             </button>
           ))}
         </div>
       </div>
 
-      <button type="submit" className="edit-profile__submit" disabled={isLoading}>
-        {isLoading 
-        ? (isCreating ? 'Creating...' : 'Saving...')
-        : (isCreating ? 'Create Profile' : "Save Profile")
-        }
+      <button
+        type="submit"
+        className="edit-profile__submit"
+        disabled={isLoading}
+      >
+        {isLoading
+          ? isCreating
+            ? "Creating..."
+            : "Saving..."
+          : isCreating
+            ? "Create Profile"
+            : "Save Profile"}
       </button>
     </form>
   );
