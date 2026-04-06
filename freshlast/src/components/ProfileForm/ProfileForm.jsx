@@ -139,10 +139,7 @@ export default function ProfileForm({
         >
           Phone Number
         </label>
-        <input
-          id="phoneNumber"
-          name="phoneNumber"
-          type="tel"
+        <input id="phoneNumber" name="phoneNumber" type="number"
           className="edit-profile__input"
           value={formData.phoneNumber}
           onChange={handleChange}

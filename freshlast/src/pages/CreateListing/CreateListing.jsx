@@ -7,10 +7,20 @@ import { createListing, updateListing, deleteListing, getListingById } from '../
 import './CreateListing.css'
 
 const validateForm = (formData) => {
+    console.log(formData)
     const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
     const isMissingFields = requiredFields.some(field => formData[field] === "" || formData[field] === null);
+    
+    if (Number(formData.quantity) == 0){
+        alert("Quantity can't be 0!")
+        return false
+    }
 
-    console.log(formData)
+    if (Number(formData.originalprice) == 0){
+        alert("Original price can't be 0!")
+        return false
+    }
+
 
     if (Number(formData.discountedprice) >= Number(formData.originalprice)) {
         alert("Discounted price can't be higher than or equal to original price!")

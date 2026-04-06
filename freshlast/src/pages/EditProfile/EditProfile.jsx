@@ -57,14 +57,16 @@ export default function EditProfile({ onSave, onLogout }) {
 
     console.log("Submitting with Data:", formData);
 
-    if (!formData.stallName.trim()) return setError("Stall Name is required");
-    if (!formData.marketLocation.trim())
-      return setError("Market Location is required");
-    if (!formData.phoneNumber.trim())
-      return setError("Phone Number is required");
-    if (formData.operatingDays.length === 0)
-      return setError("Please select at least one operating day");
+    if (!formData.stallName.trim()) return setError('Stall Name is required')
+    if (!formData.marketLocation.trim()) return setError('Market Location is required')
+    if (!formData.phoneNumber.trim()) return setError('Phone Number is required') 
+    if (!formData.operatingHoursStart.trim() || !formData.operatingHoursEnd.trim()) return setError('Please enter your operating hours.')
+    if (formData.operatingHoursStart >= formData.operatingHoursEnd) return setError('Opening time must be earlier than closing time.');
+    if (formData.operatingDays.length === 0) return setError('Please select at least one operating day')
 
+    setIsLoading(true)
+  
+    if (!supabase) { setIsLoading(false); return }
     setIsLoading(true);
 
     try {
