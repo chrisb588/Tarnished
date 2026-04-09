@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import './AdminDashboard.css'
+import MerchantDisplayAdmin from '../../components/MerchantDisplayAdmin/MerchantDisplayAdmin'
 
 export default function AdminDashboard(){
 const navigate = useNavigate();
@@ -14,22 +15,10 @@ const navigate = useNavigate();
                 <h3>Users</h3>
                 <div
                 className='user-list'>
-                    <div
-                    className='user'>
-                        <p>User 1</p>
-                    </div>
-                    <div
-                    className='user'>
-                        <p>User 2</p>
-                    </div>
-                    <div
-                    className='user'>
-                        <p>User 3</p>
-                    </div>
-                    <div
-                    className='user'>
-                        <p>User 4</p>
-                    </div>
+                    <MerchantDisplayAdmin/>
+                    <MerchantDisplayAdmin/>
+                    <MerchantDisplayAdmin/>
+                    <MerchantDisplayAdmin/>
                 </div>
                 <button
                 className='add-vendor-btn'

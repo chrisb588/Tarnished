@@ -1,0 +1,61 @@
+.merchant-container{
+    border: 1px solid var(--color-border);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0.5rem 1rem 1rem;
+}
+
+.merchant-name{
+    margin-right: auto;
+}
+
+.merchant-name p{
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;    
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.05em;
+    text-align: left;
+}
+
+.button-container{
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    opacity: 0; 
+    transition: opacity 0.1s ease-in-out;
+}
+
+.merchant-container:hover .button-container{
+    opacity: 1;
+}
+
+.edit-button, .delete-button {
+    display: flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center;     /* Vertical centering */
+    padding: 0px;
+    margin: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 0px;
+    border: 1.5px solid var(--color-border)
+}
+
+.edit-button {
+    border-radius: 0px;
+    background-color: var(--color-white);
+}
+
+.delete-button {
+
+    color: var(--color-error);
+    background-color: var(--color-white);
+
+}

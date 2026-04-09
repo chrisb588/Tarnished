@@ -5,20 +5,24 @@
     padding: 0px 10rem;
 }
 .dashboard {
-    border: 3px solid black;
     padding: 0px 2rem 1rem 2rem;
     display: flex;
     flex-direction: column;
+    border: 1.5px solid var(--color-secondary-border);
+    background-color: white;
+    border-radius: 0.5rem;
 }
 .user-list{
-    border: 3px solid black;
     min-height: 40vh;
-    padding: 30px 20px;
     overflow-x: hidden;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 0.5rem;
+    border: 1.5px solid var(--color-secondary-border);
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
 }
 .user{
     border: 3px solid black;    
