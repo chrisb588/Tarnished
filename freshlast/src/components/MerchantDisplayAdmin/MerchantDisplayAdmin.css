@@ -53,9 +53,18 @@
     background-color: var(--color-white);
 }
 
+.edit-button:hover{
+    background-color: rgb(164, 234, 156);
+}
+
 .delete-button {
 
     color: var(--color-error);
     background-color: var(--color-white);
 
+}
+
+.delete-button:hover{
+    cursor: pointer;
+    background-color: rgb(235, 165, 165);
 }
