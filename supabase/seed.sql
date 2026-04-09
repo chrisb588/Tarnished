@@ -103,7 +103,8 @@ BEGIN
     end_operating_time,
     operating_days,
     location,
-    location_photo
+    location_photo,
+    category
   )
   VALUES (
     merchant_id,
@@ -114,6 +115,7 @@ BEGIN
     '18:00:00',
     ARRAY['Mon', 'Wed', 'Fri'],
     'Cebu City, Philippines',
-    photo_url
+    photo_url,
+    'Veggies'
   );
 END $$;
