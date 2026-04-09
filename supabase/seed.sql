@@ -3,6 +3,7 @@
 DO $$
 DECLARE
   merchant_id uuid := '11111111-1111-1111-1111-111111111111';
+  merchant_email text := 'merchant@example.com';
   file_id uuid := '22222222-2222-2222-2222-222222222222';
   file_path text;
   photo_url text;
@@ -11,28 +12,63 @@ BEGIN
   photo_url := 'http://127.0.0.1:54321/storage/v1/object/public/media/' || file_path;
 
   INSERT INTO auth.users (
+    instance_id,
     id,
+    aud,
+    role,
     email,
     encrypted_password,
     email_confirmed_at,
-    created_at,
-    updated_at,
+    recovery_sent_at,
+    last_sign_in_at,
     raw_app_meta_data,
     raw_user_meta_data,
-    is_super_admin,
-    role
+    created_at,
+    updated_at,
+    confirmation_token,
+    email_change,
+    email_change_token_new,
+    recovery_token
   )
   VALUES (
+    '00000000-0000-0000-0000-000000000000',
     merchant_id,
-    'merchant@example.com',
-    extensions.crypt('password123', extensions.gen_salt('bf')),
-    now(),
-    now(),
-    now(),
+    'authenticated',
+    'authenticated',
+    merchant_email,
+    extensions.crypt ('password123', extensions.gen_salt('bf')),
+    current_timestamp,
+    current_timestamp,
+    current_timestamp,
     '{"provider":"email","providers":["email"]}',
     '{}',
-    false,
-    'authenticated'
+    current_timestamp,
+    current_timestamp,
+    '',
+    '',
+    '',
+    ''
+  );
+
+  INSERT INTO auth.identities (
+    id,
+    user_id,
+    provider_id,
+    identity_data,
+    provider,
+    last_sign_in_at,
+    created_at,
+    updated_at
+  )
+  VALUES (
+    extensions.uuid_generate_v4(),
+    merchant_id,
+    merchant_id,
+    format('{"sub":"%s","email":"%s"}', merchant_id, merchant_email)::jsonb,
+    'email',
+    current_timestamp,
+    current_timestamp,
+    current_timestamp
   );
 
   INSERT INTO storage.buckets (id, name, public)
