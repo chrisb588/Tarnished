@@ -5,11 +5,18 @@ import VendorHeader from "../../components/VendorHeader/VendorHeader";
 import ProfileForm from "../../components/ProfileForm/ProfileForm";
 import { createMerchant } from "../../api/admin";
 
+//import '../EditProfile/EditProfile.css'
+import './CreateProfile.css'
+
 export default function CreateProfile() {
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  //const [credentials, setCredentials] = useState({ email: "goon@test.com", temp_password: "testpass" }) //dummy
+  const [credentials, setCredentials] = useState(null) //real
+  const navigate = useNavigate();
+
 
   const [formData, setFormData] = useState({
     emailAddress: "",
@@ -29,6 +36,7 @@ export default function CreateProfile() {
 
     console.log("Submitting with Data:", formData);
     if(!formData.emailAddress.trim()) return setError('Email Address is required')
+    if (!photo) return setError('Stall Photo is required')
     if (!formData.stallName.trim()) return setError('Stall Name is required')
     if (!formData.marketLocation.trim()) return setError('Market Location is required')
     if (!formData.phoneNumber.trim()) return setError('Phone Number is required') 
@@ -53,23 +61,40 @@ export default function CreateProfile() {
         formData.marketLocation,
       );
 
+      // this is what displays the user password
       console.log(response); // TODO: Display user credentials to give to the vendor
+
+      const { email, temp_password } = response.data;
+      
+      console.log("Email:", email);
+      console.log("Temp Password:", temp_password);
+
+      setCredentials({ email, temp_password });
+
     } catch (e) {
       setIsLoading(false);
-      setError(toString(e));
+      setError(String(e));
 
       return;
     }
 
     setIsLoading(false);
-    onSave?.();
-    navigate("/dashboard");
   };
 
   return (
     <div className="edit-profile">
       <div className="edit-profile__container">
         <h1 className="edit-profile__title">Set Up Your Profile</h1>
+
+        {credentials && (
+          <div className="credentials-banner">
+            <p>Account created! Share these credentials with the vendor:</p>
+            <p><strong>Email:</strong> {credentials.email}</p>
+            <p><strong>Temporary Password:</strong> {credentials.temp_password}</p>
+
+            <button onClick={() => navigate("/admin")}>Return to Dashboard</button>
+          </div>
+        )}
 
         <ProfileForm
           isCreating={true}
