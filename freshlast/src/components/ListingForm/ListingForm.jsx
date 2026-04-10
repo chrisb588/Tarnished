@@ -32,21 +32,6 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
         };
     }, [formData.image]);
 
-    const handleStepper = (change) => {
-        setFormData((prev) => {
-            const newQuantity = parseInt(prev.quantity) + change;
-
-
-            if (newQuantity < 0) return prev;
-
-            return{
-                ...prev,
-                quantity: newQuantity
-            }
-
-        })
-    }
-
     const blockInvalidChar = (e) => {
         // Prevent '-', '+', and 'e' (exponential notation)
         if (['-', '+', 'e', 'E'].includes(e.key)) {
@@ -98,28 +83,18 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                         <div className="quantityWrapper">
                             <label htmlFor="quantity">Quantity Available</label>
                             <br/>
-                            <div className="quantityStepper">
-                                <button 
-                                className="stepper-button"
-                                type="button"
-                                onClick={() => handleStepper(-1)}>-</button>
                                 <input 
                                     type="number" 
                                     name="quantity"
                                     id="quantity"
                                     min="0"
                                     placeholder="0.00"
-                                    step="0.01"
+                                    step="1.00"
                                     value={formData.quantity}
                                     onChange={handleChange}
                                     onKeyDown={blockInvalidChar}
                                     required
                                     />
-                                <button 
-                                className="stepper-button"
-                                type="button"
-                                onClick={() => handleStepper(+1)}>+</button>
-                            </div>
                         </div>
                         <div className="unitWrapper">
                             <label htmlFor="unit">Unit</label>
@@ -133,6 +108,23 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                                 <option value="kg">kg</option>
                                 <option value="lbs">lbs</option>
                             </select>
+                        </div>
+                        <div className="categoryWrapper">
+                            <label htmlFor="type">Product Type</label>
+                            <select 
+                                name="type" 
+                                id="type"
+                                value={formData.type}
+                                onChange={handleChange}
+                                required
+                                >
+                                <option value="vegetable">Vegetables</option>
+                                <option value="fruit">Fruit</option>
+                                <option value="chicken">Chicken</option>
+                                <option value="pork">Pork</option>
+                                <option value="beef">Beef</option>
+                                <option value="seafood">Seafood</option>
+                            </select>                            
                         </div>
                     </div>
                 </div>
@@ -153,7 +145,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                             name="originalprice"
                             id="originalprice"
                             min="0"
-                            step="0.01"
+                            step="1.00"
                             placeholder="0.00"
                             required
                         />
@@ -168,7 +160,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                         onChange={handleChange}
                         id="discountedprice"
                         min="0"
-                        step="0.01"
+                        step="1.00"
                         placeholder="0.00"
                         required
                     />

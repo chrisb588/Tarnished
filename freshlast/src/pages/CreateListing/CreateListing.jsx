@@ -45,8 +45,9 @@ export default function CreateListing(){
         name: "",
         quantity: 0,
         unit: "kg",
+        type: "vegetable",
         originalprice: 0,
-        discountedprice: 0
+        discountedprice: 0,
     });
 
     const [merchantId, setMerchantId] = useState(null);
