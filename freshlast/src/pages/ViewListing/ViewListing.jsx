@@ -38,26 +38,34 @@ export default function ViewListing() {
         <div className="view-listing-card">
             <div className="view-listing-image">
             {listing.image && <img src={listing.image} alt={listing.name} />}
+            <p>test</p>
             </div>
 
             <div className="view-listing-info">
-            <h1 className="view-listing-name">{listing.name}</h1>
+            <h1 className="view-listing-name">{listing.name} </h1>
+            <div className="view-listing-add-info">
+              <p className="view-listing-type">Type{listing.type}</p>
+              <p className="view-listing-info-sep">-</p>
+              <p className="view-listing-quantity">{listing.quantity} {listing.unit}</p>
+            </div>
             <div className="view-listing-prices">
                 <span className="view-listing-original-price">₱{listing.original_price}</span>
                 <span className="view-listing-price-sep">|</span>
                 <span className="view-listing-discounted-price">₱{listing.discounted_price}</span>
+                <span className="view-listing-quantity">/ {listing.unit}</span>
             </div>
-            <p className="view-listing-quantity">{listing.quantity} {listing.unit}</p>
-            <p className="view-listing-type">TYPE: TO DO: ADD TYPE {listing.type}</p>
+
             </div>
 
             <div className="view-listing-info">
-                <h1 className="view-listing-name">MERCHANT: {listing.merchant}NAME OF MERCHANT </h1>
+                {/*TO DO: CLICKING ON THE MERCHANT'S NAME TAKES U TO THEIR PROFILE */}
+                <h1 className="merchant-label">Merchant {listing.merchant}</h1>
+                <p className="stall-photo-label">Stall Photo:</p>
                 <div className="merchant-stall-image">
                 {/*TO DO: ADD MERCHANT STALL IMAGE*/}
                 {listing.image && <img src={listing.image} alt={listing.name} />}
                 </div>
-                <h1 className="view-listing-name">LOCATION:</h1>
+                <h1 className="merchant-label">Stall Location</h1>
                 <div className="merchant-location">
                     INSERT GOOGLE MAPS HERE
                 </div>
