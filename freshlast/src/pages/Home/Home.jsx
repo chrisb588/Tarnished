@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ListingItem from '../../components/ListingItem/ListingItem';
 import { supabase } from '../../lib/supabaseClient';
 import { getListingsByMerchant } from '../../api/listings';
 import './Home.css';
 
 export default function Home({ onLogout }) {
+  const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,7 +50,7 @@ export default function Home({ onLogout }) {
         ) : listings.length > 0 ? (
           <div className="dashboard__grid">
             {listings.map((listing) => (
-              <ListingItem key={listing.id} listing={listing} showEdit={true} />
+              <ListingItem key={listing.id} listing={listing} showEdit={true} onSelect={(l) => navigate(`/viewListing/${l.id}`)} />
             ))}
           </div>
         ) : (

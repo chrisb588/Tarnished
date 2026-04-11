@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getListingById } from '../../api/listings';
 import { getProfile } from '../../api/profile';
+import { supabase } from '../../lib/supabaseClient';
 import './ViewListing.css';
 
 export default function ViewListing() {
@@ -9,6 +10,7 @@ export default function ViewListing() {
   const navigate = useNavigate();
   const [listing, setListing] = useState(null);
   const [merchant, setMerchant] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,6 +20,8 @@ export default function ViewListing() {
       try {
         const data = await getListingById(id);
         setListing(data);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && data.merchant === user.id) setIsOwner(true);
         if (data.merchant) {
           const merchantData = await getProfile(data.merchant);
           setMerchant(merchantData);
@@ -74,9 +78,14 @@ export default function ViewListing() {
                 <div className="merchant-location">
                     INSERT GOOGLE MAPS HERE
                 </div>
-                
 
             </div>
+
+            {isOwner && (
+              <button className="view-listing-edit-btn" onClick={() => navigate(`/edit/${id}`)}>
+                Edit Listing
+              </button>
+            )}
         </div>
       )}
     </div>

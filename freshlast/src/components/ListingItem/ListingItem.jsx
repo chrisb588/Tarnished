@@ -23,7 +23,7 @@ export default function ListingItem({ listing, showEdit = false, onSelect }) {
         </p>
       </div>
       {showEdit && (
-        <button className="edit-button" onClick={() => navigate(`/edit/${listing.id}`)}>
+        <button className="edit-button" onClick={(e) => { e.stopPropagation(); navigate(`/edit/${listing.id}`); }}>
           Edit
         </button>
       )}
