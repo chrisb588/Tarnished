@@ -18,6 +18,8 @@ export default function ListingItem({ listing, showEdit = false, onSelect }) {
           <span className='discounted-price'>₱{listing.discounted_price}</span>
           <br />
           <span className='quantity'>{listing.quantity} {listing.unit}</span>
+          <br />
+          <span className='type'>Type: TO DO: INSERT TYPE INTO TABLE{listing.type}</span>
         </p>
       </div>
       {showEdit && (

@@ -1,4 +1,5 @@
 import AuthForm from "../AuthForm/AuthForm";
+import { FaXmark } from "react-icons/fa6";
 
 import './AuthModal.css'
 
@@ -14,7 +15,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
           onClick={onClose}
           className="close-button"
         >
-          X
+        <FaXmark/>
         </button>
 
         {/* Pass the mode down to the form */}

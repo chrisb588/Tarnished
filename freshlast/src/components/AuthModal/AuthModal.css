@@ -17,7 +17,7 @@
   background-color: white;
   padding: 1rem 2.5rem 2.5rem 2.5rem;
   border-radius: 12px;
-  border: 2px solid black;
+  border: 1px solid var(--color-secondary-border);
   width: 60%;
   max-width: 450px;
   position: relative; /* Allows positioning of the close button */
@@ -29,7 +29,6 @@
   flex-direction: column;
 }
 
-/* A simple styling for that "X" button you have */
 .close-button {
   position: absolute;
   top: 15px;
@@ -38,9 +37,9 @@
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: #888;
+  color: var(--color-secondary-border);
 }
 
 .close-button:hover {
-  color: #000;
+    background-color: var(--color-border);
 }
