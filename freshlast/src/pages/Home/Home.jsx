@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import ListingItem from '../../components/ListingItem/ListingItem';
-import VendorHeader from '../../components/VendorHeader/VendorHeader';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import ListingItem from '../../components/ListingItem/ListingItem';
 import { supabase } from '../../lib/supabaseClient';
 import { getListingsByMerchant } from '../../api/listings';
-import "./Home.css";
+import './Home.css';
 
 export default function Home({ onLogout }) {
   const [listings, setListings] = useState([]);
@@ -24,18 +23,25 @@ export default function Home({ onLogout }) {
 
   return (
     <div className="dashboard">
-      <VendorHeader onLogout={onLogout} />
-
-      <div className="dashboard__content">
-        <div className="dashboard__welcome">
-          <h1 className="dashboard__title">Welcome Back, Vendor!</h1>
-          <p className="dashboard__subtitle">Here you can see your active listings.</p>
+      <header className="dashboard__header">
+        <div className="dashboard__logo">
+          <span className="dashboard__logo--green">Fr</span>
+          <span className="dashboard__logo--orange">è</span>
+          <span className="dashboard__logo--green">shL</span>
+          <span className="dashboard__logo--orange">a</span>
+          <span className="dashboard__logo--green">st</span>
         </div>
 
-        <div className="dashboard__actions">
-          <Link to="/create" className="dashboard__add-btn">
-            + Add new listing
-          </Link>
+        <div className="dashboard__header-actions">
+          <Link to="/" className="dashboard__btn">← Marketplace</Link>
+          <button className="dashboard__btn" onClick={onLogout}>Log Out</button>
+        </div>
+      </header>
+
+      <main className="dashboard__content">
+        <div className="dashboard__top-bar">
+          <h2 className="dashboard__title">MY LISTINGS:</h2>
+          <Link to="/create" className="dashboard__add-btn">+ Add new listing</Link>
         </div>
 
         {isLoading ? (
@@ -48,13 +54,11 @@ export default function Home({ onLogout }) {
           </div>
         ) : (
           <div className="dashboard__empty">
-            <p>You have no listings yet.</p>
-            <Link to="/create" className="dashboard__add-btn">
-              Create your first listing
-            </Link>
+            <p className="dashboard__status">You have no listings yet.</p>
+            <Link to="/create" className="dashboard__add-btn">Create your first listing</Link>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
