@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabaseClient";
+import { getProfile } from "./api/profile";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import OfferList from "./pages/OfferList/OfferList";
@@ -16,7 +17,7 @@ import "./App.css";
 export default function App() {
   const [session, setSession] = useState(undefined);
   const [needsPasswordChange, setNeedsPasswordChange] = useState(false);
-  const [profileComplete, setProfileComplete] = useState(false);
+  const [profileComplete, setProfileComplete] = useState(null); // null = still checking
   const [verifying, setVerifying] = useState(false);
   const [authError, setAuthError] = useState(null);
 
@@ -30,18 +31,14 @@ export default function App() {
 
   const checkProfileComplete = async (user) => {
     if (!user) return;
-    const { data } = await supabase
-      .from("profiles")
-      .select("stall_name, market_location, phone_number")
-      .eq("id", user.id)
-      .single();
-
-    const isComplete = !!(
-      data?.stall_name &&
-      data?.market_location &&
-      data?.phone_number
-    );
-    setProfileComplete(isComplete);
+    try {
+      const response = await getProfile(user.id);
+      const data = response?.data;
+      const isComplete = !!(data?.name && data?.location);
+      setProfileComplete(isComplete);
+    } catch {
+      // On API error, leave profileComplete unchanged to avoid spurious redirects
+    }
   };
 
   useEffect(() => {
@@ -82,7 +79,7 @@ export default function App() {
         checkProfileComplete(session.user);
       } else {
         setNeedsPasswordChange(false);
-        setProfileComplete(false);
+        setProfileComplete(null);
       }
     });
 
@@ -93,7 +90,7 @@ export default function App() {
     await supabase.auth.signOut();
     setSession(null);
     setNeedsPasswordChange(false);
-    setProfileComplete(false);
+    setProfileComplete(null);
   };
 
   if (session === undefined || verifying) {
@@ -146,6 +143,8 @@ export default function App() {
           element={
             !isLoggedIn ? (
               <Navigate to="/" replace />
+            ) : profileComplete === null ? (
+              <div style={{ display: "grid", placeItems: "center", height: "100vh" }}>Loading...</div>
             ) : !profileComplete ? (
               <Navigate to="/profile" replace />
             ) : (
