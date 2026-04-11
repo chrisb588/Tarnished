@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import AuthModal from '../../components/AuthModal/AuthModal.jsx'
 import ListingDetailModal from '../../components/ListingDetailModal/ListingDetailModal.jsx'
@@ -27,6 +27,7 @@ function FilterIcon() {
 const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Beef', 'Pork', 'Chicken', 'Seafood']
 
 export default function OfferList({ session, onLogout }) {
+  const navigate = useNavigate()
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -129,12 +130,14 @@ export default function OfferList({ session, onLogout }) {
               key={listing.id} 
               listing={listing} 
               showEdit={false} 
-              onSelect={(listing) => 
-                {
-                  setShowListingModal(true)
+              onSelect={(listing) => {
+                if (window.innerWidth <= 768) {
+                  navigate(`/viewListing/${listing.id}`)
+                } else {
                   setSelectedListing(listing)
+                  setShowListingModal(true)
                 }
-              }
+              }}
               />
             ))}
           </div>

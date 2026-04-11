@@ -9,6 +9,7 @@ import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import CreateProfile from "./pages/CreateProfile/CreateProfile";
+import ViewListing from "./pages/ViewListing/ViewListing"
 
 import "./App.css";
 
@@ -131,6 +132,7 @@ export default function App() {
         <Route path="/" element={<OfferList session={session} onLogout={handleLogout} />} />
         <Route path="/create" element={<CreateListing />} />
         <Route path="/edit/:id" element={<CreateListing />} />
+        <Route path="/viewListing/:id" element={<ViewListing/>} />
         <Route path="/changePass" element={<ChangePassword />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/createProfile" element={<CreateProfile />} />
