@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import AuthModal from '../../components/AuthModal/AuthModal.jsx'
-import ListingDetailModal from '../../components/ListingDetailModal/ListingDetailModal.jsx'
 import { getAllListings } from '../../api/listings'
 import './OfferList.css'
 
@@ -34,8 +33,6 @@ export default function OfferList({ session, onLogout }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [listings, setListings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedListing, setSelectedListing] = useState(null)
-  const [showListingModal, setShowListingModal] = useState(false)
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -130,14 +127,7 @@ export default function OfferList({ session, onLogout }) {
               key={listing.id} 
               listing={listing} 
               showEdit={false} 
-              onSelect={(listing) => {
-                if (window.innerWidth <= 768) {
-                  navigate(`/viewListing/${listing.id}`)
-                } else {
-                  setSelectedListing(listing)
-                  setShowListingModal(true)
-                }
-              }}
+              onSelect={(listing) => navigate(`/viewListing/${listing.id}`)}
               />
             ))}
           </div>
@@ -145,16 +135,6 @@ export default function OfferList({ session, onLogout }) {
           <p className="offerlist__status">No products found</p>
         )}
 
-        <ListingDetailModal
-          detailIsOpen={showListingModal}
-          listing={selectedListing}
-          onClose={() => 
-            {
-              setSelectedListing(null)
-              setShowListingModal(false)
-            }
-          }
-        />        
       </main>
 
       <AuthModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} onSuccess={() => setShowLoginModal(false)} />

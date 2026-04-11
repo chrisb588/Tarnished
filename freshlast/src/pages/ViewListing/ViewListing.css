@@ -108,3 +108,28 @@
   color: var(--color-text-muted);
   font-size: 0.95rem;
 }
+
+.merchant-stall-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--color-secondary-border);
+    overflow: hidden;
+    align-self: center;
+    border-radius: 5px;
+}
+  
+.merchant-stall-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.merchant-location {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--color-secondary-border);
+    overflow: hidden;
+    align-self: center;
+    border-radius: 5px;    
+}

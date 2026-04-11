@@ -27,29 +27,43 @@ export default function ViewListing() {
 
   return (
     <div className="view-listing">
-      <button className="view-listing-back-btn" onClick={() => navigate(-1)}>
+        <button className="view-listing-back-btn" onClick={() => navigate(-1)}>
         ← Back
-      </button>
+        </button>
 
-      {isLoading && <p className="view-listing-status">Loading...</p>}
-      {error && <p className="view-listing-status view-listing-status--error">{error}</p>}
+        {isLoading && <p className="view-listing-status">Loading...</p>}
+        {error && <p className="view-listing-status view-listing-status--error">{error}</p>}
 
       {listing && (
         <div className="view-listing-card">
-          <div className="view-listing-image">
+            <div className="view-listing-image">
             {listing.image && <img src={listing.image} alt={listing.name} />}
-          </div>
+            </div>
 
-          <div className="view-listing-info">
+            <div className="view-listing-info">
             <h1 className="view-listing-name">{listing.name}</h1>
             <div className="view-listing-prices">
-              <span className="view-listing-original-price">₱{listing.original_price}</span>
-              <span className="view-listing-price-sep">|</span>
-              <span className="view-listing-discounted-price">₱{listing.discounted_price}</span>
+                <span className="view-listing-original-price">₱{listing.original_price}</span>
+                <span className="view-listing-price-sep">|</span>
+                <span className="view-listing-discounted-price">₱{listing.discounted_price}</span>
             </div>
             <p className="view-listing-quantity">{listing.quantity} {listing.unit}</p>
             <p className="view-listing-type">TYPE: TO DO: ADD TYPE {listing.type}</p>
-          </div>
+            </div>
+
+            <div className="view-listing-info">
+                <h1 className="view-listing-name">MERCHANT: {listing.merchant}NAME OF MERCHANT </h1>
+                <div className="merchant-stall-image">
+                {/*TO DO: ADD MERCHANT STALL IMAGE*/}
+                {listing.image && <img src={listing.image} alt={listing.name} />}
+                </div>
+                <h1 className="view-listing-name">LOCATION:</h1>
+                <div className="merchant-location">
+                    INSERT GOOGLE MAPS HERE
+                </div>
+                
+
+            </div>
         </div>
       )}
     </div>
