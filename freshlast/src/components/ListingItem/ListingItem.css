@@ -5,6 +5,10 @@
     padding-bottom: 10px;
 }
 
+.listing-border:hover {
+    cursor: pointer;
+}
+
 .listing-image {
     aspect-ratio: 4 / 3;
     border-top: solid black 2px;

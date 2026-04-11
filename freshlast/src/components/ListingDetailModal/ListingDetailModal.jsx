@@ -1,11 +1,9 @@
-import AuthForm from "../AuthForm/AuthForm";
+import './ListingDetailModal.css'
 
-import './AuthModal.css'
-
-export default function AuthModal({ isOpen, onClose, onSuccess }) {
+export default function ListingDetailModal({ listing, onClose, detailIsOpen }) {
 
 
-  if (!isOpen) return null; // Don't render anything if closed
+  if (!detailIsOpen) return null; // Don't render anything if closed
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -18,7 +16,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
         </button>
 
         {/* Pass the mode down to the form */}
-        <AuthForm onSuccess={onSuccess} />
+        <div><p>{listing.name}</p></div>
       </div>
     </div>
   );

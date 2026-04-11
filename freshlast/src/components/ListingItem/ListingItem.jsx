@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import './ListingItem.css'
 
-export default function ListingItem({ listing, showEdit = false }) {
+export default function ListingItem({ listing, showEdit = false, onSelect }) {
   const navigate = useNavigate();
 
   return (
-    <div className="listing-border">
+    <div className="listing-border" onClick={onSelect ? () => onSelect(listing) : undefined}>
       <div className="listing-image">
         {listing.image && <img src={listing.image} alt={listing.name} />}
       </div>
