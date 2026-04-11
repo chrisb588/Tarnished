@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getListingById } from '../../api/listings';
+import { getProfile } from '../../api/profile';
 import './ViewListing.css';
 
 export default function ViewListing() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [listing, setListing] = useState(null);
+  const [merchant, setMerchant] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,6 +18,10 @@ export default function ViewListing() {
       try {
         const data = await getListingById(id);
         setListing(data);
+        if (data.merchant) {
+          const merchantData = await getProfile(data.merchant);
+          setMerchant(merchantData);
+        }
       } catch (e) {
         console.error('Failed to fetch listing:', e);
         setError('Could not load this listing.');
@@ -59,11 +65,10 @@ export default function ViewListing() {
 
             <div className="view-listing-info">
                 {/*TO DO: CLICKING ON THE MERCHANT'S NAME TAKES U TO THEIR PROFILE */}
-                <h1 className="merchant-label">Merchant {listing.merchant}</h1>
+                <h1 className="merchant-label">{merchant ? merchant.name : `${listing.merchant}`}</h1>
                 <p className="stall-photo-label">Stall Photo:</p>
                 <div className="merchant-stall-image">
-                {/*TO DO: ADD MERCHANT STALL IMAGE*/}
-                {listing.image && <img src={listing.image} alt={listing.name} />}
+                {merchant?.location_photo && <img src={merchant.location_photo} alt="Stall" />}
                 </div>
                 <h1 className="merchant-label">Stall Location</h1>
                 <div className="merchant-location">
