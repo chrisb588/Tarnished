@@ -1,28 +1,43 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './AdminDashboard.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MerchantDisplayAdmin from '../../components/MerchantDisplayAdmin/MerchantDisplayAdmin'
+import { getAllMerchants, deleteMerchant } from '../../api/admin';
 
 export default function AdminDashboard(){
 const navigate = useNavigate();
-//dummy data
-const [merchants, setMerchants] = useState([
-    { id: 1, name: "Pizza Palace" },
-    { id: 2, name: "Tech To Go" }
-]);
+const [merchants, setMerchants] = useState([]);
+const [isLoading, setIsLoading] = useState(true);
+const [fetchError, setFetchError] = useState('');
+
+useEffect(() => {
+    getAllMerchants()
+        .then((data) => setMerchants(data))
+        .catch((err) => setFetchError(err.message ?? 'Failed to load merchants'))
+        .finally(() => setIsLoading(false));
+}, []);
+
+const handleDelete = async (id) => {
+    try {
+        await deleteMerchant(id);
+        setMerchants((prev) => prev.filter((m) => m.id !== id));
+    } catch (err) {
+        alert(`Delete failed: ${err.message ?? 'Unknown error'}`);
+    }
+};
 
     return (
         <div className='container'>
             <Link to="/" className="floating-add-btn">
                 <p>Back to home</p>
             </Link>
-            <div
-            className='dashboard'>
+            <div className='dashboard'>
                 <h3>Users</h3>
-                <div
-                className='user-list'>
+                {isLoading && <p>Loading merchants...</p>}
+                {fetchError && <p style={{ color: 'red' }}>{fetchError}</p>}
+                <div className='user-list'>
                     {merchants.map((merchant) => (
-                        <MerchantDisplayAdmin key={merchant.id} merchant={merchant} />
+                        <MerchantDisplayAdmin key={merchant.id} merchant={merchant} onDelete={handleDelete} />
                     ))}
                 </div>
                 <button
@@ -31,7 +46,6 @@ const [merchants, setMerchants] = useState([
                 Create Profile
                 </button>
             </div>
-
         </div>
     );
 }
