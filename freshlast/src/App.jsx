@@ -132,6 +132,16 @@ export default function App() {
         <Route path="/viewListing/:id" element={<ViewListing/>} />
         <Route path="/changePass" element={<ChangePassword />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/editProfile/:id"
+          element={
+            !isLoggedIn ? (
+              <Navigate to="/" replace />
+            ) : (
+              <EditProfile />
+            )
+          }
+        />
         <Route path="/createProfile" element={<CreateProfile />} />
 
         {/* PUBLIC */}
