@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import VendorHeader from "../../components/VendorHeader/VendorHeader";
 import ProfileForm from "../../components/ProfileForm/ProfileForm";
@@ -8,6 +8,7 @@ import { getProfile, updateProfile } from "../../api/profile";
 
 export default function EditProfile({ onSave, onLogout }) {
   const navigate = useNavigate();
+  const { id: paramId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [photo, setPhoto] = useState(null);
@@ -28,12 +29,16 @@ export default function EditProfile({ onSave, onLogout }) {
   useEffect(() => {
     const fetchProfile = async () => {
       if (!supabase) return;
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) setError("User details cannot be retrieved");
+      let userId = paramId;
+      if (!userId) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) { setError("User details cannot be retrieved"); return; }
+        userId = user.id;
+      }
 
-      const response = await getProfile(user.id);
+      const response = await getProfile(userId);
       const data = response.data;
 
       if (data) {
@@ -50,7 +55,7 @@ export default function EditProfile({ onSave, onLogout }) {
       }
     };
     fetchProfile();
-  }, []);
+  }, [paramId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,7 +109,7 @@ export default function EditProfile({ onSave, onLogout }) {
     setIsLoading(false);
 
     onSave?.();
-    navigate("/dashboard");
+    navigate(paramId ? "/admin" : "/dashboard");
   };
 
   return (
