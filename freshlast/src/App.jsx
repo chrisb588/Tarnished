@@ -138,7 +138,7 @@ export default function App() {
             !isLoggedIn ? (
               <Navigate to="/" replace />
             ) : (
-              <EditProfile />
+              <EditProfile onLogout={handleLogout} />
             )
           }
         />
