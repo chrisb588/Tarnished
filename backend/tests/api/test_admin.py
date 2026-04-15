@@ -483,3 +483,24 @@ def test_delete_merchant_when_not_found(client):
 
     response = client.delete(f"/api/admin/delete/{uuid4()}")
     assert response.status_code == 400
+
+
+def test_get_all_merchants_success(client):
+    response = client.get("/api/admin/merchants")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    data = data[0]
+    assert data["id"] == "11111111-1111-1111-1111-111111111111"
+    assert data["name"] == "Sample Merchant"
+    assert data["latitude"] == 10.3157
+    assert data["longitude"] == 123.8854
+    assert data["start_operating_time"] == "08:00:00"
+    assert data["end_operating_time"] == "18:00:00"
+    assert data["operating_days"] == ["Mon", "Wed", "Fri"]
+    assert data["location"] == "Cebu City, Philippines"
+    assert (
+        data["location_photo"]
+        == "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/profile/22222222-2222-2222-2222-222222222222"
+    )
+    assert data["category"] == "Veggies"
