@@ -25,8 +25,13 @@ const createMerchant = async (
   return await apiClient.post(`/admin/create`, formData);
 };
 
+const getAllMerchants = async () => {
+  const response = await apiClient.get(`/admin/merchants`);
+  return response.data;
+};
+
 const deleteMerchant = async (id) => {
   return await apiClient.delete(`/admin/delete/${id}`);
 };
 
-export { createMerchant, deleteMerchant };
+export { createMerchant, getAllMerchants, deleteMerchant };
