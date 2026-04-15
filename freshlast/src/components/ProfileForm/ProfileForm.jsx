@@ -30,6 +30,17 @@ export default function ProfileForm({
     }));
   };
 
+  const allDaysSelected = DAYS.every((day) =>
+    formData.operatingDays.includes(day)
+  );
+
+  const toggleAllDays = () => {
+    setFormData((prev) => ({
+      ...prev,
+      operatingDays: allDaysSelected ? [] : DAYS,
+    }));
+  };
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -174,6 +185,20 @@ export default function ProfileForm({
         <label className="edit-profile__label edit-profile__label--required">
           Operating Days
         </label>
+        <div className="edit-profile__days-header">
+          <span className="edit-profile__days-summary">
+            {formData.operatingDays.length > 0
+              ? `${formData.operatingDays.length} selected`
+              : "No days selected"}
+          </span>
+          <button
+            type="button"
+            className="edit-profile__days-toggle"
+            onClick={toggleAllDays}
+          >
+            {allDaysSelected ? "Clear all" : "Select all"}
+          </button>
+        </div>
         <div className="edit-profile__days">
           {DAYS.map((day) => (
             <button

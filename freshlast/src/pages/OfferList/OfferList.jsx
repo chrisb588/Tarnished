@@ -23,7 +23,7 @@ function FilterIcon() {
   )
 }
 
-const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Beef', 'Pork', 'Chicken', 'Seafood']
+const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Chicken', 'Pork', 'Beef', 'Seafood']
 
 export default function OfferList({ session, onLogout }) {
   const navigate = useNavigate()
@@ -58,10 +58,10 @@ export default function OfferList({ session, onLogout }) {
     <div className="offerlist">
       <header className="offerlist__header">
 
-        {/* Colored Logo */}
+        {/* Colored Logo -- to be changed */}
         <div className="offerlist__logo">
           <span className="offerlist__logo--green">Fr</span>
-          <span className="offerlist__logo--orange">è</span>
+          <span className="offerlist__logo--orange">e</span>
           <span className="offerlist__logo--green">shL</span>
           <span className="offerlist__logo--orange">a</span>
           <span className="offerlist__logo--green">st</span>

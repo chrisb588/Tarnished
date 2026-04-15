@@ -8,6 +8,7 @@ import Home from "./pages/Home/Home";
 import CreateListing from "./pages/CreateListing/CreateListing";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import VendorProfile from "./pages/VendorProfile/VendorProfile";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import CreateProfile from "./pages/CreateProfile/CreateProfile";
 import ViewListing from "./pages/ViewListing/ViewListing"
@@ -129,6 +130,7 @@ export default function App() {
         <Route path="/" element={<OfferList session={session} onLogout={handleLogout} />} />
         <Route path="/create" element={<CreateListing />} />
         <Route path="/edit/:id" element={<CreateListing />} />
+        <Route path="/vendor/:vendorId" element={<VendorProfile />} />
         <Route path="/viewListing/:id" element={<ViewListing/>} />
         <Route path="/changePass" element={<ChangePassword />} />
         <Route path="/admin" element={<AdminDashboard />} />
