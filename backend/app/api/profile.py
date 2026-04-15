@@ -5,6 +5,7 @@ from uuid import UUID, uuid4
 
 from core.supabase import supabase
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from models.enums.category import Category
 from models.enums.weekday import Weekday
 from models.profile import Merchant
 
@@ -32,6 +33,7 @@ async def update_listing(
     operating_days: str = Form(...),
     location: str = Form(...),
     location_photo: UploadFile = File(None),
+    category: Category = Form(...),
 ):
     # Parse operating days string as an array
     try:
@@ -106,6 +108,7 @@ async def update_listing(
                 end_operating_time=end_operating_time,
                 operating_days=parsed_days,
                 location=location,
+                category=category,
             ).model_dump(mode="json")
             data = supabase.table("merchant").update(payload).eq("id", id).execute()
 

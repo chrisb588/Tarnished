@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 import passgen
 from core.supabase import supabase_admin
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from models.enums.category import Category
 from models.enums.weekday import Weekday
 from models.profile import Merchant
 from pydantic import EmailStr
@@ -26,6 +27,7 @@ async def create_merchant(
     operating_days: str = Form(...),
     location: str = Form(...),
     location_photo: UploadFile = File(...),
+    category: Category = Form(...),
 ):
     # Parse operating days string as an array
     try:
@@ -85,6 +87,7 @@ async def create_merchant(
                     end_operating_time=end_operating_time,
                     operating_days=parsed_days,
                     location=location,
+                    category=category,
                 ).model_dump(mode="json")
             )
             .execute()
@@ -119,7 +122,9 @@ def get_all_merchants():
     try:
         return supabase_admin.table("merchant").select("*").execute().data
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
 
 
 # Delete a merchant account

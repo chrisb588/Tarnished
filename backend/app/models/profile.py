@@ -1,6 +1,7 @@
 from datetime import time
 from uuid import UUID
 
+from models.enums.category import Category
 from models.enums.weekday import Weekday
 from pydantic import BaseModel
 
@@ -15,3 +16,4 @@ class Merchant(BaseModel):
     end_operating_time: time
     operating_days: list[Weekday]
     location: str
+    category: Category

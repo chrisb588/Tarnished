@@ -18,6 +18,7 @@ def test_get_merchant_success(client):
         data["location_photo"]
         == "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/profile/22222222-2222-2222-2222-222222222222"
     )
+    assert data["category"] == "Veggies"
 
 
 def test_get_merchant_when_not_found(client):
@@ -36,6 +37,7 @@ def test_update_merchant_success(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -56,6 +58,7 @@ def test_update_merchant_success(client):
     assert data["operating_days"] == ["Mon", "Wed", "Fri"]
     assert data["location"] == "Cebu City"
     assert "location_photo" in data
+    assert data["category"] == "Veggies"
 
 
 def test_update_merchant_when_not_found(client):
@@ -69,6 +72,7 @@ def test_update_merchant_when_not_found(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -93,6 +97,7 @@ def test_update_merchant_unprocessable_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -115,6 +120,7 @@ def test_update_merchant_unprocessable_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -137,6 +143,7 @@ def test_update_merchant_unprocessable_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -159,6 +166,7 @@ def test_update_merchant_unprocessable_payload(client):
             "end_operating_time": "17:0:0",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -181,6 +189,7 @@ def test_update_merchant_unprocessable_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={"location_photo": "invalid-photo"},
     )
@@ -197,6 +206,7 @@ def test_update_merchant_unprocessable_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Monday"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -220,6 +230,7 @@ def test_update_merchant_incomplete_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -241,6 +252,7 @@ def test_update_merchant_incomplete_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -262,6 +274,7 @@ def test_update_merchant_incomplete_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -283,6 +296,7 @@ def test_update_merchant_incomplete_payload(client):
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -304,6 +318,7 @@ def test_update_merchant_incomplete_payload(client):
             "start_operating_time": "08:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -325,6 +340,7 @@ def test_update_merchant_incomplete_payload(client):
             "start_operating_time": "08:00:00",
             "end_operating_time": "17:00:00",
             "location": "Cebu City",
+            "category": "Veggies",
         },
         files={
             "location_photo": (
@@ -346,6 +362,29 @@ def test_update_merchant_incomplete_payload(client):
             "start_operating_time": "08:00:00",
             "end_operating_time": "17:00:00",
             "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "category": "Veggies",
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+    )
+    assert response.status_code == 422
+
+    # No category
+    response = client.put(
+        "/api/profile/11111111-1111-1111-1111-111111111111",
+        data={
+            "name": "Test Merchant",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "location": "Cebu City",
         },
         files={
             "location_photo": (
