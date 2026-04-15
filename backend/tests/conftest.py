@@ -1,4 +1,11 @@
 import os
+
+from dotenv import load_dotenv
+
+load_dotenv(
+    dotenv_path=os.path.join(os.path.dirname(__file__), ".env.test"), override=True
+)
+
 from unittest.mock import patch
 
 import pytest
@@ -6,12 +13,11 @@ from fastapi.testclient import TestClient
 
 from supabase import create_client
 
-SUPABASE_URL = os.getenv("DATABASE_URL", "")
-SUPABASE_SECRET_KEY = os.getenv("SECRET_KEY", "")
-
 
 @pytest.fixture(scope="session")
 def supabase_local():
+    SUPABASE_URL = os.getenv("DATABASE_URL", "")
+    SUPABASE_SECRET_KEY = os.getenv("SECRET_KEY", "")
     return create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
 
 
@@ -38,6 +44,7 @@ SEEDED_DATA = {
             "operating_days": ["Mon", "Wed", "Fri"],
             "location": "Cebu City, Philippines",
             "location_photo": "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/profile/22222222-2222-2222-2222-222222222222",
+            "category": "Veggies",
         }
     ],
     # "other_table": [ ... ]
