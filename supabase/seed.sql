@@ -104,7 +104,8 @@ BEGIN
     operating_days,
     location,
     location_photo,
-    category
+    category,
+    phone_number
   )
   VALUES (
     merchant_id,
@@ -116,6 +117,7 @@ BEGIN
     ARRAY['Mon', 'Wed', 'Fri'],
     'Cebu City, Philippines',
     photo_url,
-    'Veggies'
+    'Veggies',
+    '+639123456789'
   );
 END $$;

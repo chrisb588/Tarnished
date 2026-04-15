@@ -9,6 +9,7 @@ from core.supabase import supabase_admin
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from models.enums.category import Category
 from models.enums.weekday import Weekday
+from models.ph_phone import PhPhone
 from models.profile import Merchant
 from pydantic import EmailStr
 
@@ -20,6 +21,7 @@ router = APIRouter()
 async def create_merchant(
     email: EmailStr = Form(...),
     name: str = Form(...),
+    phone_number: PhPhone = Form(...),
     latitude: float = Form(...),
     longitude: float = Form(...),
     start_operating_time: time = Form(...),
@@ -80,6 +82,7 @@ async def create_merchant(
                 Merchant(
                     id=UUID(user_id),
                     name=name,
+                    phone_number=phone_number,
                     latitude=latitude,
                     longitude=longitude,
                     location_photo=image_link,

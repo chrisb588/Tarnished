@@ -7,6 +7,7 @@ from core.supabase import supabase
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from models.enums.category import Category
 from models.enums.weekday import Weekday
+from models.ph_phone import PhPhone
 from models.profile import Merchant
 
 router = APIRouter()
@@ -26,6 +27,7 @@ async def get_listing(id: str):
 async def update_listing(
     id: str,
     name: str = Form(...),
+    phone_number: PhPhone = Form(...),
     latitude: float = Form(...),
     longitude: float = Form(...),
     start_operating_time: time = Form(...),
@@ -101,6 +103,7 @@ async def update_listing(
             payload = Merchant(
                 id=UUID(id),
                 name=name,
+                phone_number=phone_number,
                 latitude=latitude,
                 longitude=longitude,
                 location_photo=image_url,

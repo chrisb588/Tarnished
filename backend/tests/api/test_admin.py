@@ -8,6 +8,7 @@ def test_create_merchant_success(client):
         data={
             "email": "email@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -32,6 +33,7 @@ def test_create_merchant_success(client):
     assert "temp_password" in data
 
 
+# TODO: Fix invalid email in other scenarios
 def test_create_merchant_unprocessable_payload(client):
     # Test invalid email
     response = client.post(
@@ -39,6 +41,32 @@ def test_create_merchant_unprocessable_payload(client):
         data={
             "email": "not-an-email",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon"]),
+            "location": "Cebu City",
+            "category": "Veggies",
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+    )
+    assert response.status_code == 422
+
+    # Test invalid phone number
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "merchant@example.com",
+            "name": "Test Merchant",
+            "phone_number": "67",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -200,6 +228,7 @@ def test_create_merchant_user_already_exists(client):
     data = {
         "email": "duplicate@example.com",
         "name": "Test Merchant",
+        "phone_number": "+639123456789",
         "latitude": 10.3157,
         "longitude": 123.8854,
         "start_operating_time": "08:00:00",
@@ -228,6 +257,7 @@ def test_create_merchant_incomplete_payload(client):
         "/api/admin/create",
         data={
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -251,6 +281,31 @@ def test_create_merchant_incomplete_payload(client):
         "/api/admin/create",
         data={
             "email": "merchant@example.com",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "location": "Cebu City",
+            "category": "Veggies",
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+    )
+    assert response.status_code == 422
+
+    # No phone number
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "merchant@example.com",
+            "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -275,6 +330,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
             "end_operating_time": "17:00:00",
@@ -298,6 +354,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "start_operating_time": "08:00:00",
             "end_operating_time": "17:00:00",
@@ -321,6 +378,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "end_operating_time": "17:00:00",
@@ -344,6 +402,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -367,6 +426,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -390,6 +450,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -406,6 +467,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -429,6 +491,7 @@ def test_create_merchant_incomplete_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -454,6 +517,7 @@ def test_delete_merchant_success(client):
         data={
             "email": "email@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -493,6 +557,7 @@ def test_get_all_merchants_success(client):
     data = data[0]
     assert data["id"] == "11111111-1111-1111-1111-111111111111"
     assert data["name"] == "Sample Merchant"
+    assert data["phone_number"] == "+639123456789"
     assert data["latitude"] == 10.3157
     assert data["longitude"] == 123.8854
     assert data["start_operating_time"] == "08:00:00"

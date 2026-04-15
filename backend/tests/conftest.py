@@ -37,6 +37,7 @@ SEEDED_DATA = {
         {
             "id": "11111111-1111-1111-1111-111111111111",
             "name": "Sample Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
