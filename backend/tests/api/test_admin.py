@@ -90,6 +90,7 @@ def test_create_merchant_unprocessable_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": "not-a-coordinate",
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -114,6 +115,7 @@ def test_create_merchant_unprocessable_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": "not-a-coordinate",
             "start_operating_time": "08:00:00",
@@ -138,6 +140,7 @@ def test_create_merchant_unprocessable_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:0:0",
@@ -162,6 +165,7 @@ def test_create_merchant_unprocessable_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -186,6 +190,7 @@ def test_create_merchant_unprocessable_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
@@ -210,6 +215,7 @@ def test_create_merchant_unprocessable_payload(client):
         data={
             "email": "merchant@example.com",
             "name": "Test Merchant",
+            "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",

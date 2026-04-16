@@ -1,6 +1,7 @@
 # API ROUTES ACCESSIBLE ON THE ADMIN CLIENT
 
 import json
+import re
 from datetime import time
 from uuid import UUID, uuid4
 
@@ -31,6 +32,16 @@ async def create_merchant(
     location_photo: UploadFile = File(...),
     category: str = Form(...),
 ):
+    # Add a layer of validation of location photo to verify it is indeed an image file
+    IMAGE_MIME_PATTERN = re.compile(r"^image/.+$")
+    if location_photo is not None and not IMAGE_MIME_PATTERN.match(
+        location_photo.content_type or ""
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Invalid file type. Only image files are allowed",
+        )
+
     # Parse operating days string as an array
     try:
         parsed_days = [Weekday(day) for day in json.loads(operating_days)]

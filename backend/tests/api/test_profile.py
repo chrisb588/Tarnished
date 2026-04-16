@@ -96,7 +96,7 @@ def test_update_merchant_unprocessable_payload(client):
         data={
             "name": "Test Merchant",
             "phone_number": "67",
-            "latitude": "not a latitude",
+            "latitude": 10.3157,
             "longitude": 123.8854,
             "start_operating_time": "08:00:00",
             "end_operating_time": "17:00:00",
