@@ -33,7 +33,6 @@ def test_create_merchant_success(client):
     assert "temp_password" in data
 
 
-# TODO: Fix invalid email in other scenarios
 def test_create_merchant_unprocessable_payload(client):
     # Test invalid email
     response = client.post(
@@ -89,7 +88,7 @@ def test_create_merchant_unprocessable_payload(client):
     response = client.post(
         "/api/admin/create",
         data={
-            "email": "not-an-email",
+            "email": "merchant@example.com",
             "name": "Test Merchant",
             "latitude": "not-a-coordinate",
             "longitude": 123.8854,
@@ -113,7 +112,7 @@ def test_create_merchant_unprocessable_payload(client):
     response = client.post(
         "/api/admin/create",
         data={
-            "email": "not-an-email",
+            "email": "merchant@example.com",
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": "not-a-coordinate",
@@ -137,7 +136,7 @@ def test_create_merchant_unprocessable_payload(client):
     response = client.post(
         "/api/admin/create",
         data={
-            "email": "not-an-email",
+            "email": "merchant@example.com",
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
@@ -161,7 +160,7 @@ def test_create_merchant_unprocessable_payload(client):
     response = client.post(
         "/api/admin/create",
         data={
-            "email": "not-an-email",
+            "email": "merchant@example.com",
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
@@ -209,7 +208,7 @@ def test_create_merchant_unprocessable_payload(client):
     response = client.post(
         "/api/admin/create",
         data={
-            "email": "not-an-email",
+            "email": "merchant@example.com",
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
@@ -220,6 +219,31 @@ def test_create_merchant_unprocessable_payload(client):
             "category": json.dumps(["vegetable"]),
         },
         files={"location_photo": "invalid-photo"},
+    )
+    assert response.status_code == 422
+
+    # Test invalid category
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "merchant@example.com",
+            "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon"]),
+            "location": "Cebu City",
+            "category": json.dumps(["veggies"]),
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
     )
     assert response.status_code == 422
 
@@ -249,31 +273,6 @@ def test_create_merchant_user_already_exists(client):
     response = client.post("/api/admin/create", data=data, files=files)
 
     assert response.status_code == 400
-
-    # Test invalid category
-    response = client.post(
-        "/api/admin/create",
-        data={
-            "email": "not-an-email",
-            "name": "Test Merchant",
-            "phone_number": "+639123456789",
-            "latitude": 10.3157,
-            "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
-            "location": "Cebu City",
-            "category": json.dumps(["veggies"]),
-        },
-        files={
-            "location_photo": (
-                "test.jpg",
-                io.BytesIO(b"fake-image-bytes"),
-                "image/jpeg",
-            ),
-        },
-    )
-    assert response.status_code == 422
 
 
 def test_create_merchant_incomplete_payload(client):
