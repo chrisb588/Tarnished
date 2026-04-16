@@ -2,6 +2,7 @@ from uuid import UUID, uuid4
 
 from core.supabase import supabase
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from models.enums.category import Category
 from models.listing import Listing
 
 router = APIRouter()
@@ -17,6 +18,7 @@ async def create_listing(
     unit: str = Form(...),
     quantity: int = Form(0),
     image: UploadFile = File(None),
+    type: Category = Form(...),
 ):
     image_url = None
     image_path = None
@@ -47,6 +49,7 @@ async def create_listing(
             image=image_url,
             unit=unit,
             quantity=quantity,
+            type=type,
         ).model_dump(mode="json")
         data = supabase.table("listing").insert(payload).execute()
 
@@ -109,6 +112,7 @@ async def update_listing(
     unit: str = Form(...),
     quantity: int = Form(0),
     image: UploadFile = File(None),
+    type: Category = Fomr(...),
 ):
     # Get current listing entry
     listing_result = (
@@ -149,6 +153,7 @@ async def update_listing(
             image=image_url,
             unit=unit,
             quantity=quantity,
+            type=type,
         ).model_dump(mode="json")
         data = supabase.table("listing").update(payload).eq("id", listing_id).execute()
 

@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from enums.category import Category
 from pydantic import BaseModel
 
 
@@ -11,3 +12,4 @@ class Listing(BaseModel):
     image: str | None = None
     unit: str
     quantity: int = 0
+    type: Category
