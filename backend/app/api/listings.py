@@ -1,3 +1,4 @@
+import re
 from uuid import UUID, uuid4
 
 from core.supabase import supabase
@@ -11,38 +12,42 @@ router = APIRouter()
 # Create listing
 @router.post("", tags=["Listings"])
 async def create_listing(
-    merchant_id: str = Form(...),
+    merchant_id: UUID = Form(...),
     name: str = Form(...),
     original_price: float = Form(0),
     discounted_price: float = Form(0),
     unit: str = Form(...),
     quantity: int = Form(0),
-    image: UploadFile = File(None),
+    image: UploadFile = File(...),
     type: Category = Form(...),
 ):
-    image_url = None
-    image_path = None
+    # Add a layer of validation of location photo to verify it is indeed an image file
+    IMAGE_MIME_PATTERN = re.compile(r"^image/.+$")
+    if image is not None and not IMAGE_MIME_PATTERN.match(image.content_type or ""):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Invalid file type. Only image files are allowed",
+        )
 
     # Upload listing image to bucket if the user passed an image
-    if image is not None:
-        image_path = f"{merchant_id}/listings/{uuid4()}"
+    image_path = f"{merchant_id}/listings/{uuid4()}"
 
-        try:
-            image_bytes = await image.read()
-            supabase.storage.from_("media").upload(
-                image_path,
-                image_bytes,
-                file_options={"content-type": image.content_type},
-            )
+    try:
+        image_bytes = await image.read()
+        supabase.storage.from_("media").upload(
+            image_path,
+            image_bytes,
+            file_options={"content-type": image.content_type},
+        )
 
-            image_url = supabase.storage.from_("media").get_public_url(image_path)
-        except Exception as e:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        image_url = supabase.storage.from_("media").get_public_url(image_path)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
     try:
         # Insert new listing to listing table
         payload = Listing(
-            merchant_id=UUID(merchant_id),
+            merchant_id=merchant_id,
             name=name,
             original_price=original_price,
             discounted_price=discounted_price,
@@ -72,13 +77,27 @@ async def create_listing(
 # Get all listings
 @router.get("/all", tags=["Listings"])
 async def get_all_listings():
-    data = supabase.table("listing").select("*").execute()
-    return data.data
+    try:
+        data = supabase.table("listing").select("*").execute()
+        return data.data
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 # Get listings by merchant
 @router.get("", tags=["Listings"])
-async def get_listings(merchant_id: str):
+async def get_listings(merchant_id: UUID):
+    try:
+        data = (
+            supabase.table("merchant")
+            .select("*")
+            .eq("id", merchant_id)
+            .single()
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
     try:
         data = (
             supabase.table("listing")
@@ -86,6 +105,7 @@ async def get_listings(merchant_id: str):
             .eq("merchant_id", merchant_id)
             .execute()
         )
+
         return data.data
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
@@ -95,8 +115,14 @@ async def get_listings(merchant_id: str):
 @router.get("/{listing_id}", tags=["Listings"])
 async def get_listing(listing_id: str):
     try:
-        data = supabase.table("listing").select("*").eq("id", listing_id).execute()
-        return data.data[0] if data.data else None
+        data = (
+            supabase.table("listing")
+            .select("*")
+            .eq("id", listing_id)
+            .single()
+            .execute()
+        )
+        return data.data
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
@@ -104,16 +130,24 @@ async def get_listing(listing_id: str):
 # Edit listing
 @router.put("/{listing_id}", tags=["Listings"])
 async def update_listing(
-    listing_id: str,
-    merchant_id: str = Form(...),
+    listing_id: UUID,
+    merchant_id: UUID = Form(...),
     name: str = Form(...),
     original_price: float = Form(0),
     discounted_price: float = Form(0),
     unit: str = Form(...),
     quantity: int = Form(0),
     image: UploadFile = File(None),
-    type: Category = Fomr(...),
+    type: Category = Form(...),
 ):
+    # Add a layer of validation of location photo to verify it is indeed an image file
+    IMAGE_MIME_PATTERN = re.compile(r"^image/.+$")
+    if image is not None and not IMAGE_MIME_PATTERN.match(image.content_type or ""):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Invalid file type. Only image files are allowed",
+        )
+
     # Get current listing entry
     listing_result = (
         supabase.table("listing")
@@ -146,7 +180,7 @@ async def update_listing(
     # Perform update operation on listing table
     try:
         payload = Listing(
-            merchant_id=UUID(merchant_id),
+            merchant_id=merchant_id,
             name=name,
             original_price=original_price,
             discounted_price=discounted_price,
