@@ -29,7 +29,7 @@ async def create_merchant(
     operating_days: str = Form(...),
     location: str = Form(...),
     location_photo: UploadFile = File(...),
-    category: Category = Form(...),
+    category: str = Form(...),
 ):
     # Parse operating days string as an array
     try:
@@ -40,7 +40,19 @@ async def create_merchant(
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail="Invalid data format for operating days field. It should be an array containing 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', and/or 'Saturday'",
+                detail="Invalid data format for category field. It should be an array containing 'vegetable', 'fruit', 'chicken', 'pork', 'beef', and/or 'seafood'.",
+            )
+
+    # Parse category string as an array
+    try:
+        parsed_categories = [Category(c) for c in json.loads(category)]
+    except Exception:
+        try:
+            parsed_categories = [Category(c.strip()) for c in category.split(",")]
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Invalid data format for category field. It should be an array containing 'vegetable', 'fruit', 'chicken', 'pork', 'beef', and/or 'seafood'",
             )
 
     # Create a new user for the vendor
@@ -90,7 +102,7 @@ async def create_merchant(
                     end_operating_time=end_operating_time,
                     operating_days=parsed_days,
                     location=location,
-                    category=category,
+                    category=parsed_categories,
                 ).model_dump(mode="json")
             )
             .execute()

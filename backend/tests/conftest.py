@@ -45,7 +45,7 @@ SEEDED_DATA = {
             "operating_days": ["Mon", "Wed", "Fri"],
             "location": "Cebu City, Philippines",
             "location_photo": "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/profile/22222222-2222-2222-2222-222222222222",
-            "category": "Veggies",
+            "category": ["vegetable"],
         }
     ],
     # "other_table": [ ... ]

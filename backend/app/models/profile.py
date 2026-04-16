@@ -18,4 +18,4 @@ class Merchant(BaseModel):
     end_operating_time: time
     operating_days: list[Weekday]
     location: str
-    category: Category
+    category: list[Category]

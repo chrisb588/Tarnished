@@ -35,7 +35,7 @@ async def update_listing(
     operating_days: str = Form(...),
     location: str = Form(...),
     location_photo: UploadFile = File(None),
-    category: Category = Form(...),
+    category: str = Form(...),
 ):
     # Parse operating days string as an array
     try:
@@ -43,6 +43,18 @@ async def update_listing(
     except Exception:
         try:
             parsed_days = [Weekday(day.strip()) for day in operating_days.split(",")]
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Invalid data format for operating days field. It should be an array containing 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', and/or 'Sat'",
+            )
+
+    # Parse category string as an array
+    try:
+        parsed_categories = [Category(c) for c in json.loads(category)]
+    except Exception:
+        try:
+            parsed_categories = [Category(c.strip()) for c in category.split(",")]
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -111,7 +123,7 @@ async def update_listing(
                 end_operating_time=end_operating_time,
                 operating_days=parsed_days,
                 location=location,
-                category=category,
+                category=parsed_categories,
             ).model_dump(mode="json")
             data = supabase.table("merchant").update(payload).eq("id", id).execute()
 

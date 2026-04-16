@@ -117,7 +117,7 @@ BEGIN
     ARRAY['Mon', 'Wed', 'Fri'],
     'Cebu City, Philippines',
     photo_url,
-    'Veggies',
+    ARRAY['vegetable'],
     '+639123456789'
   );
 END $$;
