@@ -5,9 +5,10 @@ const createListing = async (
   name,
   originalPrice,
   discountedPrice,
-  image, // Assume for now that this is an image file
+  image,
   unit,
   quantity,
+  type,
 ) => {
   const formData = new FormData();
   formData.append("merchant_id", merchantId);
@@ -19,6 +20,7 @@ const createListing = async (
   }
   formData.append("unit", unit);
   formData.append("quantity", quantity);
+  if (type) formData.append("type", type);
 
   return apiClient.post("/listings", formData);
 };
@@ -47,6 +49,7 @@ const updateListing = async (
   image,
   unit,
   quantity,
+  type,
 ) => {
   const formData = new FormData();
   formData.append("merchant_id", merchantId);
@@ -58,6 +61,7 @@ const updateListing = async (
   }
   formData.append("unit", unit);
   formData.append("quantity", quantity);
+  if (type) formData.append("type", type);
 
   return apiClient.put(`/listings/${listingId}`, formData);
 };

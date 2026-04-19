@@ -65,6 +65,7 @@ export default function CreateListing(){
                         name: listing.name,
                         quantity: listing.quantity,
                         unit: listing.unit,
+                        type: listing.type ?? "vegetable",
                         originalprice: listing.original_price,
                         discountedprice: listing.discounted_price,
                         image: listing.image,
@@ -118,6 +119,7 @@ export default function CreateListing(){
                     formData.image,
                     formData.unit,
                     formData.quantity,
+                    formData.type,
                 );
             } else {
                 await updateListing(
@@ -129,6 +131,7 @@ export default function CreateListing(){
                     formData.image instanceof File ? formData.image : existingImagePath,
                     formData.unit,
                     formData.quantity,
+                    formData.type,
                 );
             }
             navigate('/');
