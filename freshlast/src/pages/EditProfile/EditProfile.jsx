@@ -5,6 +5,7 @@ import VendorHeader from "../../components/VendorHeader/VendorHeader";
 import ProfileForm from "../../components/ProfileForm/ProfileForm";
 import "./EditProfile.css";
 import { getProfile, updateProfile } from "../../api/profile";
+import { MapPicker } from "../../components/MapPicker";
 
 export default function EditProfile({ onSave, onLogout }) {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function EditProfile({ onSave, onLogout }) {
   const [error, setError] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [location, setLocation] = useState({ lat: 0, lng: 0 });
 
   const [formData, setFormData] = useState({
     id: "",
@@ -91,8 +93,8 @@ export default function EditProfile({ onSave, onLogout }) {
       const response = await updateProfile(
         formData.id,
         formData.stallName,
-        0, // TODO: Get x coord of vendor using map marker
-        0, // TODO: Get y coord of vendor using map marker
+        location.lat,
+        location.lng,
         photo,
         formData.operatingHoursStart,
         formData.operatingHoursEnd,
@@ -119,6 +121,7 @@ export default function EditProfile({ onSave, onLogout }) {
         <h1 className="edit-profile__title">Edit your Profile</h1>
         {/* ... subtitle ... */}
 
+        <MapPicker onLocationChange={setLocation} />
         <ProfileForm
           isCreating={false}
           formData={formData}

@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabaseClient";
 import VendorHeader from "../../components/VendorHeader/VendorHeader";
 import ProfileForm from "../../components/ProfileForm/ProfileForm";
 import { createMerchant } from "../../api/admin";
+import { MapPicker } from "../../components/MapPicker";
 
 //import '../EditProfile/EditProfile.css'
 import './CreateProfile.css'
@@ -13,6 +14,7 @@ export default function CreateProfile() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [location, setLocation] = useState({ lat: 0, lng: 0 });
   //const [credentials, setCredentials] = useState({ email: "goon@test.com", temp_password: "testpass" }) //dummy
   const [credentials, setCredentials] = useState(null) //real
   const navigate = useNavigate();
@@ -52,8 +54,8 @@ export default function CreateProfile() {
       const response = await createMerchant(
         formData.emailAddress,
         formData.stallName,
-        0, // TODO: Get x coord of vendor using map marker
-        0, // TODO: Get y coord of vendor using map marker
+        location.lat,
+        location.lng,
         photo,
         formData.operatingHoursStart,
         formData.operatingHoursEnd,
@@ -96,6 +98,7 @@ export default function CreateProfile() {
           </div>
         )}
 
+        <MapPicker onLocationChange={setLocation} />
         <ProfileForm
           isCreating={true}
           formData={formData}
