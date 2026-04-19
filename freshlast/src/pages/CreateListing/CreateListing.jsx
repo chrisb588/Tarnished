@@ -134,7 +134,7 @@ export default function CreateListing(){
                     formData.type,
                 );
             }
-            navigate('/');
+            navigate('/dashboard');
         } catch (error) {
             console.error("Failed:", error.message);
             alert("Error: " + error.message);
@@ -147,7 +147,7 @@ export default function CreateListing(){
         e.preventDefault();
         if (!confirm("Are you sure you want to delete this listing?")) return;
         await deleteListing(id);
-        navigate('/');
+        navigate('/dashboard');
     };
 
 
