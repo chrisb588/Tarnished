@@ -1,9 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
 import { getListingById } from '../../api/listings';
 import { getProfile } from '../../api/profile';
 import { supabase } from '../../lib/supabaseClient';
 import './ViewListing.css';
+
+const markerIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
 
 export default function ViewListing() {
   const { id } = useParams();
@@ -76,7 +86,26 @@ export default function ViewListing() {
                 </div>
                 <h1 className="merchant-label">Stall Location</h1>
                 <div className="merchant-location">
-                    INSERT GOOGLE MAPS HERE
+                  {merchant?.latitude && merchant?.longitude && merchant.latitude !== 0 && merchant.longitude !== 0 ? (
+                    <MapContainer
+                      center={[merchant.latitude, merchant.longitude]}
+                      zoom={17}
+                      style={{ width: '100%', height: '100%' }}
+                      dragging={false}
+                      scrollWheelZoom={false}
+                      doubleClickZoom={false}
+                      zoomControl={false}
+                      attributionControl={true}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="© OpenStreetMap contributors"
+                      />
+                      <Marker position={[merchant.latitude, merchant.longitude]} icon={markerIcon} />
+                    </MapContainer>
+                  ) : (
+                    <p className="view-listing-status">Location not set</p>
+                  )}
                 </div>
 
             </div>
