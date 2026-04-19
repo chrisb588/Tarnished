@@ -11,7 +11,6 @@ import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import CreateProfile from "./pages/CreateProfile/CreateProfile";
 import ViewListing from "./pages/ViewListing/ViewListing"
-
 import "./App.css";
 
 export default function App() {
