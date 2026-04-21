@@ -17,6 +17,20 @@ vi.mock('../../components/MapPicker', () => ({
   ),
 }))
 
+const profileWithLocation = {
+  data: {
+    id: 'user-123',
+    name: 'Test Stall',
+    location: 'Market A',
+    phone_number: '1234567890',
+    start_operating_time: '08:00',
+    end_operating_time: '17:00',
+    operating_days: ['Mon'],
+    latitude: 10.123,
+    longitude: 123.456,
+  },
+}
+
 vi.mock('../../lib/supabaseClient', () => ({
   supabase: {
     auth: {
@@ -97,6 +111,53 @@ describe('EditProfile', () => {
 
     await waitFor(() => expect(screen.getByDisplayValue('Test Stall')).toBeInTheDocument())
 
+    await user.click(screen.getByRole('button', { name: 'Save Profile' }))
+
+    await waitFor(() => {
+      expect(updateProfile).toHaveBeenCalled()
+      const [, , lat, lng] = updateProfile.mock.calls[0]
+      expect(lat).toBe(0)
+      expect(lng).toBe(0)
+    })
+  })
+
+  it('"Clear pin" is visible when lat/lng are set', async () => {
+    getProfile.mockResolvedValueOnce(profileWithLocation)
+    renderEditProfile()
+
+    await waitFor(() => expect(screen.getByDisplayValue('Test Stall')).toBeInTheDocument())
+
+    expect(screen.getByRole('button', { name: 'Clear pin' })).toBeInTheDocument()
+  })
+
+  it('"Clear pin" is NOT visible when lat/lng are 0', async () => {
+    renderEditProfile()
+
+    await waitFor(() => expect(screen.getByDisplayValue('Test Stall')).toBeInTheDocument())
+
+    expect(screen.queryByRole('button', { name: 'Clear pin' })).not.toBeInTheDocument()
+  })
+
+  it('clicking "Clear pin" resets location to 0,0', async () => {
+    const user = userEvent.setup()
+    getProfile.mockResolvedValueOnce(profileWithLocation)
+    renderEditProfile()
+
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Clear pin' })).toBeInTheDocument())
+
+    await user.click(screen.getByRole('button', { name: 'Clear pin' }))
+
+    expect(screen.queryByRole('button', { name: 'Clear pin' })).not.toBeInTheDocument()
+  })
+
+  it('submitting after clearing sends 0,0 to updateProfile', async () => {
+    const user = userEvent.setup()
+    getProfile.mockResolvedValueOnce(profileWithLocation)
+    renderEditProfile()
+
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Clear pin' })).toBeInTheDocument())
+
+    await user.click(screen.getByRole('button', { name: 'Clear pin' }))
     await user.click(screen.getByRole('button', { name: 'Save Profile' }))
 
     await waitFor(() => {

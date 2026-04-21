@@ -16,6 +16,7 @@ export default function EditProfile({ onSave, onLogout }) {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [mapClearKey, setMapClearKey] = useState(0);
 
   const [formData, setFormData] = useState({
     id: "",
@@ -125,11 +126,25 @@ export default function EditProfile({ onSave, onLogout }) {
         {/* ... subtitle ... */}
 
         {profileLoaded && (
-          <MapPicker
-            initialLat={location.lat}
-            initialLng={location.lng}
-            onLocationChange={setLocation}
-          />
+          <>
+            <MapPicker
+              key={mapClearKey}
+              initialLat={location.lat}
+              initialLng={location.lng}
+              onLocationChange={setLocation}
+            />
+            {location.lat !== 0 && location.lng !== 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setLocation({ lat: 0, lng: 0 });
+                  setMapClearKey((k) => k + 1);
+                }}
+              >
+                Clear pin
+              </button>
+            )}
+          </>
         )}
         <ProfileForm
           isCreating={false}
