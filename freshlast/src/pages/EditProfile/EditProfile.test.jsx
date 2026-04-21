@@ -3,13 +3,17 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { vi } from 'vitest'
 import EditProfile from './EditProfile'
-import { updateProfile } from '../../api/profile'
+import { getProfile, updateProfile } from '../../api/profile'
 
 vi.mock('../../components/MapPicker', () => ({
-  MapPicker: ({ onLocationChange }) => (
-    <button type="button" onClick={() => onLocationChange({ lat: 12.34, lng: 56.78 })}>
-      Set Location
-    </button>
+  MapPicker: ({ onLocationChange, initialLat, initialLng }) => (
+    <div>
+      <span data-testid="map-initial-lat">{initialLat ?? ''}</span>
+      <span data-testid="map-initial-lng">{initialLng ?? ''}</span>
+      <button type="button" onClick={() => onLocationChange({ lat: 12.34, lng: 56.78 })}>
+        Set Location
+      </button>
+    </div>
   ),
 }))
 
@@ -46,6 +50,30 @@ function renderEditProfile() {
 
 describe('EditProfile', () => {
   beforeEach(() => { vi.clearAllMocks() })
+
+  it('passes fetched lat/lng as initialLat/initialLng to MapPicker', async () => {
+    getProfile.mockResolvedValueOnce({
+      data: {
+        id: 'user-123',
+        name: 'Test Stall',
+        location: 'Market A',
+        phone_number: '1234567890',
+        start_operating_time: '08:00',
+        end_operating_time: '17:00',
+        operating_days: ['Mon'],
+        latitude: 10.123,
+        longitude: 123.456,
+      },
+    })
+
+    renderEditProfile()
+
+    await waitFor(() => expect(screen.getByDisplayValue('Test Stall')).toBeInTheDocument())
+
+    expect(screen.getByTestId('map-initial-lat').textContent).toBe('10.123')
+    expect(screen.getByTestId('map-initial-lng').textContent).toBe('123.456')
+  })
+
   it('sends lat/lng from MapPicker when onLocationChange fires before submit', async () => {
     const user = userEvent.setup()
     renderEditProfile()

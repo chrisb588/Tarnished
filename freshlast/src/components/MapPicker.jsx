@@ -37,7 +37,7 @@ function LocationMarker({ position, onLocationChange }) {
 }
 
 export function MapPicker({ initialLat, initialLng, onLocationChange }) {
-  const hasInitial = initialLat != null && initialLng != null;
+  const hasInitial = initialLat != null && initialLat !== 0 && initialLng != null && initialLng !== 0;
   const center = [hasInitial ? initialLat : DEFAULT_LAT, hasInitial ? initialLng : DEFAULT_LNG];
   const [markerPos, setMarkerPos] = useState(hasInitial ? center : null);
 

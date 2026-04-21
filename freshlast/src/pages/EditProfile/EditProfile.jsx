@@ -15,6 +15,7 @@ export default function EditProfile({ onSave, onLogout }) {
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [location, setLocation] = useState({ lat: 0, lng: 0 });
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   const [formData, setFormData] = useState({
     id: "",
@@ -54,7 +55,9 @@ export default function EditProfile({ onSave, onLogout }) {
           operatingDays: data.operating_days || [],
         });
         if (data.location_photo) setPhotoPreview(data.location_photo);
+        setLocation({ lat: data.latitude || 0, lng: data.longitude || 0 });
       }
+      setProfileLoaded(true);
     };
     fetchProfile();
   }, [paramId]);
@@ -121,7 +124,13 @@ export default function EditProfile({ onSave, onLogout }) {
         <h1 className="edit-profile__title">Edit your Profile</h1>
         {/* ... subtitle ... */}
 
-        <MapPicker onLocationChange={setLocation} />
+        {profileLoaded && (
+          <MapPicker
+            initialLat={location.lat}
+            initialLng={location.lng}
+            onLocationChange={setLocation}
+          />
+        )}
         <ProfileForm
           isCreating={false}
           formData={formData}
