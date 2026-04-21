@@ -33,8 +33,8 @@ export default function ViewListing() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user && data.merchant === user.id) setIsOwner(true);
         if (data.merchant) {
-          const merchantData = await getProfile(data.merchant);
-          setMerchant(merchantData);
+          const profileResponse = await getProfile(data.merchant);
+          setMerchant(profileResponse.data);
         }
       } catch (e) {
         console.error('Failed to fetch listing:', e);
