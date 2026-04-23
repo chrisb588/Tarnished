@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
 from models.enums.category import Category
@@ -13,3 +15,4 @@ class Listing(BaseModel):
     unit: str
     quantity: int = 0
     type: Category
+    expires_at: Optional[datetime] = None

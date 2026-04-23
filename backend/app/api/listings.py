@@ -1,10 +1,17 @@
 import re
+from datetime import datetime
+from typing import Optional
 from uuid import UUID, uuid4
 
 from core.supabase import supabase
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from models.enums.category import Category
 from models.listing import Listing
+from pydantic import BaseModel
+
+
+class SoldOutUpdate(BaseModel):
+    is_sold_out: bool
 
 router = APIRouter()
 
@@ -20,6 +27,7 @@ async def create_listing(
     quantity: int = Form(0),
     image: UploadFile = File(...),
     type: Category = Form(...),
+    expires_at: Optional[datetime] = Form(None),
 ):
     # Add a layer of validation of location photo to verify it is indeed an image file
     IMAGE_MIME_PATTERN = re.compile(r"^image/.+$")
@@ -55,6 +63,7 @@ async def create_listing(
             unit=unit,
             quantity=quantity,
             type=type,
+            expires_at=expires_at,
         ).model_dump(mode="json")
         data = supabase.table("listing").insert(payload).execute()
 
@@ -139,6 +148,7 @@ async def update_listing(
     quantity: int = Form(0),
     image: UploadFile = File(None),
     type: Category = Form(...),
+    expires_at: Optional[datetime] = Form(None),
 ):
     # Add a layer of validation of location photo to verify it is indeed an image file
     IMAGE_MIME_PATTERN = re.compile(r"^image/.+$")
@@ -188,6 +198,7 @@ async def update_listing(
             unit=unit,
             quantity=quantity,
             type=type,
+            expires_at=expires_at,
         ).model_dump(mode="json")
         data = supabase.table("listing").update(payload).eq("id", listing_id).execute()
 
@@ -210,6 +221,21 @@ async def update_listing(
                     detail=f"FATAL: Failed to clean up resources after listing update failure: {cleanup_error}",
                 )
 
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+# Mark listing as sold out
+@router.patch("/{listing_id}", tags=["Listings"])
+async def patch_listing(listing_id: str, body: SoldOutUpdate):
+    try:
+        data = (
+            supabase.table("listing")
+            .update({"is_sold_out": body.is_sold_out})
+            .eq("id", listing_id)
+            .execute()
+        )
+        return data.data[0]
+    except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
