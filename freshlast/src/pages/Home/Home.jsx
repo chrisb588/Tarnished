@@ -2,13 +2,21 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ListingItem from '../../components/ListingItem/ListingItem';
 import { supabase } from '../../lib/supabaseClient';
-import { getListingsByMerchant } from '../../api/listings';
+import { getListingsByMerchant, markAsSoldOut } from '../../api/listings';
 import './Home.css';
 
 export default function Home({ onLogout }) {
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleSoldOut = async (listing) => {
+    if (!confirm(`Mark "${listing.name}" as sold out?`)) return;
+    await markAsSoldOut(listing.id);
+    setListings(prev =>
+      prev.map(l => l.id === listing.id ? { ...l, is_sold_out: true } : l)
+    );
+  };
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -50,7 +58,13 @@ export default function Home({ onLogout }) {
         ) : listings.length > 0 ? (
           <div className="dashboard__grid">
             {listings.map((listing) => (
-              <ListingItem key={listing.id} listing={listing} showEdit={true} onSelect={(l) => navigate(`/viewListing/${l.id}`)} />
+              <ListingItem
+                key={listing.id}
+                listing={listing}
+                showEdit={true}
+                onSelect={(l) => navigate(`/viewListing/${l.id}`)}
+                onSoldOut={handleSoldOut}
+              />
             ))}
           </div>
         ) : (
