@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 from uuid import UUID, uuid4
 
 from core.supabase import supabase
@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 
 class SoldOutUpdate(BaseModel):
-    is_sold_out: bool
+    is_sold_out: Literal[True]
 
 router = APIRouter()
 

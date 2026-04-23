@@ -6,7 +6,7 @@ function getExpiryLabel(expiresAt) {
   const diffMs = new Date(expiresAt) - new Date();
   if (diffMs <= 0) return null;
   const hours = Math.ceil(diffMs / (1000 * 60 * 60));
-  if (hours <= 24) return `Expires in ${hours}h`;
+  if (hours < 24) return `Expires in ${hours}h`;
   const days = Math.ceil(hours / 24);
   return `Expires in ${days}d`;
 }

@@ -173,7 +173,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                     <p>How long will this listing be available?</p>
                 </div>
                 <div className="descriptionInput">
-                    <label htmlFor="availabilityWindow">How long will this be available?</label>
+                    <label htmlFor="availabilityWindow">Availability Window</label>
                     <select
                         name="availabilityWindow"
                         id="availabilityWindow"

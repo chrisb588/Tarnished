@@ -10,6 +10,7 @@ const baseFormData = {
   originalprice: '',
   discountedprice: '',
   image: null,
+  availabilityWindow: 'ends_today',
 }
 
 describe('ListingForm', () => {
@@ -73,7 +74,7 @@ describe('ListingForm', () => {
         handleFileUpload={() => {}}
       />
     )
-    expect(screen.getByLabelText('How long will this be available?')).toBeInTheDocument()
+    expect(screen.getByLabelText('Availability Window')).toBeInTheDocument()
   })
 
   it('calls handleChange when the availability window select is changed', async () => {
@@ -89,7 +90,7 @@ describe('ListingForm', () => {
       />
     )
 
-    await user.selectOptions(screen.getByLabelText('How long will this be available?'), '1_day')
+    await user.selectOptions(screen.getByLabelText('Availability Window'), '1_day')
     expect(handleChange).toHaveBeenCalled()
   })
 })
