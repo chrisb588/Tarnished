@@ -31,8 +31,7 @@ export default function App() {
   const checkProfileComplete = async (user) => {
     if (!user) return;
     try {
-      const response = await getProfile(user.id);
-      const data = response?.data;
+      const data = await getProfile(user.id);
       const isComplete = !!(data?.name && data?.location);
       setProfileComplete(isComplete);
     } catch {

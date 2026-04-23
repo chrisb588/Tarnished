@@ -33,7 +33,7 @@ vi.mock('../../lib/supabaseClient', () => ({
 import { getListingById } from '../../api/listings'
 import { getProfile } from '../../api/profile'
 
-const baseListing = { id: '1', name: 'Test Item', type: 'Food', quantity: 5, unit: 'kg', original_price: 100, discounted_price: 80, merchant: 'merchant-1', image: null }
+const baseListing = { id: '1', name: 'Test Item', type: 'Food', quantity: 5, unit: 'kg', original_price: 100, discounted_price: 80, merchant_id: 'merchant-1', image: null }
 
 function renderViewListing() {
   return render(
@@ -50,7 +50,7 @@ describe('ViewListing map', () => {
 
   it('renders the map when merchant has valid lat/lng', async () => {
     getListingById.mockResolvedValue(baseListing)
-    getProfile.mockResolvedValue({ data: { name: 'Test Merchant', latitude: 9.99, longitude: 123.45, location_photo: null } })
+    getProfile.mockResolvedValue({ name: 'Test Merchant', latitude: 9.99, longitude: 123.45, location_photo: null })
 
     renderViewListing()
 
@@ -63,7 +63,7 @@ describe('ViewListing map', () => {
 
   it('renders "Location not set" when lat/lng are null', async () => {
     getListingById.mockResolvedValue(baseListing)
-    getProfile.mockResolvedValue({ data: { name: 'Test Merchant', latitude: null, longitude: null, location_photo: null } })
+    getProfile.mockResolvedValue({ name: 'Test Merchant', latitude: null, longitude: null, location_photo: null })
 
     renderViewListing()
 
@@ -75,7 +75,7 @@ describe('ViewListing map', () => {
 
   it('renders "Location not set" when lat/lng are 0', async () => {
     getListingById.mockResolvedValue(baseListing)
-    getProfile.mockResolvedValue({ data: { name: 'Test Merchant', latitude: 0, longitude: 0, location_photo: null } })
+    getProfile.mockResolvedValue({ name: 'Test Merchant', latitude: 0, longitude: 0, location_photo: null })
 
     renderViewListing()
 
@@ -89,13 +89,13 @@ describe('ViewListing map', () => {
     getListingById.mockResolvedValue(baseListing)
 
     // First mount: coordinates not set
-    getProfile.mockResolvedValueOnce({ data: { name: 'Vendor', latitude: 0, longitude: 0, location_photo: null } })
+    getProfile.mockResolvedValueOnce({ name: 'Vendor', latitude: 0, longitude: 0, location_photo: null })
     const { unmount } = renderViewListing()
     await waitFor(() => expect(screen.getByText('Location not set')).toBeInTheDocument())
     unmount()
 
     // Vendor updates profile — second mount returns new coordinates
-    getProfile.mockResolvedValueOnce({ data: { name: 'Vendor', latitude: 9.99, longitude: 123.45, location_photo: null } })
+    getProfile.mockResolvedValueOnce({ name: 'Vendor', latitude: 9.99, longitude: 123.45, location_photo: null })
     renderViewListing()
     await waitFor(() => expect(screen.getByTestId('map-container')).toBeInTheDocument())
     expect(screen.queryByText('Location not set')).not.toBeInTheDocument()
@@ -106,7 +106,7 @@ describe('ViewListing map', () => {
 
   it('reflects the exact lat/lng returned by the latest getProfile call', async () => {
     getListingById.mockResolvedValue(baseListing)
-    getProfile.mockResolvedValue({ data: { name: 'Vendor', latitude: 14.5995, longitude: 120.9842, location_photo: null } })
+    getProfile.mockResolvedValue({ name: 'Vendor', latitude: 14.5995, longitude: 120.9842, location_photo: null })
 
     renderViewListing()
 

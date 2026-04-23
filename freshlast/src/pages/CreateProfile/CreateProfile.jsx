@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import VendorHeader from "../../components/VendorHeader/VendorHeader";
@@ -21,7 +21,6 @@ export default function CreateProfile() {
 
   const [formData, setFormData] = useState({
     emailAddress: "",
-    password: "",
     stallName: "",
     marketLocation: "",
     phoneNumber: "",
@@ -35,7 +34,6 @@ export default function CreateProfile() {
     e.preventDefault();
     setError("");
 
-    console.log("Submitting with Data:", formData);
     if(!formData.emailAddress.trim()) return setError('Email Address is required')
     if (!photo) return setError('Stall Photo is required')
     if (!formData.stallName.trim()) return setError('Stall Name is required')
@@ -63,14 +61,7 @@ export default function CreateProfile() {
         formData.marketLocation,
       );
 
-      // this is what displays the user password
-      console.log(response); // TODO: Display user credentials to give to the vendor
-
       const { email, temp_password } = response.data;
-
-      console.log("Email:", email);
-      console.log("Temp Password:", temp_password);
-
       setCredentials({ email, temp_password });
 
     } catch (e) {

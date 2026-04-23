@@ -18,17 +18,15 @@ vi.mock('../../components/MapPicker', () => ({
 }))
 
 const profileWithLocation = {
-  data: {
-    id: 'user-123',
-    name: 'Test Stall',
-    location: 'Market A',
-    phone_number: '1234567890',
-    start_operating_time: '08:00',
-    end_operating_time: '17:00',
-    operating_days: ['Mon'],
-    latitude: 10.123,
-    longitude: 123.456,
-  },
+  id: 'user-123',
+  name: 'Test Stall',
+  location: 'Market A',
+  phone_number: '1234567890',
+  start_operating_time: '08:00',
+  end_operating_time: '17:00',
+  operating_days: ['Mon'],
+  latitude: 10.123,
+  longitude: 123.456,
 }
 
 vi.mock('../../lib/supabaseClient', () => ({
@@ -41,15 +39,13 @@ vi.mock('../../lib/supabaseClient', () => ({
 
 vi.mock('../../api/profile', () => ({
   getProfile: vi.fn().mockResolvedValue({
-    data: {
-      id: 'user-123',
-      name: 'Test Stall',
-      location: 'Market A',
-      phone_number: '1234567890',
-      start_operating_time: '08:00',
-      end_operating_time: '17:00',
-      operating_days: ['Mon'],
-    },
+    id: 'user-123',
+    name: 'Test Stall',
+    location: 'Market A',
+    phone_number: '1234567890',
+    start_operating_time: '08:00',
+    end_operating_time: '17:00',
+    operating_days: ['Mon'],
   }),
   updateProfile: vi.fn().mockResolvedValue({ data: {} }),
 }))
@@ -67,17 +63,15 @@ describe('EditProfile', () => {
 
   it('passes fetched lat/lng as initialLat/initialLng to MapPicker', async () => {
     getProfile.mockResolvedValueOnce({
-      data: {
-        id: 'user-123',
-        name: 'Test Stall',
-        location: 'Market A',
-        phone_number: '1234567890',
-        start_operating_time: '08:00',
-        end_operating_time: '17:00',
-        operating_days: ['Mon'],
-        latitude: 10.123,
-        longitude: 123.456,
-      },
+      id: 'user-123',
+      name: 'Test Stall',
+      location: 'Market A',
+      phone_number: '1234567890',
+      start_operating_time: '08:00',
+      end_operating_time: '17:00',
+      operating_days: ['Mon'],
+      latitude: 10.123,
+      longitude: 123.456,
     })
 
     renderEditProfile()
@@ -99,7 +93,7 @@ describe('EditProfile', () => {
 
     await waitFor(() => {
       expect(updateProfile).toHaveBeenCalled()
-      const [, , lat, lng] = updateProfile.mock.calls[0]
+      const [, , , lat, lng] = updateProfile.mock.calls[0]
       expect(lat).toBe(12.34)
       expect(lng).toBe(56.78)
     })
@@ -115,7 +109,7 @@ describe('EditProfile', () => {
 
     await waitFor(() => {
       expect(updateProfile).toHaveBeenCalled()
-      const [, , lat, lng] = updateProfile.mock.calls[0]
+      const [, , , lat, lng] = updateProfile.mock.calls[0]
       expect(lat).toBe(0)
       expect(lng).toBe(0)
     })
@@ -162,7 +156,7 @@ describe('EditProfile', () => {
 
     await waitFor(() => {
       expect(updateProfile).toHaveBeenCalled()
-      const [, , lat, lng] = updateProfile.mock.calls[0]
+      const [, , , lat, lng] = updateProfile.mock.calls[0]
       expect(lat).toBe(0)
       expect(lng).toBe(0)
     })

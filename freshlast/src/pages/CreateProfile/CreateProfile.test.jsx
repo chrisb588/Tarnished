@@ -63,7 +63,7 @@ describe('CreateProfile', () => {
 
     await waitFor(() => {
       expect(createMerchant).toHaveBeenCalled()
-      const [, , lat, lng] = createMerchant.mock.calls[0]
+      const [, , , lat, lng] = createMerchant.mock.calls[0]
       expect(lat).toBe(9.99)
       expect(lng).toBe(123.45)
     })
@@ -78,7 +78,7 @@ describe('CreateProfile', () => {
 
     await waitFor(() => {
       expect(createMerchant).toHaveBeenCalled()
-      const [, , lat, lng] = createMerchant.mock.calls[0]
+      const [, , , lat, lng] = createMerchant.mock.calls[0]
       expect(lat).toBe(0)
       expect(lng).toBe(0)
     })

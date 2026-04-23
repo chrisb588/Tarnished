@@ -33,11 +33,10 @@ export default function ViewListing() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user && data.merchant_id === user.id) setIsOwner(true);
         if (data.merchant_id) {
-          const profileResponse = await getProfile(data.merchant_id);
-          setMerchant(profileResponse.data);
+          setMerchant(await getProfile(data.merchant_id));
         }
       } catch (e) {
-        console.error('[DEBUG] fetchListing error caught:', e);
+        console.error('Failed to fetch listing:', e);
         setError('Could not load this listing.');
       }
       setIsLoading(false);
@@ -92,6 +91,10 @@ export default function ViewListing() {
                       zoom={17}
                       style={{ width: '100%', height: '100%' }}
                       attributionControl={true}
+                      dragging={false}
+                      scrollWheelZoom={false}
+                      doubleClickZoom={false}
+                      zoomControl={false}
                     >
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

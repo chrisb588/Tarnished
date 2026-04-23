@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 
 const getProfile = async (id) => {
   const response = await apiClient.get(`/profile/${id}`);
-  return response.data;
+  return response.data.data;
 };
 
 const updateProfile = async (

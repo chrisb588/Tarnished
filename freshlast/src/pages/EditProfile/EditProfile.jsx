@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import VendorHeader from "../../components/VendorHeader/VendorHeader";
@@ -20,8 +20,6 @@ export default function EditProfile({ onSave, onLogout }) {
 
   const [formData, setFormData] = useState({
     id: "",
-    emailAddress: "", // TODO: Pls remove this
-    password: "", // TODO: Pls remove this
     stallName: "",
     marketLocation: "",
     phoneNumber: "",
@@ -43,8 +41,7 @@ export default function EditProfile({ onSave, onLogout }) {
         userId = user.id;
       }
 
-      const response = await getProfile(userId);
-      const data = response.data;
+      const data = await getProfile(userId);
 
       if (data) {
         setFormData({
@@ -69,8 +66,6 @@ export default function EditProfile({ onSave, onLogout }) {
     e.preventDefault();
     setError("");
 
-    console.log("Submitting with Data:", formData);
-
     if (!formData.stallName.trim()) return setError("Stall Name is required");
     if (!formData.marketLocation.trim())
       return setError("Market Location is required");
@@ -86,12 +81,6 @@ export default function EditProfile({ onSave, onLogout }) {
     if (formData.operatingDays.length === 0)
       return setError("Please select at least one operating day");
 
-    setIsLoading(true);
-
-    if (!supabase) {
-      setIsLoading(false);
-      return;
-    }
     setIsLoading(true);
 
     try {
@@ -110,7 +99,6 @@ export default function EditProfile({ onSave, onLogout }) {
         formData.category,
       );
 
-      console.log(response);
     } catch (e) {
       setError(String(e));
       setIsLoading(false);
