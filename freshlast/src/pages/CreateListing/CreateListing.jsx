@@ -6,6 +6,15 @@ import { createListing, updateListing, deleteListing, getListingById } from '../
 
 import './CreateListing.css'
 
+function getWindowFromExpiresAt(expiresAt) {
+  if (!expiresAt) return 'ends_today';
+  const hours = (new Date(expiresAt) - new Date()) / (1000 * 60 * 60);
+  if (hours <= 24) return 'ends_today';
+  if (hours <= 48) return '1_day';
+  if (hours <= 72) return '2_days';
+  return '3_days';
+}
+
 function calculateExpiresAt(window) {
   const now = new Date();
   switch (window) {
@@ -85,7 +94,7 @@ export default function CreateListing(){
                         originalprice: listing.original_price,
                         discountedprice: listing.discounted_price,
                         image: listing.image,
-                        availabilityWindow: 'ends_today',
+                        availabilityWindow: getWindowFromExpiresAt(listing.expires_at),
                     });
                     setExistingImagePath(listing.image);
                 }

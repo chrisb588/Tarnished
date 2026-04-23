@@ -234,7 +234,11 @@ async def patch_listing(listing_id: str, body: SoldOutUpdate):
             .eq("id", listing_id)
             .execute()
         )
+        if not data.data:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Listing not found")
         return data.data[0]
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 

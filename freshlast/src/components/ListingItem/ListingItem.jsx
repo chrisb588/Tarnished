@@ -57,7 +57,7 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
           >
             Edit
           </button>
-          {onSoldOut && (
+          {onSoldOut && !isSoldOut && (
             <button
               className="sold-out-button"
               onClick={(e) => { e.stopPropagation(); onSoldOut(listing); }}

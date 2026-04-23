@@ -12,10 +12,14 @@ export default function Home({ onLogout }) {
 
   const handleSoldOut = async (listing) => {
     if (!confirm(`Mark "${listing.name}" as sold out?`)) return;
-    await markAsSoldOut(listing.id);
-    setListings(prev =>
-      prev.map(l => l.id === listing.id ? { ...l, is_sold_out: true } : l)
-    );
+    try {
+      await markAsSoldOut(listing.id);
+      setListings(prev =>
+        prev.map(l => l.id === listing.id ? { ...l, is_sold_out: true } : l)
+      );
+    } catch (error) {
+      alert("Failed to mark as sold out. Please try again.");
+    }
   };
 
   useEffect(() => {
