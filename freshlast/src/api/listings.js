@@ -74,4 +74,8 @@ const deleteListing = async (listingId) => {
   return apiClient.delete(`/listings/${listingId}`);
 };
 
-export { getAllListings, createListing, getListingsByMerchant, getListingById, updateListing, deleteListing };
+const markAsSoldOut = async (listingId) => {
+  return apiClient.patch(`/listings/${listingId}`, { is_sold_out: true });
+};
+
+export { getAllListings, createListing, getListingsByMerchant, getListingById, updateListing, deleteListing, markAsSoldOut };
