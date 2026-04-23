@@ -49,3 +49,39 @@
 .quantity{
     text-align: left;
 }
+
+.listing-border--sold-out {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.listing-border--sold-out .listing-image {
+    filter: grayscale(100%);
+}
+
+.expiry-label {
+    color: #e67e22;
+    font-size: 0.8em;
+}
+
+.sold-out-label {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.listing-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding-bottom: 8px;
+}
+
+.sold-out-button {
+    background-color: #e74c3c;
+    color: white;
+    width: 85%;
+    border: none;
+    border-radius: 350px;
+    cursor: pointer;
+}
