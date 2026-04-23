@@ -14,7 +14,7 @@ export default function EditProfile({ onSave, onLogout }) {
   const [error, setError] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-  const [location, setLocation] = useState({ lat: 0, lng: 0 });
+  const [location, setLocation] = useState(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [mapClearKey, setMapClearKey] = useState(0);
 
@@ -28,6 +28,7 @@ export default function EditProfile({ onSave, onLogout }) {
     operatingHoursStart: "",
     operatingHoursEnd: "",
     operatingDays: [],
+    category: [],
   });
 
   useEffect(() => {
@@ -54,9 +55,10 @@ export default function EditProfile({ onSave, onLogout }) {
           operatingHoursStart: data.start_operating_time || "",
           operatingHoursEnd: data.end_operating_time || "",
           operatingDays: data.operating_days || [],
+          category: data.category || [],
         });
         if (data.location_photo) setPhotoPreview(data.location_photo);
-        setLocation({ lat: data.latitude || 0, lng: data.longitude || 0 });
+        setLocation(data.latitude && data.longitude ? { lat: data.latitude, lng: data.longitude } : null);
       }
       setProfileLoaded(true);
     };
@@ -97,18 +99,21 @@ export default function EditProfile({ onSave, onLogout }) {
       const response = await updateProfile(
         formData.id,
         formData.stallName,
-        location.lat,
-        location.lng,
+        formData.phoneNumber,
+        location?.lat ?? 0,
+        location?.lng ?? 0,
         photo,
         formData.operatingHoursStart,
         formData.operatingHoursEnd,
         formData.operatingDays,
         formData.marketLocation,
+        formData.category,
       );
 
       console.log(response);
     } catch (e) {
-      setError(toString(e));
+      setError(String(e));
+      setIsLoading(false);
       return;
     }
 
@@ -129,15 +134,15 @@ export default function EditProfile({ onSave, onLogout }) {
           <>
             <MapPicker
               key={mapClearKey}
-              initialLat={location.lat}
-              initialLng={location.lng}
+              initialLat={location?.lat}
+              initialLng={location?.lng}
               onLocationChange={setLocation}
             />
-            {location.lat !== 0 && location.lng !== 0 && (
+            {location !== null && (
               <button
                 type="button"
                 onClick={() => {
-                  setLocation({ lat: 0, lng: 0 });
+                  setLocation(null);
                   setMapClearKey((k) => k + 1);
                 }}
               >

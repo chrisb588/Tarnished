@@ -3,6 +3,7 @@ import apiClient from "../lib/apiClient";
 const createMerchant = async (
   email,
   name,
+  phone_number,
   latitude,
   longitude,
   location_photo,
@@ -14,6 +15,7 @@ const createMerchant = async (
   const formData = new FormData();
   formData.append("email", email);
   formData.append("name", name);
+  formData.append("phone_number", phone_number);
   formData.append("latitude", latitude);
   formData.append("longitude", longitude);
   formData.append("location_photo", location_photo);

@@ -14,8 +14,7 @@ export default function CreateProfile() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [location, setLocation] = useState({ lat: 0, lng: 0 });
-  //const [credentials, setCredentials] = useState({ email: "goon@test.com", temp_password: "testpass" }) //dummy
+  const [location, setLocation] = useState(null);
   const [credentials, setCredentials] = useState(null) //real
   const navigate = useNavigate();
 
@@ -41,11 +40,11 @@ export default function CreateProfile() {
     if (!photo) return setError('Stall Photo is required')
     if (!formData.stallName.trim()) return setError('Stall Name is required')
     if (!formData.marketLocation.trim()) return setError('Market Location is required')
-    if (!formData.phoneNumber.trim()) return setError('Phone Number is required') 
+    if (!formData.phoneNumber.trim()) return setError('Phone Number is required')
     if (!formData.operatingHoursStart.trim() || !formData.operatingHoursEnd.trim()) return setError('Please enter your operating hours.')
     if (formData.operatingHoursStart >= formData.operatingHoursEnd) return setError('Opening time must be earlier than closing time.')
     if (formData.operatingDays.length === 0) return setError('Please select at least one operating day')
-    
+
 
     setIsLoading(true)
 
@@ -54,8 +53,9 @@ export default function CreateProfile() {
       const response = await createMerchant(
         formData.emailAddress,
         formData.stallName,
-        location.lat,
-        location.lng,
+        formData.phoneNumber,
+        location?.lat ?? 0,
+        location?.lng ?? 0,
         photo,
         formData.operatingHoursStart,
         formData.operatingHoursEnd,
@@ -67,7 +67,7 @@ export default function CreateProfile() {
       console.log(response); // TODO: Display user credentials to give to the vendor
 
       const { email, temp_password } = response.data;
-      
+
       console.log("Email:", email);
       console.log("Temp Password:", temp_password);
 

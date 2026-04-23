@@ -9,6 +9,7 @@ const getProfile = async (id) => {
 const updateProfile = async (
   id,
   name,
+  phone_number,
   latitude,
   longitude,
   location_photo,
@@ -16,10 +17,12 @@ const updateProfile = async (
   end_operating_time,
   operating_days,
   location,
+  category,
 ) => {
   const formData = new FormData();
   formData.append("id", id);
   formData.append("name", name);
+  formData.append("phone_number", phone_number);
   formData.append("latitude", latitude);
   formData.append("longitude", longitude);
   if (location_photo instanceof File) {
@@ -29,6 +32,7 @@ const updateProfile = async (
   formData.append("end_operating_time", end_operating_time);
   formData.append("operating_days", JSON.stringify(operating_days));
   formData.append("location", location);
+  formData.append("category", JSON.stringify(category));
   return await apiClient.put(`/profile/${id}`, formData);
 };
 
