@@ -131,7 +131,7 @@ export default function EditProfile({ onSave, onLogout }) {
         {/* ... subtitle ... */}
 
         {profileLoaded && (
-          <>
+          <div className="edit-profile__map-section">
             <MapPicker
               key={mapClearKey}
               initialLat={location?.lat}
@@ -141,6 +141,7 @@ export default function EditProfile({ onSave, onLogout }) {
             {location !== null && (
               <button
                 type="button"
+                className="edit-profile__clear-pin-btn"
                 onClick={() => {
                   setLocation(null);
                   setMapClearKey((k) => k + 1);
@@ -149,7 +150,7 @@ export default function EditProfile({ onSave, onLogout }) {
                 Clear pin
               </button>
             )}
-          </>
+          </div>
         )}
         <ProfileForm
           isCreating={false}
