@@ -6,6 +6,21 @@ import { createListing, updateListing, deleteListing, getListingById } from '../
 
 import './CreateListing.css'
 
+function calculateExpiresAt(window) {
+  const now = new Date();
+  switch (window) {
+    case 'ends_today': {
+      const endOfDay = new Date(now);
+      endOfDay.setHours(23, 59, 59, 999);
+      return endOfDay.toISOString();
+    }
+    case '1_day': return new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    case '2_days': return new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString();
+    case '3_days': return new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    default: return null;
+  }
+}
+
 const validateForm = (formData) => {
     console.log(formData)
     const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
@@ -48,6 +63,7 @@ export default function CreateListing(){
         type: "vegetable",
         originalprice: 0,
         discountedprice: 0,
+        availabilityWindow: 'ends_today',
     });
 
     const [merchantId, setMerchantId] = useState(null);
@@ -69,6 +85,7 @@ export default function CreateListing(){
                         originalprice: listing.original_price,
                         discountedprice: listing.discounted_price,
                         image: listing.image,
+                        availabilityWindow: 'ends_today',
                     });
                     setExistingImagePath(listing.image);
                 }
@@ -110,6 +127,8 @@ export default function CreateListing(){
 
         setIsSubmitting(true);
         try {
+            const expiresAt = calculateExpiresAt(formData.availabilityWindow);
+
             if (isCreating) {
                 await createListing(
                     merchantId,
@@ -120,6 +139,7 @@ export default function CreateListing(){
                     formData.unit,
                     formData.quantity,
                     formData.type,
+                    expiresAt,
                 );
             } else {
                 await updateListing(
@@ -132,6 +152,7 @@ export default function CreateListing(){
                     formData.unit,
                     formData.quantity,
                     formData.type,
+                    expiresAt,
                 );
             }
             navigate('/dashboard');

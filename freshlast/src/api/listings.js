@@ -9,6 +9,7 @@ const createListing = async (
   unit,
   quantity,
   type,
+  expiresAt,
 ) => {
   const formData = new FormData();
   formData.append("merchant_id", merchantId);
@@ -21,6 +22,7 @@ const createListing = async (
   formData.append("unit", unit);
   formData.append("quantity", quantity);
   if (type) formData.append("type", type);
+  if (expiresAt) formData.append("expires_at", expiresAt);
 
   return apiClient.post("/listings", formData);
 };
@@ -50,6 +52,7 @@ const updateListing = async (
   unit,
   quantity,
   type,
+  expiresAt,
 ) => {
   const formData = new FormData();
   formData.append("merchant_id", merchantId);
@@ -62,6 +65,7 @@ const updateListing = async (
   formData.append("unit", unit);
   formData.append("quantity", quantity);
   if (type) formData.append("type", type);
+  if (expiresAt) formData.append("expires_at", expiresAt);
 
   return apiClient.put(`/listings/${listingId}`, formData);
 };
