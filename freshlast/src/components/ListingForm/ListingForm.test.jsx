@@ -63,4 +63,33 @@ describe('ListingForm', () => {
 
     expect(handleChange).toHaveBeenCalled()
   })
+
+  it('renders the availability window dropdown', () => {
+    render(
+      <ListingForm
+        formData={{ ...baseFormData, availabilityWindow: 'ends_today' }}
+        setFormData={() => {}}
+        handleChange={() => {}}
+        handleFileUpload={() => {}}
+      />
+    )
+    expect(screen.getByLabelText('How long will this be available?')).toBeInTheDocument()
+  })
+
+  it('calls handleChange when the availability window select is changed', async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+
+    render(
+      <ListingForm
+        formData={{ ...baseFormData, availabilityWindow: 'ends_today' }}
+        setFormData={() => {}}
+        handleChange={handleChange}
+        handleFileUpload={() => {}}
+      />
+    )
+
+    await user.selectOptions(screen.getByLabelText('How long will this be available?'), '1_day')
+    expect(handleChange).toHaveBeenCalled()
+  })
 })
