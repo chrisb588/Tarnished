@@ -31,13 +31,13 @@ export default function ViewListing() {
         const data = await getListingById(id);
         setListing(data);
         const { data: { user } } = await supabase.auth.getUser();
-        if (user && data.merchant === user.id) setIsOwner(true);
-        if (data.merchant) {
-          const profileResponse = await getProfile(data.merchant);
+        if (user && data.merchant_id === user.id) setIsOwner(true);
+        if (data.merchant_id) {
+          const profileResponse = await getProfile(data.merchant_id);
           setMerchant(profileResponse.data);
         }
       } catch (e) {
-        console.error('Failed to fetch listing:', e);
+        console.error('[DEBUG] fetchListing error caught:', e);
         setError('Could not load this listing.');
       }
       setIsLoading(false);
@@ -79,7 +79,7 @@ export default function ViewListing() {
 
             <div className="view-listing-info">
                 {/*TO DO: CLICKING ON THE MERCHANT'S NAME TAKES U TO THEIR PROFILE */}
-                <h1 className="merchant-label">{merchant ? merchant.name : `${listing.merchant}`}</h1>
+                <h1 className="merchant-label">{merchant ? merchant.name : `${listing.merchant_id}`}</h1>
                 <p className="stall-photo-label">Stall Photo:</p>
                 <div className="merchant-stall-image">
                 {merchant?.location_photo && <img src={merchant.location_photo} alt="Stall" />}
@@ -91,10 +91,6 @@ export default function ViewListing() {
                       center={[merchant.latitude, merchant.longitude]}
                       zoom={17}
                       style={{ width: '100%', height: '100%' }}
-                      dragging={false}
-                      scrollWheelZoom={false}
-                      doubleClickZoom={false}
-                      zoomControl={false}
                       attributionControl={true}
                     >
                       <TileLayer

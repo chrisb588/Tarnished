@@ -98,7 +98,9 @@ export default function CreateProfile() {
           </div>
         )}
 
-        <MapPicker onLocationChange={setLocation} />
+        <div className="edit-profile__map-section">
+          <MapPicker onLocationChange={setLocation} />
+        </div>
         <ProfileForm
           isCreating={true}
           formData={formData}
