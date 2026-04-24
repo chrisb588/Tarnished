@@ -61,7 +61,7 @@ def test_create_listing_success(client):
     assert data["quantity"] == 67
     assert data["type"] == "vegetable"
     assert "image" in data
-    assert data["expires_at"] == "2026-12-31T00:00:00"
+    assert data["expires_at"] == "2026-12-31T00:00:00+00:00"
     assert data["is_sold_out"] == False
 
 
