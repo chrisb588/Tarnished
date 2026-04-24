@@ -1,13 +1,18 @@
 # API ROUTES ACCESSIBLE ON THE ADMIN CLIENT
 
 import json
+import os
 import re
-from datetime import time
+from datetime import datetime, time, timedelta
 from uuid import UUID, uuid4
 
+import jwt
 import passgen
 from core.supabase import supabase_admin
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from dotenv import load_dotenv
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from middleware.auth_middleware import verify_admin
+from models.admin_credentials import AdminCredentials
 from models.enums.category import Category
 from models.enums.weekday import Weekday
 from models.ph_phone import PhPhone
@@ -15,6 +20,35 @@ from models.profile import Merchant
 from pydantic import EmailStr
 
 router = APIRouter()
+load_dotenv()
+
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+ADMIN_JWT_SECRET = os.getenv("ADMIN_JWT_SECRET")
+
+
+# Authenticates an admin user to be able to access the admin endpoints
+@router.post("/auth/login", tags=["Admin"])
+async def login_admin(credentials: AdminCredentials):
+    print(ADMIN_USERNAME, ADMIN_PASSWORD)
+    if credentials.username != ADMIN_USERNAME or credentials.password != ADMIN_PASSWORD:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid admin credentials"
+        )
+
+    token = jwt.encode(
+        {"sub": "admin", "exp": datetime.now() + timedelta(hours=1)},
+        ADMIN_JWT_SECRET,
+        algorithm="HS256",
+    )
+
+    return {"access_token": token}
+
+
+# Checks if the admin's JWT token is still valid
+@router.get("/auth/verify", tags=["Admin"])
+async def is_admin_authenticated(_: None = Depends(verify_admin)):
+    return {"valid": True}
 
 
 # Create a merchant account
@@ -31,6 +65,7 @@ async def create_merchant(
     location: str = Form(...),
     location_photo: UploadFile = File(...),
     category: str = Form(...),
+    _: None = Depends(verify_admin),
 ):
     # Add a layer of validation of location photo to verify it is indeed an image file
     IMAGE_MIME_PATTERN = re.compile(r"^image/.+$")
@@ -144,7 +179,9 @@ async def create_merchant(
 
 # Get all merchant accounts
 @router.get("/merchants", tags=["Admin"])
-def get_all_merchants():
+def get_all_merchants(
+    _: None = Depends(verify_admin),
+):
     try:
         return supabase_admin.table("merchant").select("*").execute().data
     except Exception as e:
@@ -155,7 +192,10 @@ def get_all_merchants():
 
 # Delete a merchant account
 @router.delete("/delete/{id}", tags=["Admin"])
-def delete_merchant(id: str):
+def delete_merchant(
+    id: str,
+    _: None = Depends(verify_admin),
+):
     try:
         # Retrieve all uploaded images from the vendor
         files = supabase_admin.storage.from_("media").list(id)
