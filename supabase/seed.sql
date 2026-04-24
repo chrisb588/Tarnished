@@ -163,7 +163,8 @@ BEGIN
     image,
     unit,
     quantity,
-    type
+    type,
+    is_sold_out
   )
   VALUES (
     listing_id,
@@ -174,6 +175,7 @@ BEGIN
     photo_url,
     'kg',
     10,
-    'vegetable'
+    'vegetable',
+    FALSE
   );
 END $$;
