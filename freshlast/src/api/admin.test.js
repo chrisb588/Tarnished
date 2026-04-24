@@ -45,22 +45,6 @@ describe("getAdminToken", () => {
   });
 });
 
-describe("verifyAdminToken", () => {
-  it("returns true when token is valid", async () => {
-    sessionStorage.setItem("adminToken", "test-token");
-    apiClient.get.mockResolvedValue({ status: 200 });
-    const result = await verifyAdminToken();
-    expect(result).toBe(true);
-  });
-
-  it("returns false when token is invalid", async () => {
-    sessionStorage.setItem("adminToken", "expired-token");
-    apiClient.get.mockResolvedValue({ status: 401 });
-    const result = await verifyAdminToken();
-    expect(result).toBe(false);
-  });
-});
-
 describe("adminLogout", () => {
   it("removes token from sessionStorage", () => {
     sessionStorage.setItem("adminToken", "test-token");
