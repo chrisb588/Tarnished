@@ -10,8 +10,9 @@ import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import CreateProfile from "./pages/CreateProfile/CreateProfile";
-import ViewListing from "./pages/ViewListing/ViewListing"
+import ViewListing from "./pages/ViewListing/ViewListing";
 import "./App.css";
+import { adminLogin, getAdminToken, verifyAdminToken } from "./api/admin";
 
 export default function App() {
   const [session, setSession] = useState(undefined);
@@ -19,6 +20,8 @@ export default function App() {
   const [profileComplete, setProfileComplete] = useState(null); // null = still checking
   const [verifying, setVerifying] = useState(false);
   const [authError, setAuthError] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false); // Keeps track if admin user is currently authenticated
+  const [verifyingAdmin, setVerifyingAdmin] = useState(true); // Loading state of admin user verification
 
   const checkPasswordFlag = (user) => {
     if (user?.user_metadata?.password_changed === false) {
@@ -84,6 +87,26 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Verify JWT token upon loading the app
+  // to authenticate admin user
+  useEffect(() => {
+    const checkIfIsAdmin = async () => {
+      await adminLogin("admin", "1234567890");
+
+      const token = getAdminToken();
+      if (!token) {
+        setVerifyingAdmin(false);
+        return;
+      }
+
+      const valid = await verifyAdminToken();
+      setIsAdmin(valid);
+      setVerifyingAdmin(false);
+    };
+
+    checkIfIsAdmin();
+  }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setSession(null);
@@ -91,7 +114,7 @@ export default function App() {
     setProfileComplete(null);
   };
 
-  if (session === undefined || verifying) {
+  if (session === undefined || verifying || verifyingAdmin) {
     return (
       <div style={{ display: "grid", placeItems: "center", height: "100vh" }}>
         Loading...
@@ -124,12 +147,18 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<OfferList session={session} onLogout={handleLogout} />} />
+        <Route
+          path="/"
+          element={<OfferList session={session} onLogout={handleLogout} />}
+        />
         <Route path="/create" element={<CreateListing />} />
         <Route path="/edit/:id" element={<CreateListing />} />
-        <Route path="/viewListing/:id" element={<ViewListing/>} />
+        <Route path="/viewListing/:id" element={<ViewListing />} />
         <Route path="/changePass" element={<ChangePassword />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/admin"
+          element={!isAdmin ? <Navigate to="/" replace /> : <AdminDashboard />}
+        />
         <Route
           path="/editProfile/:id"
           element={
@@ -140,10 +169,16 @@ export default function App() {
             )
           }
         />
-        <Route path="/createProfile" element={<CreateProfile />} />
+        <Route
+          path="/createProfile"
+          element={!isAdmin ? <Navigate to="/" replace /> : <CreateProfile />}
+        />
 
         {/* PUBLIC */}
-        <Route path="/offers" element={<OfferList session={session} onLogout={handleLogout} />} />
+        <Route
+          path="/offers"
+          element={<OfferList session={session} onLogout={handleLogout} />}
+        />
 
         {/* VENDOR DASHBOARD */}
         <Route
@@ -152,7 +187,15 @@ export default function App() {
             !isLoggedIn ? (
               <Navigate to="/" replace />
             ) : profileComplete === null ? (
-              <div style={{ display: "grid", placeItems: "center", height: "100vh" }}>Loading...</div>
+              <div
+                style={{
+                  display: "grid",
+                  placeItems: "center",
+                  height: "100vh",
+                }}
+              >
+                Loading...
+              </div>
             ) : !profileComplete ? (
               <Navigate to="/profile" replace />
             ) : (
