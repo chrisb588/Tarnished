@@ -1,7 +1,7 @@
 import io
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
 from dotenv import load_dotenv
@@ -71,6 +71,8 @@ def test_is_admin_authenticated_invalid_token(client):
         headers={"Authorization": "Bearer not-the-correct-token"},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Invalid token"
 
 
 def test_is_admin_authenticated_invalid_header(client):
@@ -79,6 +81,8 @@ def test_is_admin_authenticated_invalid_header(client):
         headers={"Some-Header": f"Bearer {generate_test_admin_token()}"},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
 
 def test_is_admin_authenticated_no_bearer_prefix(client):
@@ -87,6 +91,8 @@ def test_is_admin_authenticated_no_bearer_prefix(client):
         headers={"Authorization": generate_test_admin_token()},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
 
 def test_is_admin_authenticated_no_token(client):
@@ -94,6 +100,20 @@ def test_is_admin_authenticated_no_token(client):
         "/api/admin/auth/verify",
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
+
+
+def test_is_admin_authenticated_expired_token(client):
+    response = client.get(
+        "/api/admin/auth/verify",
+        headers={
+            "Authorization": f"Bearer {generate_test_admin_token(exp_timedelta=timedelta(seconds=-1))}"
+        },
+    )
+    assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Token expired"
 
 
 def test_create_merchant_success(client):
@@ -680,6 +700,8 @@ def test_create_merchant_no_headers(client):
         },
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
 
 def test_create_merchant_invalid_headers(client):
@@ -708,6 +730,8 @@ def test_create_merchant_invalid_headers(client):
         headers={"Some-Header": f"Bearer {generate_test_admin_token()}"},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
     # No bearer prefix
     response = client.post(
@@ -734,6 +758,68 @@ def test_create_merchant_invalid_headers(client):
         headers={"Authorization": generate_test_admin_token()},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
+
+
+def test_create_merchant_invalid_token(client):
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "email@example.com",
+            "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "location": "Cebu City",
+            "category": json.dumps(["vegetable"]),
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+        headers={"Authorization": "Bearer not-the-correct-token"},
+    )
+    assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Invalid token"
+
+
+def test_create_merchant_expired_token(client):
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "email@example.com",
+            "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "location": "Cebu City",
+            "category": json.dumps(["vegetable"]),
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+        headers={
+            "Authorization": f"Bearer {generate_test_admin_token(exp_timedelta=timedelta(seconds=-1))}"
+        },
+    )
+    assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Token expired"
 
 
 def test_delete_merchant_success(client):
@@ -813,6 +899,8 @@ def test_delete_merchant_no_headers(client):
         f"/api/admin/delete/{user['uuid']}",
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
 
 def test_delete_merchant_invalid_headers(client):
@@ -849,6 +937,8 @@ def test_delete_merchant_invalid_headers(client):
         headers={"Some-Header": f"Bearer {generate_test_admin_token()}"},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
     # No bearer prefix
     response = client.delete(
@@ -856,6 +946,84 @@ def test_delete_merchant_invalid_headers(client):
         headers={"Authorization": generate_test_admin_token()},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
+
+
+def test_delete_merchant_invalid_token(client):
+    # Create the user first
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "email@example.com",
+            "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "location": "Cebu City",
+            "category": json.dumps(["vegetable"]),
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+        headers={"Authorization": f"Bearer {generate_test_admin_token()}"},
+    )
+    assert response.status_code == 200
+    user = response.json()
+
+    response = client.delete(
+        f"/api/admin/delete/{user['uuid']}",
+        headers={"Authorization": "Bearer not-the-correct-token"},
+    )
+    assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Invalid token"
+
+
+def test_delete_merchant_expired_token(client):
+    # Create the user first
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "email@example.com",
+            "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "start_operating_time": "08:00:00",
+            "end_operating_time": "17:00:00",
+            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "location": "Cebu City",
+            "category": json.dumps(["vegetable"]),
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+        headers={"Authorization": f"Bearer {generate_test_admin_token()}"},
+    )
+    assert response.status_code == 200
+    user = response.json()
+
+    response = client.delete(
+        f"/api/admin/delete/{user['uuid']}",
+        headers={
+            "Authorization": f"Bearer {generate_test_admin_token(exp_timedelta=timedelta(seconds=-1))}"
+        },
+    )
+    assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Token expired"
 
 
 def test_get_all_merchants_success(client):
@@ -888,6 +1056,8 @@ def test_get_all_merchants_no_headers(client):
         "/api/admin/merchants",
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
 
 def test_get_all_merchants_invalid_headers(client):
@@ -897,6 +1067,8 @@ def test_get_all_merchants_invalid_headers(client):
         headers={"Some-Header": f"Bearer {generate_test_admin_token()}"},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
     # No bearer prefix
     response = client.get(
@@ -904,11 +1076,35 @@ def test_get_all_merchants_invalid_headers(client):
         headers={"Authorization": generate_test_admin_token()},
     )
     assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Not authenticated"
 
 
-def generate_test_admin_token():
+def test_get_all_merchants_invalid_token(client):
+    response = client.get(
+        "/api/admin/merchants",
+        headers={"Authorization": "Bearer not-the-correct-token"},
+    )
+    assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Invalid token"
+
+
+def test_get_all_merchants_expired_token(client):
+    response = client.get(
+        "/api/admin/merchants",
+        headers={
+            "Authorization": f"Bearer {generate_test_admin_token(exp_timedelta=timedelta(seconds=-1))}"
+        },
+    )
+    assert response.status_code == 401
+    data = response.json()
+    assert data["detail"] == "Token expired"
+
+
+def generate_test_admin_token(exp_timedelta: timedelta = timedelta(hours=1)):
     return jwt.encode(
-        {"sub": "admin", "exp": datetime.now() + timedelta(hours=1)},
+        {"sub": "admin", "exp": datetime.now(timezone.utc) + exp_timedelta},
         os.getenv("ADMIN_JWT_SECRET", ""),
         algorithm="HS256",
     )
