@@ -30,7 +30,6 @@ ADMIN_JWT_SECRET = os.getenv("ADMIN_JWT_SECRET")
 # Authenticates an admin user to be able to access the admin endpoints
 @router.post("/auth/login", tags=["Admin"])
 async def login_admin(credentials: AdminCredentials):
-    print(ADMIN_USERNAME, ADMIN_PASSWORD)
     if credentials.username != ADMIN_USERNAME or credentials.password != ADMIN_PASSWORD:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid admin credentials"
