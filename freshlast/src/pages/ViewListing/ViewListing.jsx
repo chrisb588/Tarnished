@@ -63,7 +63,7 @@ export default function ViewListing() {
             <div className="view-listing-info">
             <h1 className="view-listing-name">{listing.name} </h1>
             <div className="view-listing-add-info">
-              <p className="view-listing-type">Type{listing.type}</p>
+              <p className="view-listing-type">Type: {listing.type}</p>
               <p className="view-listing-info-sep">-</p>
               <p className="view-listing-quantity">{listing.quantity} {listing.unit}</p>
             </div>
