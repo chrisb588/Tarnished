@@ -1,5 +1,6 @@
 import io
 
+
 def test_patch_listing_success(client):
     response = client.patch(
         "/api/listings/11111111-1111-1111-1111-111111111112",
@@ -18,12 +19,13 @@ def test_patch_listing_unprocessable_payload(client):
     )
     assert response.status_code == 422
 
+
 def test_patch_listing_not_found(client):
-      response = client.patch(
-          "/api/listings/11111111-1111-1111-1111-111111111113",
-          json={"is_sold_out": True},
-      )
-      assert response.status_code == 404
+    response = client.patch(
+        "/api/listings/11111111-1111-1111-1111-111111111113",
+        json={"is_sold_out": True},
+    )
+    assert response.status_code == 404
 
 
 def test_create_listing_success(client):
@@ -64,6 +66,27 @@ def test_create_listing_success(client):
 
 
 def test_create_listing_unprocessable_payload(client):
+    # Test invalid merchant_id
+    response = client.post(
+        "/api/listings",
+        data={
+            "merchant_id": "not-merchant-id",
+            "name": "Test Listing",
+            "original_price": 100,
+            "discounted_price": 80,
+            "unit": "kg",
+            "quantity": 67,
+            "type": "vegetable",
+        },
+        files={
+            "image": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+    )
+    assert response.status_code == 422
     # Test invalid expires_at
     response = client.post(
         "/api/listings",
@@ -516,6 +539,28 @@ def test_update_listing_success(client):
 
 
 def test_update_listing_unprocessable_payload(client):
+    # Test invalid merchant_id
+    response = client.put(
+        "/api/listings/11111111-1111-1111-1111-111111111112",
+        data={
+            "merchant_id": "not-merchant-id",
+            "name": "Test Listing",
+            "original_price": 100,
+            "discounted_price": 80,
+            "unit": "kg",
+            "quantity": 67,
+            "type": "vegetable",
+        },
+        files={
+            "image": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+    )
+    assert response.status_code == 422
+
     # Test invalid expires_at
     response = client.put(
         "/api/listings/11111111-1111-1111-1111-111111111112",
