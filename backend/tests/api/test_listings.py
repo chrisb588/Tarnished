@@ -1,5 +1,30 @@
 import io
 
+def test_patch_listing_success(client):
+    response = client.patch(
+        "/api/listings/11111111-1111-1111-1111-111111111112",
+        json={"is_sold_out": True},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["is_sold_out"] == True
+
+
+def test_patch_listing_unprocessable_payload(client):
+    # is_sold_out must be True (Literal[True]) — False should be rejected
+    response = client.patch(
+        "/api/listings/11111111-1111-1111-1111-111111111112",
+        json={"is_sold_out": False},
+    )
+    assert response.status_code == 422
+
+def test_patch_listing_not_found(client):
+      response = client.patch(
+          "/api/listings/11111111-1111-1111-1111-111111111113",
+          json={"is_sold_out": True},
+      )
+      assert response.status_code == 404
+
 
 def test_create_listing_success(client):
     response = client.post(
@@ -12,6 +37,7 @@ def test_create_listing_success(client):
             "unit": "kg",
             "quantity": 67,
             "type": "vegetable",
+            "expires_at": "2026-12-31T00:00:00",
         },
         files={
             "image": (
@@ -33,20 +59,23 @@ def test_create_listing_success(client):
     assert data["quantity"] == 67
     assert data["type"] == "vegetable"
     assert "image" in data
+    assert data["expires_at"] == "2026-12-31T00:00:00"
+    assert data["is_sold_out"] == False
 
 
 def test_create_listing_unprocessable_payload(client):
-    # Test invalid merchant id
+    # Test invalid expires_at
     response = client.post(
         "/api/listings",
         data={
-            "merchant_id": "invalid-uuid",
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
             "name": "Test Listing",
             "original_price": 100,
             "discounted_price": 80,
             "unit": "kg",
             "quantity": 67,
             "type": "vegetable",
+            "expires_at": "not-a-date",
         },
         files={
             "image": (
@@ -318,6 +347,30 @@ def test_create_listing_incomplete_payload(client):
     )
     assert response.status_code == 422
 
+    # No expires_at (optional, defaults to None)
+    response = client.post(
+        "/api/listings",
+        data={
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
+            "name": "Test Listing",
+            "original_price": 100,
+            "discounted_price": 80,
+            "unit": "kg",
+            "quantity": 67,
+            "type": "vegetable",
+        },
+        files={
+            "image": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["expires_at"] is None
+
     # No image
     response = client.post(
         "/api/listings",
@@ -350,6 +403,8 @@ def test_get_listing_success(client):
     assert data["unit"] == "kg"
     assert data["quantity"] == 10
     assert data["type"] == "vegetable"
+    assert data["expires_at"] is None
+    assert data["is_sold_out"] == False
 
 
 def test_get_listing_when_not_found(client):
@@ -377,6 +432,8 @@ def test_get_listings_by_merchant_success(client):
     assert data["unit"] == "kg"
     assert data["quantity"] == 10
     assert data["type"] == "vegetable"
+    assert data["expires_at"] is None
+    assert data["is_sold_out"] == False
 
 
 def test_get_listings_by_merchant_when_not_found(client):
@@ -418,6 +475,8 @@ def test_get_all_listings_success(client):
     assert data["unit"] == "kg"
     assert data["quantity"] == 10
     assert data["type"] == "vegetable"
+    assert data["expires_at"] is None
+    assert data["is_sold_out"] == False
 
 
 def test_update_listing_success(client):
@@ -452,20 +511,23 @@ def test_update_listing_success(client):
     assert data["quantity"] == 10
     assert data["type"] == "vegetable"
     assert "image" in data
+    assert data["expires_at"] is None
+    assert data["is_sold_out"] == False
 
 
 def test_update_listing_unprocessable_payload(client):
-    # Test invalid merchant id
+    # Test invalid expires_at
     response = client.put(
         "/api/listings/11111111-1111-1111-1111-111111111112",
         data={
-            "merchant_id": "invalid-uuid",
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
             "name": "Test Listing",
             "original_price": 100,
             "discounted_price": 80,
             "unit": "kg",
             "quantity": 67,
             "type": "vegetable",
+            "expires_at": "not-a-date",
         },
         files={
             "image": (
@@ -737,6 +799,30 @@ def test_update_listing_incomplete_payload(client):
         },
     )
     assert response.status_code == 422
+
+    # No expires_at (optional, defaults to None)
+    response = client.put(
+        "/api/listings/11111111-1111-1111-1111-111111111112",
+        data={
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
+            "name": "Test Listing",
+            "original_price": 100,
+            "discounted_price": 80,
+            "unit": "kg",
+            "quantity": 67,
+            "type": "vegetable",
+        },
+        files={
+            "image": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["expires_at"] is None
 
     # No image
     response = client.put(

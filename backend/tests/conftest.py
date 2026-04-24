@@ -59,6 +59,8 @@ SEEDED_DATA = {
             "unit": "kg",
             "quantity": 10,
             "type": "vegetable",
+            "expires_at": None,
+            "is_sold_out": False,
         }
     ],
     # "other_table": [ ... ]
