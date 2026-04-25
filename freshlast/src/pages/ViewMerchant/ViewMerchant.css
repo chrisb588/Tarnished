@@ -1,0 +1,60 @@
+body {
+    display: block;
+    background-color: var(--color-white);
+    color: var(--color-text);
+  }
+
+.offerlist {
+    min-height: 100vh;
+    background-color: var(--color-white);    
+}
+
+.viewmerchant-content {
+    width: 100%;
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+
+
+/* Title */
+.viewmerchant-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 1.25rem; 
+  }
+  
+  /* Grid */
+  .viewmerchant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .viewmerchant-status {
+    color: var(--color-text-muted);
+    padding: 2rem 0;
+    font-size: 1rem;
+  }
+
+  .viewmerchant-info {
+    min-width: fit-content;
+  }
+
+  
+  @media (max-width: 640px) {
+    .viewmerchant-grid {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    .viewmerchant-content {
+        width: 100%;
+        display: flex;
+        padding: 0.5rem;
+        flex-direction: column;
+    }
+  }
+  

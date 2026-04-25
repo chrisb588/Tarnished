@@ -1,0 +1,117 @@
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import ListingItem from '../../components/ListingItem/ListingItem.jsx'
+import AuthModal from '../../components/AuthModal/AuthModal.jsx'
+import { getAllListings } from '../../api/listings'
+import MerchantInfo from '../../components/MerchantInfo/MerchantInfo.jsx'
+import './ViewMerchant.css'
+
+
+function SearchIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.3-4.3"/>
+    </svg>
+  )
+}
+
+
+const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Beef', 'Pork', 'Chicken', 'Seafood']
+
+export default function ViewMerchant({ session, onLogout }) {
+  const navigate = useNavigate()
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [listings, setListings] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      setIsLoading(true)
+      try {
+        const data = await getAllListings()
+        setListings(data || [])
+      } catch (e) {
+        console.error('Failed to fetch listings:', e)
+      }
+      setIsLoading(false)
+    }
+    fetchListings()
+  }, [])
+
+  const filteredListings = listings.filter(listing => {
+    const matchesCategory = selectedCategory === 'All' || listing.category === selectedCategory
+    const matchesSearch = listing.name.toLowerCase().includes(searchQuery.toLowerCase())
+    return matchesCategory && matchesSearch
+  })
+
+  return (
+    <div className="offerlist">
+      <header className="offerlist__header">
+
+        {/* Colored Logo */}
+        <div className="offerlist__logo">
+          <span className="offerlist__logo--green">Fr</span>
+          <span className="offerlist__logo--orange">è</span>
+          <span className="offerlist__logo--green">shL</span>
+          <span className="offerlist__logo--orange">a</span>
+          <span className="offerlist__logo--green">st</span>
+        </div>
+
+        <div className="offerlist__search">
+          <input
+            type="text"
+            className="offerlist__search-input"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button className="offerlist__search-btn" aria-label="Search">
+            <SearchIcon />
+          </button>
+        </div>
+
+        {session ? (
+          <div className="offerlist__header-actions">
+            <Link to="/dashboard" className="offerlist__login-btn">My Listings</Link>
+            <button className="offerlist__login-btn" onClick={onLogout}>
+              Log Out
+            </button>
+          </div>
+        ) : (
+          <button className="offerlist__login-btn" onClick={() => setShowLoginModal(true)}>
+            Log in to Sell
+          </button>
+        )}
+      </header>
+
+      <main className="viewmerchant-content">
+        <div className='viewmerchant-info'>
+            <MerchantInfo/>
+        </div>
+
+        <div className="viewmerchant-listings">
+            {isLoading ? (
+            <p className="viewmerchant-status">Loading listings...</p>
+            ) : filteredListings.length > 0 ? (
+            <div className="viewmerchant-grid">
+                {filteredListings.map(listing => (
+                <ListingItem 
+                key={listing.id} 
+                listing={listing} 
+                showEdit={false} 
+                onSelect={(listing) => navigate(`/viewListing/${listing.id}`)}
+                />
+                ))}
+            </div>
+            ) : (
+            <p className="viewmerchant-status">No products found</p>
+            )}
+        </div>
+      </main>
+    </div>
+  )
+}
