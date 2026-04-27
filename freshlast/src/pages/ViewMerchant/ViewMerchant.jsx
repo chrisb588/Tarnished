@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
-import AuthModal from '../../components/AuthModal/AuthModal.jsx'
 import { getAllListings } from '../../api/listings'
 import MerchantInfo from '../../components/MerchantInfo/MerchantInfo.jsx'
+import CategoryFilter from '../../components/CategoryFilter/CategoryFilter.jsx'
 import './ViewMerchant.css'
+import { supabase } from '../../lib/supabaseClient.jsx'
 
 
 function SearchIcon() {
@@ -17,23 +19,80 @@ function SearchIcon() {
 }
 
 
-const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Beef', 'Pork', 'Chicken', 'Seafood']
-
-export default function ViewMerchant({ session, onLogout }) {
+export default function ViewMerchant() {
   const navigate = useNavigate()
-  const [showLoginModal, setShowLoginModal] = useState(false)
-  const [showFilters, setShowFilters] = useState(false)
+  const { id: paramId } = useParams();
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [listings, setListings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const [merchantData, setMerchantData] = useState(
+    {
+      id: "",
+      stallName: "",
+      marketLocation: "",
+      phoneNumber: "",
+      //to do: this becomes an array
+      operatingHoursStart: "",
+      operatingHoursEnd: "",
+      operatingDays: [],
+      category: [],
+    }
+  )
+
+  useEffect(() => 
+  {
+    const fetchProfile = async () => {
+      if(!supabase) return
+      let userId = paramId;
+      if (!userId) {
+        const
+        {
+          data: {user},
+        } = await supabase.auth.getUser();
+        if (!user) { setError("User details cannot be retrieved"); return; }
+        userId = user.id;
+      }
+
+      const data = await getProfile(userId);
+
+      if (data) {
+        setMerchantData({
+          id: data.id || "",
+          stallName: data.name || "",
+          marketLocation: data.location || "",
+          phoneNumber: data.phone_number || "",
+          operatingHoursStart: data.start_operating_time || "",
+          operatingHoursEnd: data.end_operating_time || "",
+          operatingDays: data.operating_days || [],
+          category: data.category || [],
+          location_photo: data.location_photo || "",
+          location: data.latitude && data.longitude 
+          ? { lat: data.latitude, lng: data.longitude } 
+          : null,
+        });
+      }
+      setIsLoading(false)
+    }
+    fetchProfile();
+  }, [paramId]
+)
+
   useEffect(() => {
     const fetchListings = async () => {
       setIsLoading(true)
       try {
-        const data = await getAllListings()
-        setListings(data || [])
+        const {data: { user }} = await supabase.auth.getUser()
+
+        if (user) {
+          const response = await fetch(`http://localhost:8000/listings?merchant_id=${user.id}`)
+
+          if (!response.ok) throw new Error("Failed to fetch")
+
+          const data = await response.json()
+          setListings(data)
+        }
       } catch (e) {
         console.error('Failed to fetch listings:', e)
       }
@@ -73,27 +132,22 @@ export default function ViewMerchant({ session, onLogout }) {
             <SearchIcon />
           </button>
         </div>
-
-        {session ? (
-          <div className="offerlist__header-actions">
-            <Link to="/dashboard" className="offerlist__login-btn">My Listings</Link>
-            <button className="offerlist__login-btn" onClick={onLogout}>
-              Log Out
-            </button>
-          </div>
-        ) : (
-          <button className="offerlist__login-btn" onClick={() => setShowLoginModal(true)}>
-            Log in to Sell
-          </button>
-        )}
       </header>
 
       <main className="viewmerchant-content">
         <div className='viewmerchant-info'>
-            <MerchantInfo/>
+            <MerchantInfo
+              formData ={merchantData}
+            />
         </div>
 
-        <div className="viewmerchant-listings">
+        <div className="viewmerchant-listings"> 
+          <div className="viewmerchant-categories">
+            {/*TO DO: Make these clickable/filterable*/}
+            <CategoryFilter name="Vegetables" />
+            <CategoryFilter name="Chicken" />
+            <CategoryFilter name="Seafood" />
+          </div>
             {isLoading ? (
             <p className="viewmerchant-status">Loading listings...</p>
             ) : filteredListings.length > 0 ? (

@@ -1,9 +1,24 @@
 import './MerchantInfo.css'
 
-export default function MerchantInfo() {
+export default function MerchantInfo({formData}) {
+    const [photoPreview, setPhotoPreview] = useState(null)
+
+    const {
+        id, 
+        stallName, 
+        marketLocation, 
+        phoneNumber, 
+        operatingHoursStart, 
+        operatingHoursEnd,
+        operatingDays,
+        category,
+        location_photo,
+        location,
+    } = data
+
     return (
         <div className="merchantinfo-container">
-            <h3 className="merchantinfo-name">MERCHANT NAME</h3>
+            <h3 className="merchantinfo-name">{formData.name}</h3>
             <div className="merchantinfo-photo">
                 <img src=''/>
             </div>

@@ -156,7 +156,10 @@ export default function App() {
         <Route path="/edit/:id" element={<CreateListing />} />
         <Route path="/viewListing/:id" element={<ViewListing />} />
         <Route path="/changePass" element={<ChangePassword />} />
-        <Route path="/viewMerchant" element={<ViewMerchant />} />
+        <Route 
+          path="/viewMerchant/:id" 
+          element={<ViewMerchant />} 
+        />
         <Route
           path="/admin"
           element={!isAdmin ? <Navigate to="/" replace /> : <AdminDashboard />}

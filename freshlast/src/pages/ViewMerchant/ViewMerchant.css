@@ -17,6 +17,16 @@ body {
     gap: 2rem;
 }
 
+.viewmerchant-categories {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: solid 1px var(--color-border);
+  border-radius: 10px;
+  display: flex;
+  gap: 0.5rem;
+}
+
 
 
 /* Title */
