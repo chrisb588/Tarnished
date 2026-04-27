@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
-import { getAllListings } from '../../api/listings'
 import MerchantInfo from '../../components/MerchantInfo/MerchantInfo.jsx'
 import CategoryFilter from '../../components/CategoryFilter/CategoryFilter.jsx'
 import './ViewMerchant.css'
 import { supabase } from '../../lib/supabaseClient.jsx'
+import { getProfile} from "../../api/profile";
 
 
 function SearchIcon() {
