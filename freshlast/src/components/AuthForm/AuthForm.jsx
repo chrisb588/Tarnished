@@ -30,7 +30,9 @@ export default function AuthForm({ onSuccess }) {
 
   return (
     <div>
-      <h1>Sign In</h1>
+        <p style={{ fontSize: '12px', fontWeight: 500, color: '#2d6a4f', letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 6px' }}>
+        Welcome to Freshlast</p>
+      <h1>Log In</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
         <p>email address</p>
         <input

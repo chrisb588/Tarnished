@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router-dom'
 import ListingItem from '@/components/ListingItem/ListingItem.jsx'
 import { supabase } from '@/lib/supabaseClient'
 import { getProfile } from '@/api/profile'
@@ -22,7 +22,7 @@ function PhoneIcon() {
 }
 
 export default function VendorProfile({ params }) {
-  const router = useRouter()
+  const navigate = useNavigate()
   const [vendorId] = useState(params?.vendorId || null)
 
   const [vendor, setVendor] = useState(null)
@@ -97,7 +97,7 @@ export default function VendorProfile({ params }) {
     return (
       <div className="vendor-profile">
         <div className="vendor-profile__header">
-          <button className="vendor-profile__back-btn" onClick={() => router.back()}>
+          <button className="vendor-profile__back-btn" onClick={() => navigate(-1)}>
             <BackArrowIcon />
             Back
           </button>
@@ -113,7 +113,7 @@ export default function VendorProfile({ params }) {
     return (
       <div className="vendor-profile">
         <div className="vendor-profile__header">
-          <button className="vendor-profile__back-btn" onClick={() => router.back()}>
+          <button className="vendor-profile__back-btn" onClick={() => navigate(-1)}>
             <BackArrowIcon />
             Back
           </button>
@@ -129,7 +129,7 @@ export default function VendorProfile({ params }) {
     <div className="vendor-profile">
       {/* Header with back button */}
       <div className="vendor-profile__header">
-        <button className="vendor-profile__back-btn" onClick={() => router.back()}>
+        <button className="vendor-profile__back-btn" onClick={() => navigate(-1)}>
           <BackArrowIcon />
           Back
         </button>

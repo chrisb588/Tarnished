@@ -68,3 +68,9 @@
     cursor: pointer;
     background-color: rgb(235, 165, 165);
 }
+
+@media (max-width: 768px) {
+    .button-container {
+        opacity: 1;
+    }
+}
