@@ -12,6 +12,7 @@ import EditProfile from "./pages/EditProfile/EditProfile";
 import CreateProfile from "./pages/CreateProfile/CreateProfile";
 import ViewListing from "./pages/ViewListing/ViewListing";
 import ViewMerchant from "./pages/ViewMerchant/ViewMerchant";
+import AdminLoginPage from "./pages/AdminLoginPage/AdminLoginPage";
 import "./App.css";
 import { adminLogin, getAdminToken, verifyAdminToken } from "./api/admin";
 
@@ -156,6 +157,7 @@ export default function App() {
         <Route path="/edit/:id" element={<CreateListing />} />
         <Route path="/viewListing/:id" element={<ViewListing />} />
         <Route path="/changePass" element={<ChangePassword />} />
+        <Route path="/adminLoginPage" element={<AdminLoginPage/>} />
         <Route 
           path="/viewMerchant/:id" 
           element={<ViewMerchant />} 
