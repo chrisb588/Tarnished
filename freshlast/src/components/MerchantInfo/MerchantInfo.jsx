@@ -12,7 +12,7 @@ const markerIcon = new L.Icon({
   });
 
 export default function MerchantInfo({formData}) {
-    const [photoPreview, setPhotoPreview] = useState(null)
+
 
     if (!formData) {
         return <div>Loading merchant details...</div>;
@@ -35,7 +35,12 @@ export default function MerchantInfo({formData}) {
         <div className="merchantinfo-container">
             <h3 className="merchantinfo-name">{stallName}</h3>
             <div className="merchantinfo-photo">
-                {location_photo && <img src={location_photo} alt="Stall" />}
+                {location_photo ? 
+                (
+                    <img src={location_photo} alt="Stall" />
+                ):(
+                    <p>No photo found</p>
+                )}
             </div>
             <div className="merchantinfo-general">
                 <div className='general-div'>
