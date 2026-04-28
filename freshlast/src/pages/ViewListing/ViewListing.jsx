@@ -77,8 +77,9 @@ export default function ViewListing() {
             </div>
 
             <div className="view-listing-info">
-                {/*TO DO: CLICKING ON THE MERCHANT'S NAME TAKES U TO THEIR PROFILE */}
-                <h1 className="merchant-label">{merchant ? merchant.name : `${listing.merchant_id}`}</h1>
+                <button className="merchant-name-btn" onClick={() => navigate(`/viewMerchant/${listing.merchant_id}`)}>
+                  {merchant ? merchant.name : listing.merchant_id}
+                </button>
                 <p className="stall-photo-label">Stall Photo:</p>
                 <div className="merchant-stall-image">
                 {merchant?.location_photo && <img src={merchant.location_photo} alt="Stall" />}
