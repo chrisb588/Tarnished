@@ -11,7 +11,7 @@ body {
 
 .viewmerchant-content {
     width: 100%;
-    padding: 2rem 3rem;
+    padding: 0rem 3rem 2rem;
     display: flex;
     flex-direction: row;
     gap: 2rem;
@@ -28,7 +28,20 @@ body {
   gap: 0.5rem;
 }
 
+.viewmerchant-backbtn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  align-items: center;
+  margin-left: 3rem
+}
 
+.viewmerchant-backbtn:hover {
+  background: none;
+  color: var(--color-text);
+}
 
 /* Title */
 .viewmerchant-title {
@@ -65,9 +78,13 @@ body {
     .viewmerchant-content {
         width: 100%;
         display: flex;
-        padding: 0.5rem;
+        padding: 0rem 0.5rem 0.5rem 0.5rem;
         flex-direction: column;
         gap: 0.5rem;
+    }
+
+    .viewmerchant-backbtn {
+      margin-left: 0.1rem
     }
   }
   

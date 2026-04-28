@@ -138,38 +138,44 @@ export default function ViewMerchant() {
         </div>
       </header>
 
-      <main className="viewmerchant-content">
-        <div className='viewmerchant-info'>
-            <MerchantInfo
-              formData ={merchantData}
-            />
-        </div>
 
-        <div className="viewmerchant-listings"> 
-          <div className="viewmerchant-categories">
-            {/*TO DO: Make these clickable/filterable*/}
-            <CategoryFilter name="Vegetables" />
-            <CategoryFilter name="Chicken" />
-            <CategoryFilter name="Seafood" />
+      <div className='view-merchant-container'>
+        <button className="viewmerchant-backbtn" onClick={() => navigate(-1)}>
+          ← Back
+        </button>
+        <main className="viewmerchant-content">
+          <div className='viewmerchant-info'>
+              <MerchantInfo
+                formData ={merchantData}
+              />
           </div>
-            {isLoading ? (
-            <p className="viewmerchant-status">Loading listings...</p>
-            ) : filteredListings.length > 0 ? (
-            <div className="viewmerchant-grid">
-                {filteredListings.map(listing => (
-                <ListingItem 
-                key={listing.id} 
-                listing={listing} 
-                showEdit={false} 
-                onSelect={(listing) => navigate(`/viewListing/${listing.id}`)}
-                />
-                ))}
+
+          <div className="viewmerchant-listings"> 
+            <div className="viewmerchant-categories">
+              {/*TO DO: Make these clickable/filterable*/}
+              <CategoryFilter name="Vegetables" />
+              <CategoryFilter name="Chicken" />
+              <CategoryFilter name="Seafood" />
             </div>
-            ) : (
-            <p className="viewmerchant-status">No products found</p>
-            )}
-        </div>
-      </main>
+              {isLoading ? (
+              <p className="viewmerchant-status">Loading listings...</p>
+              ) : filteredListings.length > 0 ? (
+              <div className="viewmerchant-grid">
+                  {filteredListings.map(listing => (
+                  <ListingItem 
+                  key={listing.id} 
+                  listing={listing} 
+                  showEdit={false} 
+                  onSelect={(listing) => navigate(`/viewListing/${listing.id}`)}
+                  />
+                  ))}
+              </div>
+              ) : (
+              <p className="viewmerchant-status">No products found</p>
+              )}
+          </div>
+        </main>
+      </div>
     </div>
   )
 }

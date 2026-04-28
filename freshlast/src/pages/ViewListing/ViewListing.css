@@ -121,24 +121,32 @@
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .merchant-name-btn {
   background: none;
   border: none;
-  padding: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-primary, #2e7d32);
+  padding: 0.2rem 0.4rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-white);
+  background-color: var(--color-primary);
   cursor: pointer;
-  text-align: left;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-align: center;
+  height: 2.5rem;
 }
 
 .merchant-name-btn:hover {
-  background: none;
-  color: var(--color-primary-hover, #1b5e20);
+  background-color: var(--color-primary-hover);
+  color: var(--color-white);
+
+}
+
+.stall-merchant-div {
+  display: flex;
+  justify-content: space-between;
 }
 
 .stall-photo-label {
@@ -169,4 +177,23 @@
     overflow: hidden;
     align-self: center;
     border-radius: 5px;    
+}
+
+@media screen and (max-width: 750px) {
+  .view-listing{
+    padding: 0.5rem;
+  }
+
+  .merchant-name-btn{
+    background: none;
+    border: none;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-white);
+    background-color: var(--color-primary);
+    cursor: pointer;
+    text-align: center;
+    height: 2.5rem;
+  }
+
 }
