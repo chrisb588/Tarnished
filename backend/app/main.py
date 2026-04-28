@@ -20,9 +20,8 @@ app.include_router(profile_router, prefix=f"{API_PREFIX}/profile")
 app.include_router(admin_router, prefix="/api/admin")
 
 # Add CORS Middleware
-origins = os.getenv("ORIGINS")
-origins = "" if origins is None else origins
-origins = [i for i in origins.split(" ")]
+origins_raw = os.getenv("ORIGINS", "")
+origins = [o for o in origins_raw.split(" ") if o]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

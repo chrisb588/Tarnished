@@ -7,6 +7,7 @@ import CategoryFilter from '../../components/CategoryFilter/CategoryFilter.jsx'
 import './ViewMerchant.css'
 import { supabase } from '../../lib/supabaseClient.jsx'
 import { getProfile} from "../../api/profile";
+import { getListingsByMerchant } from '../../api/listings';
 
 
 function SearchIcon() {
@@ -26,6 +27,7 @@ export default function ViewMerchant() {
   const [searchQuery, setSearchQuery] = useState('')
   const [listings, setListings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const [merchantData, setMerchantData] = useState(
     {
@@ -68,7 +70,7 @@ export default function ViewMerchant() {
           operatingDays: data.operating_days || [],
           category: data.category || [],
           location_photo: data.location_photo || "",
-          location: data.latitude && data.longitude 
+          coords: data.latitude && data.longitude 
           ? { lat: data.latitude, lng: data.longitude } 
           : null,
         });
@@ -83,23 +85,25 @@ export default function ViewMerchant() {
     const fetchListings = async () => {
       setIsLoading(true)
       try {
-        const {data: { user }} = await supabase.auth.getUser()
-
-        if (user) {
-          const response = await fetch(`http://localhost:8000/listings?merchant_id=${user.id}`)
-
-          if (!response.ok) throw new Error("Failed to fetch")
-
-          const data = await response.json()
+        let merchantId = paramId
+        if (!merchantId)
+        {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (!user) return
+          merchantId = user.id
+        }
+          
+          const data = await getListingsByMerchant(merchantId)
           setListings(data)
         }
-      } catch (e) {
+      catch (e) {
         console.error('Failed to fetch listings:', e)
       }
       setIsLoading(false)
     }
     fetchListings()
-  }, [])
+  }, [paramId])
+
 
   const filteredListings = listings.filter(listing => {
     const matchesCategory = selectedCategory === 'All' || listing.category === selectedCategory
