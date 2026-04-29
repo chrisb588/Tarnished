@@ -1,8 +1,7 @@
-h1 {
+.auth-form h1 {
   text-align: center;
   font-size: 12px;
 }
-
 
 .auth-form {
   display: flex;

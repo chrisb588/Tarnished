@@ -1,20 +1,27 @@
 .listing-border {
-    border: solid black 2px;
-    border-radius: 7px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 
 .listing-border:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     cursor: pointer;
 }
 
 .listing-image {
     aspect-ratio: 4 / 3;
-    border-top: solid black 2px;
-    border-bottom: solid black 2px;
-    overflow: hidden; 
-    width: 100%;      
+    background-color: #e8f5e9;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;   
 }
 
 .listing-image img {
@@ -26,17 +33,25 @@
 
 .edit-button{
     background-color: white;
-    color: black;
-    width: 85%;
-    border: solid black 1px;
+    color: #1a1a1a;
+    width: 100%;
+    border: 1px solid #ccc;
     border-radius: 350px;
     align-self: center;
+    padding: 6px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    background-color: rgb(164, 234, 156);
+    border-color: #aaa;
 }
 
 .listing-info{
-    width: 80%;
-    margin-left: 10px;
+    width: 100%;
+    padding: 0.75rem 1rem;
     text-align: left;
+    box-sizing: border-box;
 }
 
 .listing-name{
@@ -44,10 +59,10 @@
     text-align: left;
 }
 
-
-
 .quantity{
     text-align: left;
+    font-size: 0.8rem;
+    color: #666;
 }
 
 .listing-border--sold-out {
@@ -67,6 +82,7 @@
 .sold-out-label {
     color: #e74c3c;
     font-weight: bold;
+    font-size: 0.8rem;
 }
 
 .listing-actions {
@@ -74,14 +90,28 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    padding-bottom: 8px;
+    padding: 0 1rem 0.75rem;
 }
 
 .sold-out-button {
     background-color: #e74c3c;
     color: white;
-    width: 85%;
+    width: 100%;
     border: none;
     border-radius: 350px;
     cursor: pointer;
+    padding: 6px;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.875rem;
+}
+
+/* Orange discounted price */
+.discounted-price {
+    color: #e67e22;
+    font-weight: 600;
+    font-size: 0.875rem;
 }

@@ -3,17 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import AuthModal from '../../components/AuthModal/AuthModal.jsx'
 import { getAllListings } from '../../api/listings'
+import AppHeader from '../../components/AppHeader/AppHeader.jsx'
 import './OfferList.css'
-
-
-function SearchIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8"/>
-      <path d="m21 21-4.3-4.3"/>
-    </svg>
-  )
-}
 
 function FilterIcon() {
   return (
@@ -41,6 +32,7 @@ export default function OfferList({ session, onLogout }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [listings, setListings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -50,6 +42,7 @@ export default function OfferList({ session, onLogout }) {
         setListings(data || [])
       } catch (e) {
         console.error('Failed to fetch listings:', e)
+        setError('Failed to load listings. Please try again.')
       }
       setIsLoading(false)
     }
@@ -64,44 +57,14 @@ export default function OfferList({ session, onLogout }) {
 
   return (
     <div className="offerlist">
-      <header className="offerlist__header">
-
-        {/* Colored Logo */}
-        <div className="offerlist__logo">
-          <span className="offerlist__logo--green">Fr</span>
-          <span className="offerlist__logo--orange">è</span>
-          <span className="offerlist__logo--green">shL</span>
-          <span className="offerlist__logo--orange">a</span>
-          <span className="offerlist__logo--green">st</span>
-        </div>
-
-        <div className="offerlist__search">
-          <input
-            type="text"
-            className="offerlist__search-input"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button className="offerlist__search-btn" aria-label="Search">
-            <SearchIcon />
-          </button>
-        </div>
-
-        {session ? (
-          <div className="offerlist__header-actions">
-            <Link to="/dashboard" className="offerlist__login-btn">My Listings</Link>
-            <button className="offerlist__login-btn" onClick={onLogout}>
-              Log Out
-            </button>
-          </div>
-        ) : (
-          <button className="offerlist__login-btn" onClick={() => setShowLoginModal(true)}>
-            Log in to Sell
-          </button>
-        )}
-      </header>
-
+      <AppHeader
+        session={session}
+        onLogout={onLogout}
+        onLoginClick={() => setShowLoginModal(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
+      
       <main className="offerlist__content">
         <div className="offerlist__filters">
           <div className="offerlist__dropdown">
@@ -128,6 +91,8 @@ export default function OfferList({ session, onLogout }) {
 
         {isLoading ? (
           <p className="offerlist__status">Loading listings...</p>
+        ) : error ? (
+          <p className="offerlist__status offerlist__status--error">{error}</p>
         ) : filteredListings.length > 0 ? (
           <div className="offerlist__grid">
             {filteredListings.map(listing => (

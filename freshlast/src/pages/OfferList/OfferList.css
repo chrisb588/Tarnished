@@ -204,3 +204,7 @@ body {
   padding: 2rem 0;
   font-size: 1rem;
 }
+
+.offerlist__status--error {
+  color: var(--color-error, #e74c3c);
+}

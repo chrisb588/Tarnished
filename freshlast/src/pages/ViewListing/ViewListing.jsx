@@ -57,7 +57,6 @@ export default function ViewListing() {
         <div className="view-listing-card">
             <div className="view-listing-image">
             {listing.image && <img src={listing.image} alt={listing.name} />}
-            <p>test</p>
             </div>
 
             <div className="view-listing-info">
@@ -75,7 +74,6 @@ export default function ViewListing() {
             </div>
 
             </div>
-
             <div className="view-listing-info">
                 <div className='stall-merchant-div'>
                   <div className='name-and-photo'>

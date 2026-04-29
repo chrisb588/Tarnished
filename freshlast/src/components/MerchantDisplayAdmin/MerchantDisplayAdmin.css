@@ -28,12 +28,6 @@
     display: flex;
     flex-direction: row;
     gap: 0.3rem;
-    opacity: 0; 
-    transition: opacity 0.1s ease-in-out;
-}
-
-.merchant-container:hover .button-container{
-    opacity: 1;
 }
 
 .edit-button, .delete-button {
@@ -58,7 +52,6 @@
 }
 
 .delete-button {
-
     color: var(--color-error);
     background-color: var(--color-white);
 

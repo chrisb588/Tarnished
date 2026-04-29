@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import ListingItem from '../../components/ListingItem/ListingItem';
 import { supabase } from '../../lib/supabaseClient';
 import { getListingsByMerchant, markAsSoldOut } from '../../api/listings';
+import AppHeader from '../../components/AppHeader/AppHeader.jsx'
 import './Home.css';
 
 export default function Home({ onLogout }) {
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleSoldOut = async (listing) => {
     if (!confirm(`Mark "${listing.name}" as sold out?`)) return;
@@ -27,8 +29,14 @@ export default function Home({ onLogout }) {
       if (!supabase) { setIsLoading(false); return; }
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setIsLoading(false); return; }
+
+      try {
       const data = await getListingsByMerchant(user.id);
-      setListings(data || []);
+        setListings(data || []);
+      } catch (e) {
+        console.error('Failed to fetch listings:', e);
+        setError('Failed to load your listings. Please try again.');
+      }
       setIsLoading(false);
     };
     fetchListings();
@@ -36,20 +44,10 @@ export default function Home({ onLogout }) {
 
   return (
     <div className="dashboard">
-      <header className="dashboard__header">
-        <div className="dashboard__logo">
-          <span className="dashboard__logo--green">Fr</span>
-          <span className="dashboard__logo--orange">è</span>
-          <span className="dashboard__logo--green">shL</span>
-          <span className="dashboard__logo--orange">a</span>
-          <span className="dashboard__logo--green">st</span>
-        </div>
-
-        <div className="dashboard__header-actions">
-          <Link to="/" className="dashboard__btn">← Marketplace</Link>
-          <button className="dashboard__btn" onClick={onLogout}>Log Out</button>
-        </div>
-      </header>
+      <AppHeader
+        session={true}
+        onLogout={onLogout}
+      />
 
       <main className="dashboard__content">
         <div className="dashboard__top-bar">
@@ -59,6 +57,8 @@ export default function Home({ onLogout }) {
 
         {isLoading ? (
           <p className="dashboard__status">Loading listings...</p>
+        ) : error ? (
+          <p className="dashboard__status dashboard__status--error">{error}</p>
         ) : listings.length > 0 ? (
           <div className="dashboard__grid">
             {listings.map((listing) => (

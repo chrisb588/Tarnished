@@ -8,17 +8,7 @@ import './ViewMerchant.css'
 import { supabase } from '../../lib/supabaseClient.jsx'
 import { getProfile} from "../../api/profile";
 import { getListingsByMerchant } from '../../api/listings';
-
-
-function SearchIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8"/>
-      <path d="m21 21-4.3-4.3"/>
-    </svg>
-  )
-}
-
+import AppHeader from '../../components/AppHeader/AppHeader.jsx'
 
 export default function ViewMerchant() {
   const navigate = useNavigate()
@@ -113,31 +103,10 @@ export default function ViewMerchant() {
 
   return (
     <div className="offerlist">
-      <header className="offerlist__header">
-
-        {/* Colored Logo */}
-        <div className="offerlist__logo">
-          <span className="offerlist__logo--green">Fr</span>
-          <span className="offerlist__logo--orange">è</span>
-          <span className="offerlist__logo--green">shL</span>
-          <span className="offerlist__logo--orange">a</span>
-          <span className="offerlist__logo--green">st</span>
-        </div>
-
-        <div className="offerlist__search">
-          <input
-            type="text"
-            className="offerlist__search-input"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button className="offerlist__search-btn" aria-label="Search">
-            <SearchIcon />
-          </button>
-        </div>
-      </header>
-
+      <AppHeader
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
 
       <div className='view-merchant-container'>
         <button className="viewmerchant-backbtn" onClick={() => navigate(-1)}>
