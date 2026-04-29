@@ -10,6 +10,7 @@ const baseFormData = {
   originalprice: '',
   discountedprice: '',
   image: null,
+  availabilityWindow: 'ends_today',
 }
 
 describe('ListingForm', () => {
@@ -61,6 +62,35 @@ describe('ListingForm', () => {
 
     await user.selectOptions(screen.getByLabelText('Unit'), 'lbs')
 
+    expect(handleChange).toHaveBeenCalled()
+  })
+
+  it('renders the availability window dropdown', () => {
+    render(
+      <ListingForm
+        formData={{ ...baseFormData, availabilityWindow: 'ends_today' }}
+        setFormData={() => {}}
+        handleChange={() => {}}
+        handleFileUpload={() => {}}
+      />
+    )
+    expect(screen.getByLabelText('Availability Window')).toBeInTheDocument()
+  })
+
+  it('calls handleChange when the availability window select is changed', async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+
+    render(
+      <ListingForm
+        formData={{ ...baseFormData, availabilityWindow: 'ends_today' }}
+        setFormData={() => {}}
+        handleChange={handleChange}
+        handleFileUpload={() => {}}
+      />
+    )
+
+    await user.selectOptions(screen.getByLabelText('Availability Window'), '1_day')
     expect(handleChange).toHaveBeenCalled()
   })
 })

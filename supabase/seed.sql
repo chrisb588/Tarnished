@@ -117,7 +117,65 @@ BEGIN
     ARRAY['Mon', 'Wed', 'Fri'],
     'Cebu City, Philippines',
     photo_url,
-    'Veggies',
+    ARRAY['vegetable'],
     '+639123456789'
+  );
+END $$;
+
+-- Dummy listing for testing
+
+DO $$
+DECLARE
+  merchant_id uuid := '11111111-1111-1111-1111-111111111111';
+  listing_id uuid := '11111111-1111-1111-1111-111111111112';
+  file_id uuid := '22222222-2222-2222-2222-222222222221';
+  file_path text;
+  photo_url text;
+BEGIN
+  file_path := merchant_id || '/listings/' || file_id;
+  photo_url := 'http://127.0.0.1:54321/storage/v1/object/public/media/' || file_path;
+
+  INSERT INTO storage.objects (
+    id,
+    bucket_id,
+    name,
+    owner,
+    created_at,
+    updated_at,
+    metadata
+  )
+  VALUES (
+    file_id,
+    'media',
+    file_path,
+    merchant_id,
+    now(),
+    now(),
+    '{"mimetype":"image/jpeg","size":0}'
+  );
+
+  INSERT INTO public.listing (
+    id,
+    merchant_id,
+    name,
+    original_price,
+    discounted_price,
+    image,
+    unit,
+    quantity,
+    type,
+    is_sold_out
+  )
+  VALUES (
+    listing_id,
+    merchant_id,
+    'Sample Listing',
+    200,
+    150,
+    photo_url,
+    'kg',
+    10,
+    'vegetable',
+    FALSE
   );
 END $$;

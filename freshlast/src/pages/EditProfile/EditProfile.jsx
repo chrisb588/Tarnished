@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import VendorHeader from "../../components/VendorHeader/VendorHeader";
 import ProfileForm from "../../components/ProfileForm/ProfileForm";
 import "./EditProfile.css";
 import { getProfile, updateProfile } from "../../api/profile";
+import { MapPicker } from "../../components/MapPicker";
 
 export default function EditProfile({ onSave, onLogout }) {
   const navigate = useNavigate();
@@ -13,17 +14,19 @@ export default function EditProfile({ onSave, onLogout }) {
   const [error, setError] = useState("");
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [mapClearKey, setMapClearKey] = useState(0);
 
   const [formData, setFormData] = useState({
     id: "",
-    emailAddress: "", // TODO: Pls remove this
-    password: "", // TODO: Pls remove this
     stallName: "",
     marketLocation: "",
     phoneNumber: "",
     operatingHoursStart: "",
     operatingHoursEnd: "",
     operatingDays: [],
+    category: [],
   });
 
   useEffect(() => {
@@ -38,8 +41,7 @@ export default function EditProfile({ onSave, onLogout }) {
         userId = user.id;
       }
 
-      const response = await getProfile(userId);
-      const data = response.data;
+      const data = await getProfile(userId);
 
       if (data) {
         setFormData({
@@ -50,9 +52,12 @@ export default function EditProfile({ onSave, onLogout }) {
           operatingHoursStart: data.start_operating_time || "",
           operatingHoursEnd: data.end_operating_time || "",
           operatingDays: data.operating_days || [],
+          category: data.category || [],
         });
         if (data.location_photo) setPhotoPreview(data.location_photo);
+        setLocation(data.latitude && data.longitude ? { lat: data.latitude, lng: data.longitude } : null);
       }
+      setProfileLoaded(true);
     };
     fetchProfile();
   }, [paramId]);
@@ -60,8 +65,6 @@ export default function EditProfile({ onSave, onLogout }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    console.log("Submitting with Data:", formData);
 
     if (!formData.stallName.trim()) return setError("Stall Name is required");
     if (!formData.marketLocation.trim())
@@ -80,29 +83,25 @@ export default function EditProfile({ onSave, onLogout }) {
 
     setIsLoading(true);
 
-    if (!supabase) {
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
-
     try {
       // Send request to update profile endpoint
       const response = await updateProfile(
         formData.id,
         formData.stallName,
-        0, // TODO: Get x coord of vendor using map marker
-        0, // TODO: Get y coord of vendor using map marker
+        formData.phoneNumber,
+        location?.lat ?? 0,
+        location?.lng ?? 0,
         photo,
         formData.operatingHoursStart,
         formData.operatingHoursEnd,
         formData.operatingDays,
         formData.marketLocation,
+        formData.category,
       );
 
-      console.log(response);
     } catch (e) {
-      setError(toString(e));
+      setError(String(e));
+      setIsLoading(false);
       return;
     }
 
@@ -119,6 +118,28 @@ export default function EditProfile({ onSave, onLogout }) {
         <h1 className="edit-profile__title">Edit your Profile</h1>
         {/* ... subtitle ... */}
 
+        {profileLoaded && (
+          <div className="edit-profile__map-section">
+            <MapPicker
+              key={mapClearKey}
+              initialLat={location?.lat}
+              initialLng={location?.lng}
+              onLocationChange={setLocation}
+            />
+            {location !== null && (
+              <button
+                type="button"
+                className="edit-profile__clear-pin-btn"
+                onClick={() => {
+                  setLocation(null);
+                  setMapClearKey((k) => k + 1);
+                }}
+              >
+                Clear pin
+              </button>
+            )}
+          </div>
+        )}
         <ProfileForm
           isCreating={false}
           formData={formData}

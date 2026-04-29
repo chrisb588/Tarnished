@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient'
+import { useNavigate } from 'react-router-dom'
 
 import './AuthForm.css'
 
@@ -7,6 +8,7 @@ export default function AuthForm({ onSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,8 +32,8 @@ export default function AuthForm({ onSuccess }) {
 
   return (
     <div>
-      <h1>Sign In</h1>
       <form className="auth-form" onSubmit={handleSubmit}>
+        <h1 className='sign-in-label'>Sign in</h1>
         <p>email address</p>
         <input
           type="email"
@@ -56,6 +58,10 @@ export default function AuthForm({ onSuccess }) {
 
         <button disabled={loading} className="auth-buttons">
           {loading ? "Processing..." : "Log In"}
+        </button>
+
+        <button type="button" className="admin-login" onClick={() => navigate('/adminLoginPage')}>
+          Logging in as an administrator?
         </button>
       </form>
     </div>

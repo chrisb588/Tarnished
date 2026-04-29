@@ -167,6 +167,27 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                     </div>
                 </div>
             </div>
+            <div className="info-container">
+                <div className="info-preface">
+                    <h4>Availability</h4>
+                    <p>How long will this listing be available?</p>
+                </div>
+                <div className="descriptionInput">
+                    <label htmlFor="availabilityWindow">Availability Window</label>
+                    <select
+                        name="availabilityWindow"
+                        id="availabilityWindow"
+                        value={formData.availabilityWindow}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="ends_today">Ends Today</option>
+                        <option value="1_day">1 Day</option>
+                        <option value="2_days">2 Days</option>
+                        <option value="3_days">3 Days</option>
+                    </select>
+                </div>
+            </div>
 
 
         </div>

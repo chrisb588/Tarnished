@@ -23,7 +23,15 @@ function FilterIcon() {
   )
 }
 
-const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Beef', 'Pork', 'Chicken', 'Seafood']
+const CATEGORIES = [
+  { label: 'All',        value: 'All' },
+  { label: 'Vegetables', value: 'vegetable' },
+  { label: 'Fruits',     value: 'fruit' },
+  { label: 'Beef',       value: 'beef' },
+  { label: 'Pork',       value: 'pork' },
+  { label: 'Chicken',    value: 'chicken' },
+  { label: 'Seafood',    value: 'seafood' },
+]
 
 export default function OfferList({ session, onLogout }) {
   const navigate = useNavigate()
@@ -49,8 +57,8 @@ export default function OfferList({ session, onLogout }) {
   }, [])
 
   const filteredListings = listings.filter(listing => {
-    const matchesCategory = selectedCategory === 'All' || listing.category === selectedCategory
-    const matchesSearch = listing.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesCategory = selectedCategory === 'All' || listing.type === selectedCategory
+    const matchesSearch = listing.name?.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
   })
 
@@ -102,13 +110,13 @@ export default function OfferList({ session, onLogout }) {
             </button>
             {showFilters && (
               <div className="offerlist__dropdown-content">
-                {CATEGORIES.map(category => (
+                {CATEGORIES.map(({ label, value }) => (
                   <button
-                    key={category}
-                    className={`offerlist__dropdown-item ${selectedCategory === category ? 'offerlist__dropdown-item--active' : ''}`}
-                    onClick={() => { setSelectedCategory(category); setShowFilters(false) }}
+                    key={value}
+                    className={`offerlist__dropdown-item ${selectedCategory === value ? 'offerlist__dropdown-item--active' : ''}`}
+                    onClick={() => { setSelectedCategory(value); setShowFilters(false) }}
                   >
-                    {category}
+                    {label}
                   </button>
                 ))}
               </div>

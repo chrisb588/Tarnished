@@ -1,9 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
 import { getListingById } from '../../api/listings';
 import { getProfile } from '../../api/profile';
 import { supabase } from '../../lib/supabaseClient';
 import './ViewListing.css';
+
+const markerIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
 
 export default function ViewListing() {
   const { id } = useParams();
@@ -21,10 +31,9 @@ export default function ViewListing() {
         const data = await getListingById(id);
         setListing(data);
         const { data: { user } } = await supabase.auth.getUser();
-        if (user && data.merchant === user.id) setIsOwner(true);
-        if (data.merchant) {
-          const merchantData = await getProfile(data.merchant);
-          setMerchant(merchantData);
+        if (user && data.merchant_id === user.id) setIsOwner(true);
+        if (data.merchant_id) {
+          setMerchant(await getProfile(data.merchant_id));
         }
       } catch (e) {
         console.error('Failed to fetch listing:', e);
@@ -54,7 +63,7 @@ export default function ViewListing() {
             <div className="view-listing-info">
             <h1 className="view-listing-name">{listing.name} </h1>
             <div className="view-listing-add-info">
-              <p className="view-listing-type">Type{listing.type}</p>
+              <p className="view-listing-type">Type: {listing.type}</p>
               <p className="view-listing-info-sep">-</p>
               <p className="view-listing-quantity">{listing.quantity} {listing.unit}</p>
             </div>
@@ -68,15 +77,42 @@ export default function ViewListing() {
             </div>
 
             <div className="view-listing-info">
-                {/*TO DO: CLICKING ON THE MERCHANT'S NAME TAKES U TO THEIR PROFILE */}
-                <h1 className="merchant-label">{merchant ? merchant.name : `${listing.merchant}`}</h1>
-                <p className="stall-photo-label">Stall Photo:</p>
+                <div className='stall-merchant-div'>
+                  <div className='name-and-photo'>
+                    <h1 className='merchant-label'>{merchant ? merchant.name : listing.merchant_id}</h1>
+                    <p className="stall-photo-label">Stall Photo:</p>
+                  </div>
+
+                  <button className="merchant-name-btn" onClick={() => navigate(`/viewMerchant/${listing.merchant_id}`)}>
+                    View Merchant
+                  </button>
+                </div>
+
                 <div className="merchant-stall-image">
                 {merchant?.location_photo && <img src={merchant.location_photo} alt="Stall" />}
                 </div>
                 <h1 className="merchant-label">Stall Location</h1>
                 <div className="merchant-location">
-                    INSERT GOOGLE MAPS HERE
+                  {merchant?.latitude && merchant?.longitude && merchant.latitude !== 0 && merchant.longitude !== 0 ? (
+                    <MapContainer
+                      center={[merchant.latitude, merchant.longitude]}
+                      zoom={17}
+                      style={{ width: '100%', height: '100%' }}
+                      attributionControl={true}
+                      dragging={false}
+                      scrollWheelZoom={false}
+                      doubleClickZoom={false}
+                      zoomControl={false}
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="© OpenStreetMap contributors"
+                      />
+                      <Marker position={[merchant.latitude, merchant.longitude]} icon={markerIcon} />
+                    </MapContainer>
+                  ) : (
+                    <p className="view-listing-status">Location not set</p>
+                  )}
                 </div>
 
             </div>

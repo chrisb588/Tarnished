@@ -45,7 +45,22 @@ SEEDED_DATA = {
             "operating_days": ["Mon", "Wed", "Fri"],
             "location": "Cebu City, Philippines",
             "location_photo": "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/profile/22222222-2222-2222-2222-222222222222",
-            "category": "Veggies",
+            "category": ["vegetable"],
+        }
+    ],
+    "listing": [
+        {
+            "id": "11111111-1111-1111-1111-111111111112",
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
+            "name": "Sample Listing",
+            "original_price": 200,
+            "discounted_price": 150,
+            "image": "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/listings/22222222-2222-2222-2222-222222222221",
+            "unit": "kg",
+            "quantity": 10,
+            "type": "vegetable",
+            "expires_at": None,
+            "is_sold_out": False,
         }
     ],
     # "other_table": [ ... ]
@@ -61,9 +76,15 @@ def cleanup(supabase_local):
     for merchant in merchants.data:
         if merchant["id"] in SEEDED_IDS:
             continue
+        # Remove profile images
         files = supabase_local.storage.from_("media").list(f"{merchant['id']}/profile")
         if files:
             paths = [f"{merchant['id']}/profile/{f['name']}" for f in files]
+            supabase_local.storage.from_("media").remove(paths)
+        # Remove listing images
+        files = supabase_local.storage.from_("media").list(f"{merchant['id']}/listings")
+        if files:
+            paths = [f"{merchant['id']}/listings/{f['name']}" for f in files]
             supabase_local.storage.from_("media").remove(paths)
         supabase_local.auth.admin.delete_user(merchant["id"])
 

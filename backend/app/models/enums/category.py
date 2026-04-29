@@ -2,7 +2,9 @@ from enum import Enum
 
 
 class Category(Enum):
-    VEGGOES = "Veggies"
-    FRUITS = "Fruits"
-    SEAFOOD = "Seafood"
-    MEAT = "Meat"
+    VEGGIES = "vegetable"
+    FRUIT = "fruit"
+    CHICKEN = "chicken"
+    PORK = "pork"
+    BEEF = "beef"
+    SEAFOOD = "seafood"

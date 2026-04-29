@@ -6,6 +6,30 @@ import { createListing, updateListing, deleteListing, getListingById } from '../
 
 import './CreateListing.css'
 
+function getWindowFromExpiresAt(expiresAt) {
+  if (!expiresAt) return 'ends_today';
+  const hours = (new Date(expiresAt) - new Date()) / (1000 * 60 * 60);
+  if (hours <= 24) return 'ends_today';
+  if (hours <= 48) return '1_day';
+  if (hours <= 72) return '2_days';
+  return '3_days';
+}
+
+function calculateExpiresAt(window) {
+  const now = new Date();
+  switch (window) {
+    case 'ends_today': {
+      const endOfDay = new Date(now);
+      endOfDay.setHours(23, 59, 59, 999);
+      return endOfDay.toISOString();
+    }
+    case '1_day': return new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    case '2_days': return new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString();
+    case '3_days': return new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    default: return null;
+  }
+}
+
 const validateForm = (formData) => {
     console.log(formData)
     const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
@@ -48,6 +72,7 @@ export default function CreateListing(){
         type: "vegetable",
         originalprice: 0,
         discountedprice: 0,
+        availabilityWindow: 'ends_today',
     });
 
     const [merchantId, setMerchantId] = useState(null);
@@ -65,9 +90,11 @@ export default function CreateListing(){
                         name: listing.name,
                         quantity: listing.quantity,
                         unit: listing.unit,
+                        type: listing.type ?? "vegetable",
                         originalprice: listing.original_price,
                         discountedprice: listing.discounted_price,
                         image: listing.image,
+                        availabilityWindow: getWindowFromExpiresAt(listing.expires_at),
                     });
                     setExistingImagePath(listing.image);
                 }
@@ -109,6 +136,8 @@ export default function CreateListing(){
 
         setIsSubmitting(true);
         try {
+            const expiresAt = calculateExpiresAt(formData.availabilityWindow);
+
             if (isCreating) {
                 await createListing(
                     merchantId,
@@ -118,6 +147,8 @@ export default function CreateListing(){
                     formData.image,
                     formData.unit,
                     formData.quantity,
+                    formData.type,
+                    expiresAt,
                 );
             } else {
                 await updateListing(
@@ -129,9 +160,11 @@ export default function CreateListing(){
                     formData.image instanceof File ? formData.image : existingImagePath,
                     formData.unit,
                     formData.quantity,
+                    formData.type,
+                    expiresAt,
                 );
             }
-            navigate('/');
+            navigate('/dashboard');
         } catch (error) {
             console.error("Failed:", error.message);
             alert("Error: " + error.message);
@@ -144,7 +177,7 @@ export default function CreateListing(){
         e.preventDefault();
         if (!confirm("Are you sure you want to delete this listing?")) return;
         await deleteListing(id);
-        navigate('/');
+        navigate('/dashboard');
     };
 
 
