@@ -9,6 +9,7 @@ const mockListing = {
   discounted_price: 35,
   quantity: 10,
   unit: 'kg',
+  type: 'vegetable',
   image: null,
 }
 
