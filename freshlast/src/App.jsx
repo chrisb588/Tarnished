@@ -93,8 +93,6 @@ export default function App() {
   // to authenticate admin user
   useEffect(() => {
     const checkIfIsAdmin = async () => {
-      await adminLogin("admin", "1234567890");
-
       const token = getAdminToken();
       if (!token) {
         setVerifyingAdmin(false);
@@ -157,11 +155,8 @@ export default function App() {
         <Route path="/edit/:id" element={<CreateListing />} />
         <Route path="/viewListing/:id" element={<ViewListing />} />
         <Route path="/changePass" element={<ChangePassword />} />
-        <Route path="/adminLoginPage" element={<AdminLoginPage/>} />
-        <Route 
-          path="/viewMerchant/:id" 
-          element={<ViewMerchant />} 
-        />
+        <Route path="/adminLoginPage" element={<AdminLoginPage />} />
+        <Route path="/viewMerchant/:id" element={<ViewMerchant />} />
         <Route
           path="/admin"
           element={!isAdmin ? <Navigate to="/" replace /> : <AdminDashboard />}
