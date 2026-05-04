@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import './AppHeader.css'
+import { useNavigate} from 'react-router-dom'
 
 function SearchIcon() {
   return (
@@ -13,6 +14,7 @@ function SearchIcon() {
 export default function AppHeader({ session, onLogout, onLoginClick, searchQuery, onSearchChange }) {
   return (
     <header className="app-header">
+      <Link to="/" className="app-header-logo-link">
       <div className="app-header__logo">
         <span className="app-header__logo--green">Fr</span>
         <span className="app-header__logo--orange">è</span>
@@ -20,6 +22,7 @@ export default function AppHeader({ session, onLogout, onLoginClick, searchQuery
         <span className="app-header__logo--orange">a</span>
         <span className="app-header__logo--green">st</span>
       </div>
+      </Link>
 
       {onSearchChange && (
         <div className="app-header__search">
