@@ -18,6 +18,7 @@ export default function ViewMerchant() {
   const [listings, setListings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
+  const availableCategories = ['All', ...new Set(listings.map(l => l.type).filter(Boolean))]
 
   const [merchantData, setMerchantData] = useState(
     {
@@ -122,9 +123,16 @@ export default function ViewMerchant() {
           <div className="viewmerchant-listings"> 
             <div className="viewmerchant-categories">
               {/*TO DO: Make these clickable/filterable*/}
-              <CategoryFilter name="Vegetables" />
-              <CategoryFilter name="Chicken" />
-              <CategoryFilter name="Seafood" />
+              {
+                availableCategories.map(category => (
+                  <CategoryFilter
+                    key = {category}
+                    name = {category}
+                    isActive = {selectedCategory === category}
+                    onClick = {() => setSelectedCategory(category)}
+                  />
+                ))
+              }
             </div>
               {isLoading ? (
               <p className="viewmerchant-status">Loading listings...</p>
