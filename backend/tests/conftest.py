@@ -31,7 +31,6 @@ def client(supabase_local):
 
 
 SEEDED_IDS = {"11111111-1111-1111-1111-111111111111"}
-
 SEEDED_DATA = {
     "merchant": [
         {
@@ -40,13 +39,30 @@ SEEDED_DATA = {
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "18:00:00",
-            "operating_days": ["Mon", "Wed", "Fri"],
             "location": "Cebu City, Philippines",
             "location_photo": "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/profile/22222222-2222-2222-2222-222222222222",
             "category": ["vegetable"],
         }
+    ],
+    "schedule": [
+        {
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
+            "day": "Mon",
+            "start_time": "08:00:00",
+            "end_time": "12:00:00",
+        },
+        {
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
+            "day": "Tue",
+            "start_time": "08:00:00",
+            "end_time": "12:00:00",
+        },
+        {
+            "merchant_id": "11111111-1111-1111-1111-111111111111",
+            "day": "Wed",
+            "start_time": "09:00:00",
+            "end_time": "14:00:00",
+        },
     ],
     "listing": [
         {
@@ -65,33 +81,41 @@ SEEDED_DATA = {
     ],
     # "other_table": [ ... ]
 }
-
 TABLES = list(SEEDED_DATA.keys())
 
 
 @pytest.fixture(autouse=True)
 def cleanup(supabase_local):
     yield
+
     merchants = supabase_local.table("merchant").select("id").execute()
     for merchant in merchants.data:
         if merchant["id"] in SEEDED_IDS:
             continue
+
         # Remove profile images
         files = supabase_local.storage.from_("media").list(f"{merchant['id']}/profile")
         if files:
             paths = [f"{merchant['id']}/profile/{f['name']}" for f in files]
             supabase_local.storage.from_("media").remove(paths)
+
         # Remove listing images
         files = supabase_local.storage.from_("media").list(f"{merchant['id']}/listings")
         if files:
             paths = [f"{merchant['id']}/listings/{f['name']}" for f in files]
             supabase_local.storage.from_("media").remove(paths)
+
         supabase_local.auth.admin.delete_user(merchant["id"])
 
     for table in reversed(TABLES):
-        supabase_local.table(table).delete().neq(
-            "id", "00000000-0000-0000-0000-000000000000"
-        ).filter("id", "not.in", f"({','.join(SEEDED_IDS)})").execute()
+        if table == "schedule":
+            supabase_local.table("schedule").delete().not_.in_(
+                "merchant_id", list(SEEDED_IDS)
+            ).execute()
+        else:
+            supabase_local.table(table).delete().neq(
+                "id", "00000000-0000-0000-0000-000000000000"
+            ).filter("id", "not.in", f"({','.join(SEEDED_IDS)})").execute()
 
     for table in TABLES:
         supabase_local.table(table).upsert(SEEDED_DATA[table]).execute()
