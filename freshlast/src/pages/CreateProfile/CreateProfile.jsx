@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabaseClient";
 import VendorHeader from "../../components/VendorHeader/VendorHeader";
 import ProfileForm from "../../components/ProfileForm/ProfileForm";
 import { createMerchant } from "../../api/admin";
+import { MapPicker } from "../../components/MapPicker";
 
 //import '../EditProfile/EditProfile.css'
 import './CreateProfile.css'
@@ -13,14 +14,13 @@ export default function CreateProfile() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  //const [credentials, setCredentials] = useState({ email: "goon@test.com", temp_password: "testpass" }) //dummy
+  const [location, setLocation] = useState(null);
   const [credentials, setCredentials] = useState(null) //real
   const navigate = useNavigate();
 
 
   const [formData, setFormData] = useState({
     emailAddress: "",
-    password: "",
     stallName: "",
     marketLocation: "",
     phoneNumber: "",
@@ -34,16 +34,15 @@ export default function CreateProfile() {
     e.preventDefault();
     setError("");
 
-    console.log("Submitting with Data:", formData);
     if(!formData.emailAddress.trim()) return setError('Email Address is required')
     if (!photo) return setError('Stall Photo is required')
     if (!formData.stallName.trim()) return setError('Stall Name is required')
     if (!formData.marketLocation.trim()) return setError('Market Location is required')
-    if (!formData.phoneNumber.trim()) return setError('Phone Number is required') 
+    if (!formData.phoneNumber.trim()) return setError('Phone Number is required')
     if (!formData.operatingHoursStart.trim() || !formData.operatingHoursEnd.trim()) return setError('Please enter your operating hours.')
     if (formData.operatingHoursStart >= formData.operatingHoursEnd) return setError('Opening time must be earlier than closing time.')
     if (formData.operatingDays.length === 0) return setError('Please select at least one operating day')
-    
+
 
     setIsLoading(true)
 
@@ -52,8 +51,9 @@ export default function CreateProfile() {
       const response = await createMerchant(
         formData.emailAddress,
         formData.stallName,
-        0, // TODO: Get x coord of vendor using map marker
-        0, // TODO: Get y coord of vendor using map marker
+        formData.phoneNumber,
+        location?.lat ?? 0,
+        location?.lng ?? 0,
         photo,
         formData.operatingHoursStart,
         formData.operatingHoursEnd,
@@ -61,14 +61,7 @@ export default function CreateProfile() {
         formData.marketLocation,
       );
 
-      // this is what displays the user password
-      console.log(response); // TODO: Display user credentials to give to the vendor
-
       const { email, temp_password } = response.data;
-      
-      console.log("Email:", email);
-      console.log("Temp Password:", temp_password);
-
       setCredentials({ email, temp_password });
 
     } catch (e) {
@@ -96,6 +89,9 @@ export default function CreateProfile() {
           </div>
         )}
 
+        <div className="edit-profile__map-section">
+          <MapPicker onLocationChange={setLocation} />
+        </div>
         <ProfileForm
           isCreating={true}
           formData={formData}

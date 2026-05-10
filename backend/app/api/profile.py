@@ -5,7 +5,9 @@ from uuid import UUID, uuid4
 
 from core.supabase import supabase
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
+from models.enums.category import Category
 from models.enums.weekday import Weekday
+from models.ph_phone import PhPhone
 from models.profile import Merchant
 
 router = APIRouter()
@@ -25,6 +27,7 @@ async def get_listing(id: str):
 async def update_listing(
     id: str,
     name: str = Form(...),
+    phone_number: PhPhone = Form(...),
     latitude: float = Form(...),
     longitude: float = Form(...),
     start_operating_time: time = Form(...),
@@ -32,6 +35,7 @@ async def update_listing(
     operating_days: str = Form(...),
     location: str = Form(...),
     location_photo: UploadFile = File(None),
+    category: str = Form(...),
 ):
     # Parse operating days string as an array
     try:
@@ -39,6 +43,18 @@ async def update_listing(
     except Exception:
         try:
             parsed_days = [Weekday(day.strip()) for day in operating_days.split(",")]
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Invalid data format for operating days field. It should be an array containing 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', and/or 'Sat'",
+            )
+
+    # Parse category string as an array
+    try:
+        parsed_categories = [Category(c) for c in json.loads(category)]
+    except Exception:
+        try:
+            parsed_categories = [Category(c.strip()) for c in category.split(",")]
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -99,6 +115,7 @@ async def update_listing(
             payload = Merchant(
                 id=UUID(id),
                 name=name,
+                phone_number=phone_number,
                 latitude=latitude,
                 longitude=longitude,
                 location_photo=image_url,
@@ -106,6 +123,7 @@ async def update_listing(
                 end_operating_time=end_operating_time,
                 operating_days=parsed_days,
                 location=location,
+                category=parsed_categories,
             ).model_dump(mode="json")
             data = supabase.table("merchant").update(payload).eq("id", id).execute()
 

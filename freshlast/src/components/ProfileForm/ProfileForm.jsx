@@ -30,14 +30,12 @@ export default function ProfileForm({
     }));
   };
 
-  const allDaysSelected = DAYS.every((day) =>
-    formData.operatingDays.includes(day)
-  );
+  const allDaysSelected = DAYS.every((d) => formData.operatingDays.includes(d));
 
   const toggleAllDays = () => {
     setFormData((prev) => ({
       ...prev,
-      operatingDays: allDaysSelected ? [] : DAYS,
+      operatingDays: allDaysSelected ? [] : [...DAYS],
     }));
   };
 
@@ -150,7 +148,7 @@ export default function ProfileForm({
         >
           Phone Number
         </label>
-        <input id="phoneNumber" name="phoneNumber" type="number"
+        <input id="phoneNumber" name="phoneNumber" type="tel"
           className="edit-profile__input"
           value={formData.phoneNumber}
           onChange={handleChange}
@@ -182,21 +180,16 @@ export default function ProfileForm({
 
       {/* Operating Days */}
       <div className="edit-profile__field">
-        <label className="edit-profile__label edit-profile__label--required">
-          Operating Days
-        </label>
         <div className="edit-profile__days-header">
-          <span className="edit-profile__days-summary">
-            {formData.operatingDays.length > 0
-              ? `${formData.operatingDays.length} selected`
-              : "No days selected"}
-          </span>
+          <label className="edit-profile__label edit-profile__label--required">
+            Operating Days
+          </label>
           <button
             type="button"
-            className="edit-profile__days-toggle"
+            className="edit-profile__select-all-btn"
             onClick={toggleAllDays}
           >
-            {allDaysSelected ? "Clear all" : "Select all"}
+            {allDaysSelected ? "Unselect All" : "Select All"}
           </button>
         </div>
         <div className="edit-profile__days">

@@ -1,0 +1,17 @@
+.category-filter {
+    border: solid 1px var(--color-border);
+    border-radius: 10px;  
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+  }
+  
+  .category-filter.highlighted {
+    border: solid 1px var(--color-border);
+    border-radius: 10px;  
+    padding: 0.4rem 0.7rem;
+    background-color: var(--color-primary);
+  }
+
+.category-filter:hover{
+  background-color: var(--color-primary-hover);
+}

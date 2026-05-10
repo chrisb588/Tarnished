@@ -1,0 +1,90 @@
+body {
+    display: block;
+    background-color: var(--color-white);
+    color: var(--color-text);
+  }
+
+.offerlist {
+    min-height: 100vh;
+    background-color: var(--color-background);    
+}
+
+.viewmerchant-content {
+    width: 100%;
+    padding: 0rem 3rem 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.viewmerchant-categories {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: solid 1px var(--color-border);
+  background-color: var(--color-white);
+  border-radius: 10px;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.viewmerchant-backbtn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  align-items: center;
+  margin-left: 3rem
+}
+
+.viewmerchant-backbtn:hover {
+  background: none;
+  color: var(--color-text);
+}
+
+/* Title */
+.viewmerchant-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 1.25rem; 
+  }
+  
+  /* Grid */
+  .viewmerchant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .viewmerchant-status {
+    color: var(--color-text-muted);
+    padding: 2rem 0;
+    font-size: 1rem;
+  }
+
+  .viewmerchant-info {
+    min-width: fit-content;
+  }
+
+  
+  @media (max-width: 640px) {
+    .viewmerchant-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.7rem;
+    }
+
+    .viewmerchant-content {
+        width: 100%;
+        display: flex;
+        padding: 0rem 0.5rem 0.5rem 0.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .viewmerchant-backbtn {
+      margin-left: 0.1rem
+    }
+  }
+  

@@ -1,5 +1,8 @@
+from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
+from models.enums.category import Category
 from pydantic import BaseModel
 
 
@@ -8,6 +11,8 @@ class Listing(BaseModel):
     name: str
     original_price: float = 0
     discounted_price: float = 0
-    image: str | None = None
+    image: str
     unit: str
     quantity: int = 0
+    type: Category
+    expires_at: Optional[datetime] = None

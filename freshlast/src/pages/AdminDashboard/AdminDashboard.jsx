@@ -27,11 +27,11 @@ const handleDelete = async (id) => {
 };
 
     return (
-        <div className='container'>
+        <div className='admin-container'>
             <Link to="/" className="floating-add-btn">
                 <p>Back to home</p>
             </Link>
-            <div className='dashboard'>
+            <div className='admin-dashboard'>
                 <h3>Users</h3>
                 {isLoading && <p>Loading merchants...</p>}
                 {fetchError && <p style={{ color: 'red' }}>{fetchError}</p>}

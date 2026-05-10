@@ -1,8 +1,6 @@
 .auth-form h1 {
- text-align: left;
-  font-size: 26px;
-  font-weight: 500;
-  margin: 0 0 4px;
+  text-align: center;
+  font-size: 12px;
 }
 
 .auth-form {
@@ -16,42 +14,27 @@
 .auth-form input[type="email"],
 .auth-form input[type="password"],
 .auth-form input[type="text"] {
-  width: 85%;
+  width: 85%; /* Ensures they fill the modal width */
   padding: 12px 16px;
   font-size: 1rem;
-  border: 1px solid rgb(74, 72, 72);
+  border: 1px solid black;
   background-color: white;
-  color: rgb(103, 109, 108);
+  color: black;
   border-radius: 6px;
-  outline: none;
+  outline: none; /* Removes the default browser glow */
   transition: border-color 0.2s, box-shadow 0.2s;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Crucial: includes padding in the width */
   align-self: center;
 }
 
-.auth-form input[type="email"]:hover,
-.auth-form input[type="password"]:hover,
-.auth-form input[type="text"]:hover {
-  border-color: #999;
-}
-
-.auth-form input[type="email"]:focus,
-.auth-form input[type="password"]:focus,
-.auth-form input[type="text"]:focus {
-  border-color: #2d6a4f;
-  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
-}
-
 .auth-buttons{
-  background-color: #d4edda;
-  color: #2d6a4f;
-  border: 0.5px solid #b7dfc4;
-  border-radius: 350px;
-  width: 100%;
-  margin-top: 0.5rem;
-  padding: 13px;
-  font-size: 14px;
-  font-weight: 500;
+  background-color: var(--color-primary);
+  border: none;
+  color: white;
+  width: 85%;
+  border-radius: 50px;
+  margin-top: 1.5rem;
+  align-self: center;
 }
 
 .auth-form p {
@@ -81,3 +64,17 @@
   color: darkblue; /* Darkens slightly on hover */ 
 }
 
+.admin-login {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  align-items: center;
+  text-decoration: underline;
+}
+
+.admin-login:hover{
+  background: none;
+  color: var(--color-text)
+}

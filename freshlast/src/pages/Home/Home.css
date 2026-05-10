@@ -113,12 +113,6 @@ body {
   gap: 1.5rem;
 }
 
-@media (min-width: 640px) {
-  .dashboard__grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
-}
-
 /* Status / empty */
 .dashboard__status {
   color: var(--color-text-muted);
@@ -131,4 +125,14 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
+}
+
+.dashboard__status--error {
+  color: var(--color-error, #e74c3c);
+}
+
+@media (min-width: 640px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
 }
