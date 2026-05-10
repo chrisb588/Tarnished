@@ -8,6 +8,7 @@ import Home from "./pages/Home/Home";
 import CreateListing from "./pages/CreateListing/CreateListing";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import MerchantView from "./pages/MerchantView/MerchantView";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import CreateProfile from "./pages/CreateProfile/CreateProfile";
 import ViewListing from "./pages/ViewListing/ViewListing";
@@ -93,17 +94,21 @@ export default function App() {
   // to authenticate admin user
   useEffect(() => {
     const checkIfIsAdmin = async () => {
-      await adminLogin("admin", "1234567890");
+      try {
+        await adminLogin("admin", "1234567890");
 
-      const token = getAdminToken();
-      if (!token) {
+        const token = getAdminToken();
+        if (!token) {
+          return;
+        }
+
+        const valid = await verifyAdminToken();
+        setIsAdmin(valid);
+      } catch (e) {
+        console.error("Failed to authenticate admin:", e);
+      } finally {
         setVerifyingAdmin(false);
-        return;
       }
-
-      const valid = await verifyAdminToken();
-      setIsAdmin(valid);
-      setVerifyingAdmin(false);
     };
 
     checkIfIsAdmin();
@@ -155,6 +160,7 @@ export default function App() {
         />
         <Route path="/create" element={<CreateListing />} />
         <Route path="/edit/:id" element={<CreateListing />} />
+        <Route path="/merchant/:id" element={<MerchantView />} />
         <Route path="/viewListing/:id" element={<ViewListing />} />
         <Route path="/changePass" element={<ChangePassword />} />
         <Route path="/adminLoginPage" element={<AdminLoginPage/>} />
