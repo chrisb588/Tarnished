@@ -8,7 +8,6 @@ import Home from "./pages/Home/Home";
 import CreateListing from "./pages/CreateListing/CreateListing";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
-import MerchantView from "./pages/MerchantView/MerchantView";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import CreateProfile from "./pages/CreateProfile/CreateProfile";
 import ViewListing from "./pages/ViewListing/ViewListing";
@@ -16,6 +15,7 @@ import ViewMerchant from "./pages/ViewMerchant/ViewMerchant";
 import AdminLoginPage from "./pages/AdminLoginPage/AdminLoginPage";
 import "./App.css";
 import { adminLogin, getAdminToken, verifyAdminToken } from "./api/admin";
+import AuthModal from "./components/AuthModal/AuthModal";
 
 export default function App() {
   const [session, setSession] = useState(undefined);
@@ -25,6 +25,7 @@ export default function App() {
   const [authError, setAuthError] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false); // Keeps track if admin user is currently authenticated
   const [verifyingAdmin, setVerifyingAdmin] = useState(true); // Loading state of admin user verification
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const checkPasswordFlag = (user) => {
     if (user?.user_metadata?.password_changed === false) {
@@ -156,17 +157,47 @@ export default function App() {
       <Routes>
         <Route
           path="/"
-          element={<OfferList session={session} onLogout={handleLogout} />}
+          element={
+            <OfferList
+              session={session}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+            />
+          }
         />
         <Route path="/create" element={<CreateListing />} />
         <Route path="/edit/:id" element={<CreateListing />} />
-        <Route path="/merchant/:id" element={<MerchantView />} />
-        <Route path="/viewListing/:id" element={<ViewListing />} />
+        <Route
+          path="/merchant/:id"
+          element={
+            <ViewMerchant
+              session={session}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+            />
+          }
+        />
+        <Route
+          path="/viewListing/:id"
+          element={
+            <ViewListing
+              session={session}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+            />
+          }
+        />
         <Route path="/changePass" element={<ChangePassword />} />
-        <Route path="/adminLoginPage" element={<AdminLoginPage/>} />
-        <Route 
-          path="/viewMerchant/:id" 
-          element={<ViewMerchant />} 
+        <Route path="/adminLoginPage" element={<AdminLoginPage />} />
+        <Route
+          path="/viewMerchant/:id"
+          element={
+            <ViewMerchant
+              session={session}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+            />
+          }
         />
         <Route
           path="/admin"
@@ -190,7 +221,13 @@ export default function App() {
         {/* PUBLIC */}
         <Route
           path="/offers"
-          element={<OfferList session={session} onLogout={handleLogout} />}
+          element={
+            <OfferList
+              session={session}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+            />
+          }
         />
 
         {/* VENDOR DASHBOARD */}
@@ -234,6 +271,12 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      <AuthModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSuccess={() => setShowLoginModal(false)}
+      />
     </BrowserRouter>
   );
 }

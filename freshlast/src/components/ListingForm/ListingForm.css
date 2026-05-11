@@ -1,228 +1,358 @@
-* {
-    box-sizing: border-box;
+:root {
+  --lf-primary: #16a34a;
+  --lf-primary-hover: #15803d;
+  --lf-primary-soft: #f0fdf4;
+  --lf-border: #e5e7eb;
+  --lf-border-strong: #d1d5db;
+  --lf-text: #111827;
+  --lf-muted: #6b7280;
+  --lf-bg: #f9fafb;
+  --lf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --lf-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
-.create-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-    gap: 15px;
-    border: 2px solid black;
-    border-radius: 30px;
-    background-color: white;
-    padding: 0px 2rem 1rem;
-}
-.preface{
-    display: block;
-    place-self: start;
-    margin-bottom: -15px;
-}
-.preface h1{
-    margin-bottom: -15px;
-}
-.info-container-photo{
-    border: solid black 2px;
-    border-radius: 30px;
-    width: 95%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 10px;
-    padding: 0px 1.5rem 1rem;
-    text-align: left;
-    box-sizing: border-box;
-}
-.img-container{
-    border: solid black 2px;
-    border-radius: 30px;
-    width: 10rem;
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    margin-top: 10px;
-}
-.img-container label{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-}
-.img-container.is-empty img{
-    height: 40%;
-    width: 40%;
-    object-fit: contain;
-}
-.img-container.has-image{
-    width: 100%;      /* Let it expand to the parent container's width */
-    max-width: 20rem; /* Prevents it from getting TOO big */
-    aspect-ratio: auto; /* Allow the image to dictate the shape */    
-}
-.img-container.has-image img {
-    width: 100%;
-    height: auto;
-    display: block;
+.lf {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem 4rem;
+  font-family: inherit;
+  color: var(--lf-text);
 }
 
-.info-preface{
-    width: 100%;
-    text-align: left;
-    margin-top: -1rem;
-}
-.info-preface h4{
-    text-align: left;
-    font-size: 20px;
-    margin-bottom: -1rem;
-}
-.info-container{
-    border: solid black 2px;
-    border-radius: 30px;
-    width: 95%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-    padding: 0px 1.5rem 16px;
-    text-align: left;
-    box-sizing: border-box;
-}
-.info-container h4{
-    text-align: left;
-    margin-bottom: -20px;
-}
-.info-container input[type="text"]{
-    background-color: white;
-    color: black;
-    height: 40px;
-    width: 100%;
-    border-radius: 5px;
-    border: black 2px solid;
-    padding: 3px 0.5rem;
-    font-size: 16px;
-}
-.info-container input[type="text"]:focus {
-    /* This removes the default blue/black square ring */
-    outline: none; 
-    
-    /* This ensures the border stays visible and rounded */
-    border: black 2px solid; 
-    
-    /* Optional: Add a subtle glow or change border color so users 
-       know which box they are typing in (Great for UX!) */
-    border-color: #2ce257; 
-    box-shadow: 0 0 5px #13c73d;
+/* ── HEADER ── */
+.lf__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
-.descriptionInput{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 100%;
-    height: fit-content;
-}
-.quantityDiv{
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-}
-.quantityWrapper{
-    height: 50px;
-}
-.quantityWrapper input[type="number"]{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 2px; 
-    box-sizing: border-box;
-    padding: 3px 0.5rem;
-    max-width: 6.5rem;
-    font-size: 16px;
-}
-.quantityStepper{
-    display: flex;
-    gap: 5px;
-}
-.stepper-button{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 10px;
-    aspect-ratio: 1/1;
-    box-sizing: border-box;
-}
-.unitWrapper{
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-.unitWrapper select{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 2px;
-    width: 50px;
-    height: 50px;
-}
-.priceInput{
-    display: flex;
-    flex-direction: row;
-    align-self: flex-start;
-    gap: 30px;
-    margin-bottom: 5px;
-}
-.priceInput input{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 5px;
-    height: 30px;
-    width: 100%;
-    max-width: 9rem;
-    padding: 3px 0.5rem;
-    font-size: 16px;
-}
-.pricing{
-    width: 100%;
+.lf__title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
 }
 
-@media only screen and (max-width: 450px) {
-    body {
-        font-size: 12px;
-    }
-    p {
-        font-size: 9px;
-    }
-    .create-container{
-        min-width: 100%;
-        padding: 0px 1rem 1rem;
-    }
-    .create-container h1{
-        font-size: 18px;
-    }
-    .create-container h4{
-        font-size: 1.2rem;
-    }
-    .create-container p{
-        font-size: 0.9rem;
-    }
-    .info-preface {
-        margin-bottom: -0.7rem;
-    }
-    .quantityWrapper input{
-        max-width: 5rem;
-    }
-    .stepper-button {
-        width: 10px;
-    }
-    .quantityDiv {
-        gap: 10px;
-    }
-    .quantityDiv select{
-        width: 3rem;
-    }
-    .priceInput {
-        gap: 0.5rem;
-    }
+.lf__subtitle {
+  color: var(--lf-muted);
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+}
+
+.lf__publish {
+  background: var(--lf-primary);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+}
+
+.lf__publish:hover {
+  background: var(--lf-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.35);
+}
+
+/* ── GRID ── */
+.lf__grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.lf__main,
+.lf__side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lf__side {
+  position: sticky;
+  top: 1.5rem;
+}
+
+/* ── CARD ── */
+.lf__card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid var(--lf-border);
+  box-shadow: var(--lf-shadow-sm);
+  transition: box-shadow 0.2s;
+}
+
+.lf__card:hover {
+  box-shadow: var(--lf-shadow-md);
+}
+
+.lf__card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.lf__card-head h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.lf__card-head p {
+  font-size: 0.85rem;
+  color: var(--lf-muted);
+  margin: 0.15rem 0 0;
+}
+
+.lf__step {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--lf-primary-soft);
+  color: var(--lf-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.lf__savings {
+  margin-left: auto;
+  background: var(--lf-primary);
+  color: #fff;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ── FIELDS ── */
+.lf__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.lf__field:last-child {
+  margin-bottom: 0;
+}
+
+.lf__field label {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--lf-text);
+}
+
+.lf__field input,
+.lf__field select {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--lf-border);
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--lf-text);
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.lf__field input:hover,
+.lf__field select:hover {
+  border-color: var(--lf-border-strong);
+}
+
+.lf__field input:focus,
+.lf__field select:focus {
+  outline: none;
+  border-color: var(--lf-primary);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+/* ── INPUT WITH PREFIX ── */
+.lf__input-prefix {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--lf-border);
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.lf__input-prefix:hover {
+  border-color: var(--lf-border-strong);
+}
+
+.lf__input-prefix:focus-within {
+  border-color: var(--lf-primary);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.lf__input-prefix span {
+  padding: 0 0.85rem;
+  color: var(--lf-muted);
+  font-weight: 600;
+  border-right: 1px solid var(--lf-border);
+  font-size: 0.95rem;
+}
+
+.lf__input-prefix input {
+  border: none !important;
+  background: transparent;
+  padding: 0.65rem 0.85rem;
+  width: 100%;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.lf__input-prefix input:focus {
+  box-shadow: none !important;
+}
+
+.lf__input-prefix--error,
+.lf__input-prefix--error:focus-within {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.lf__error {
+  margin: 0.6rem 0 0;
+  color: #b91c1c;
+  font-size: 0.825rem;
+  font-weight: 500;
+}
+
+/* ── GROUPS ── */
+.lf__triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: 0.85rem;
+}
+
+.lf__double {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+/* ── UPLOAD ── */
+.lf__card--upload .lf__upload {
+  border: 2px dashed var(--lf-border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  overflow: hidden;
+  background: var(--lf-bg);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.lf__upload:hover {
+  border-color: var(--lf-primary);
+  background: var(--lf-primary-soft);
+}
+
+.lf__upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lf__upload--has-image {
+  border-style: solid;
+  padding: 0;
+}
+
+.lf__upload-empty {
+  text-align: center;
+  color: var(--lf-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+}
+
+.lf__upload-empty img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  opacity: 0.6;
+}
+
+.lf__upload-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--lf-text);
+}
+
+.lf__upload-empty span {
+  font-size: 0.78rem;
+}
+
+/* ── TIP ── */
+.lf__tip {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  padding: 1.25rem;
+  border-radius: 14px;
+  border: 1px solid #bbf7d0;
+}
+
+.lf__tip h4 {
+  color: #166534;
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.lf__tip p {
+  color: #15803d;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .lf__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lf__side {
+    position: static;
+  }
+
+  .lf__triple {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lf__triple .lf__field:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+
+  .lf__triple,
+  .lf__double {
+    grid-template-columns: 1fr;
+  }
+
+  .lf__publish {
+    width: 100%;
+  }
 }

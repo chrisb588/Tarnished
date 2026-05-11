@@ -4,7 +4,7 @@ import './AdminLoginPage.css'
 
 
 
-export default function AdminLoginPage(){
+export default function AdminLoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -15,17 +15,17 @@ export default function AdminLoginPage(){
         setLoading(true);
 
         if (!supabase) {
-        alert("Supabase not configured. Please check environment variables.");
-        setLoading(false);
-        return;
+            alert("Supabase not configured. Please check environment variables.");
+            setLoading(false);
+            return;
         }
 
         const { error } = await supabase.auth.signInWithPassword({ email, password });
 
         if (error) {
-        alert(error.message);
+            alert(error.message);
         } else {
-        onSuccess?.();
+            onSuccess?.();
         }
         setLoading(false);
     };
@@ -39,20 +39,20 @@ export default function AdminLoginPage(){
                 <h1 className='admin-login-label'>Sign in as Admin</h1>
                 <p>email address</p>
                 <input
-                type="email"
-                placeholder="Your email"
-                value={email}
-                required
-                onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    placeholder="Your email"
+                    value={email}
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <p>password</p>
                 <input
-                type="password"
-                placeholder="Your password"
-                value={password}
-                required
-                onChange={(e) => setPassword(e.target.value)}
-                />            
+                    type="password"
+                    placeholder="Your password"
+                    value={password}
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                />
                 <button disabled={loading} className="admin-login-button">
                     {loading ? "Processing..." : "Log In"}
                 </button>

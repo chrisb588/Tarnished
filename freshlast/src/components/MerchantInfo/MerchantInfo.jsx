@@ -9,9 +9,9 @@ const markerIcon = new L.Icon({
     shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
-  });
+});
 
-export default function MerchantInfo({formData}) {
+export default function MerchantInfo({ formData }) {
 
 
     if (!formData) {
@@ -19,11 +19,11 @@ export default function MerchantInfo({formData}) {
     }
 
     const {
-        id, 
-        stallName, 
-        marketLocation, 
-        phoneNumber, 
-        operatingHoursStart, 
+        id,
+        stallName,
+        marketLocation,
+        phoneNumber,
+        operatingHoursStart,
         operatingHoursEnd,
         operatingDays,
         category,
@@ -35,12 +35,12 @@ export default function MerchantInfo({formData}) {
         <div className="merchantinfo-container">
             <h3 className="merchantinfo-name">{stallName}</h3>
             <div className="merchantinfo-photo">
-                {location_photo ? 
-                (
-                    <img src={location_photo} alt="Stall" />
-                ):(
-                    <p>No photo found</p>
-                )}
+                {location_photo ?
+                    (
+                        <img src={location_photo} alt="Stall" />
+                    ) : (
+                        <p>No photo found</p>
+                    )}
             </div>
             <div className="merchantinfo-general">
                 <div className='general-div'>
@@ -56,23 +56,23 @@ export default function MerchantInfo({formData}) {
                 </div>
                 <div className="merchantinfo-schedule">
                     <div className="hours-container">
-                            <p>Monday:</p>
-                            <p>10PM-12AM</p>
-                            <p>Tuesday:</p>
-                            <p>CLOSED</p>
-                            <p>Wednesday:</p>
-                            <p>CLOSED</p>
-                            <p>Thursday:</p>
-                            <p>CLOSED</p>                            
+                        <p>Monday:</p>
+                        <p>10PM-12AM</p>
+                        <p>Tuesday:</p>
+                        <p>CLOSED</p>
+                        <p>Wednesday:</p>
+                        <p>CLOSED</p>
+                        <p>Thursday:</p>
+                        <p>CLOSED</p>
                     </div>
                     <div className="hours-container">
-                            <p>Friday:</p>
-                            <p>10PM-12AM</p>
-                            <p>Saturday:</p>
-                            <p>10PM-12AM</p>
-                            <p>Sunday:</p>
-                            <p>10PM-12AM</p>
-                            <br></br>                 
+                        <p>Friday:</p>
+                        <p>10PM-12AM</p>
+                        <p>Saturday:</p>
+                        <p>10PM-12AM</p>
+                        <p>Sunday:</p>
+                        <p>10PM-12AM</p>
+                        <br></br>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@ export default function MerchantInfo({formData}) {
 
             <div className="merchantinfo-photo">
                 {coords?.lat && coords?.lng && coords.lat !== 0 && coords.lng !== 0 ? (
-                        <MapContainer
+                    <MapContainer
                         center={[coords.lat, coords.lng]}
                         zoom={17}
                         style={{ width: '100%', height: '300px' }}
@@ -89,18 +89,17 @@ export default function MerchantInfo({formData}) {
                         scrollWheelZoom={false}
                         doubleClickZoom={false}
                         zoomControl={false}
-                        >
+                    >
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution="© OpenStreetMap contributors"
                         />
                         <Marker position={[coords.lat, coords.lng]} icon={markerIcon} />
-                        </MapContainer>
-                    ) : (
-                        <p className="view-listing-status">Location not set</p>
-                    )}
+                    </MapContainer>
+                ) : (
+                    <p className="view-listing-status">Location not set</p>
+                )}
             </div>
         </div>
     );
-  }
-  
+}
