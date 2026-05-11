@@ -114,3 +114,23 @@ describe('ViewListing map', () => {
     expect(getProfile).toHaveBeenCalledWith('merchant-1')
   })
 })
+
+describe('ViewListing pricing', () => {
+  beforeEach(() => { vi.clearAllMocks() })
+
+  it('shows original as main price with no strike when discounted_price is 0', async () => {
+    getListingById.mockResolvedValue({
+      ...baseListing,
+      discounted_price: 0,
+    })
+    getProfile.mockResolvedValue({ name: 'Test Merchant', latitude: null, longitude: null, location_photo: null })
+
+    const { container } = renderViewListing()
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Test Item' })).toBeInTheDocument()
+    })
+    expect(screen.getByText('₱100')).toBeInTheDocument()
+    expect(container.querySelector('.vl-info__original-price')).not.toBeInTheDocument()
+  })
+})

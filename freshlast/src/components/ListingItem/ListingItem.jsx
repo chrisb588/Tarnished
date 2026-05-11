@@ -15,15 +15,21 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
   const navigate = useNavigate();
   const expiry = getExpiryLabel(listing.expires_at);
   const isSoldOut = listing.is_sold_out;
-  const isDiscounted = !!listing.discounted_price;
 
+  const original = Number(listing.original_price);
+  const discounted = Number(listing.discounted_price);
   const hasDiscount =
-    listing.original_price && listing.discounted_price &&
-    Number(listing.original_price) > Number(listing.discounted_price);
+    Number.isFinite(original) &&
+    original > 0 &&
+    Number.isFinite(discounted) &&
+    discounted > 0 &&
+    original > discounted;
 
   const discountPct = hasDiscount
-    ? Math.round(((listing.original_price - listing.discounted_price) / listing.original_price) * 100)
+    ? Math.round(((original - discounted) / original) * 100)
     : 0;
+
+  const displayPrice = hasDiscount ? discounted : original;
 
   return (
     <article
@@ -79,7 +85,7 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
         )}
 
         <div className="listing-card__price-row">
-          <span className="listing-card__price">₱{listing.discounted_price}</span>
+          <span className="listing-card__price">₱{displayPrice}</span>
           {hasDiscount && (
             <span className="listing-card__price-original">₱{listing.original_price}</span>
           )}
