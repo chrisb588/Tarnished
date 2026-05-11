@@ -63,6 +63,15 @@ export default function ViewListing({ session, onLogout, onLoginClick }) {
     </div>
   );
 
+  const originalPrice = Number(listing.original_price);
+  const discountedPrice = Number(listing.discounted_price);
+  const hasDiscount =
+    Number.isFinite(originalPrice) &&
+    originalPrice > 0 &&
+    Number.isFinite(discountedPrice) &&
+    discountedPrice > 0 &&
+    originalPrice > discountedPrice;
+
   return (
     <div className="vl-container">
 
@@ -105,11 +114,15 @@ export default function ViewListing({ session, onLogout, onLoginClick }) {
               </span>
               <h1 className="vl-info__name">{listing.name}</h1>
               <div className="vl-info__price-row">
-                {listing.original_price && (
-                  <span className="vl-info__original-price">₱{listing.original_price}</span>
-                )}
-                {listing.discounted_price && (
-                  <span className="vl-info__price">₱{listing.discounted_price}</span>
+                {hasDiscount ? (
+                  <>
+                    <span className="vl-info__original-price">₱{listing.original_price}</span>
+                    <span className="vl-info__price">₱{listing.discounted_price}</span>
+                  </>
+                ) : (
+                  listing.original_price != null && listing.original_price !== '' && (
+                    <span className="vl-info__price">₱{listing.original_price}</span>
+                  )
                 )}
                 {listing.unit && (
                   <span className="vl-info__unit">/ {listing.unit}</span>
