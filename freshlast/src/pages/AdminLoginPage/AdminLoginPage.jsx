@@ -49,8 +49,8 @@ export default function AdminLoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
+          type="submit"
           disabled={loading}
-          onClick={handleSubmit}
           className="admin-login-button"
         >
           {loading ? "Processing..." : "Log In"}

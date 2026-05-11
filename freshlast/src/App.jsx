@@ -91,12 +91,19 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Verify JWT token upon loading the app
-  // to authenticate admin user
   useEffect(() => {
     const checkIfIsAdmin = async () => {
       const token = getAdminToken();
       if (!token) {
+        setVerifyingAdmin(false);
+        return;
+      }
+      try {
+        const valid = await verifyAdminToken();
+        setIsAdmin(valid);
+      } catch {
+        setIsAdmin(false);
+      } finally {
         setVerifyingAdmin(false);
       }
     };
