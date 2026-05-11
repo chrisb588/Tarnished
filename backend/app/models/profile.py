@@ -14,8 +14,5 @@ class Merchant(BaseModel):
     latitude: float
     longitude: float
     location_photo: str | None = None
-    start_operating_time: time
-    end_operating_time: time
-    operating_days: list[Weekday]
     location: str
     category: list[Category]
