@@ -50,11 +50,6 @@ const validateForm = (formData) => {
         return false;
     }
 
-    //returns -1 as the discounted price if there is no discount so the backend doesn't explode
-    if (formData.discountedprice == null){
-        formData.discountedprice = -1
-    }
-
     if (isMissingFields) {
         alert("All fields are required! Please check your inputs.");
         return false;

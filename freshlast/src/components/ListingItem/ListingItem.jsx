@@ -15,6 +15,7 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
   const navigate = useNavigate();
   const expiryLabel = getExpiryLabel(listing.expires_at);
   const isSoldOut = listing.is_sold_out;
+  const isDiscounted = !!listing.discounted_price;
 
   return (
     <div
@@ -28,9 +29,15 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
         <p>
           <span className='listing-name'>{listing.name}</span>
           <br />
-          <span className='original-price'>₱{listing.original_price}</span>
-          &nbsp;|&nbsp;
-          <span className='discounted-price'>₱{listing.discounted_price}</span>
+          <span className={isDiscounted ? 'original-price' : 'full-price'}>
+            ₱{listing.original_price}
+          </span>
+          {isDiscounted && (
+            <>
+              &nbsp;|&nbsp;
+              <span className='discounted-price'>₱{listing.discounted_price}</span>
+            </>
+          )}
           <br />
           <span className='quantity'>{listing.quantity} {listing.unit}</span>
           <br />

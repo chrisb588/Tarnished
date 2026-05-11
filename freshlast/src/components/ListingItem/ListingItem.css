@@ -109,6 +109,11 @@
     font-size: 0.875rem;
 }
 
+.full-price {
+    font-size: 0.875rem;
+    color: inherit;
+}
+
 /* Orange discounted price */
 .discounted-price {
     color: #e67e22;

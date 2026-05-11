@@ -44,6 +44,8 @@ export default function ViewListing() {
     fetchListing();
   }, [id]);
 
+  const isDiscounted = listing ? !!listing.discounted_price : false;
+
   return (
     <div className="view-listing">
         <button className="view-listing-back-btn" onClick={() => navigate(-1)}>
@@ -67,9 +69,15 @@ export default function ViewListing() {
               <p className="view-listing-quantity">{listing.quantity} {listing.unit}</p>
             </div>
             <div className="view-listing-prices">
-                <span className="view-listing-original-price">₱{listing.original_price}</span>
-                <span className="view-listing-price-sep">|</span>
-                <span className="view-listing-discounted-price">₱{listing.discounted_price}</span>
+                <span className={isDiscounted ? 'view-listing-original-price' : 'view-listing-full-price'}>
+                  ₱{listing.original_price}
+                </span>
+                {isDiscounted && (
+                  <>
+                    <span className="view-listing-price-sep">|</span>
+                    <span className="view-listing-discounted-price">₱{listing.discounted_price}</span>
+                  </>
+                )}
                 <span className="view-listing-quantity">/ {listing.unit}</span>
             </div>
 

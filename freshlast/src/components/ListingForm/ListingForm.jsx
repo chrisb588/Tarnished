@@ -13,7 +13,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
     const [hasDiscount, setHasDiscount] = useState(false)
 
     useEffect(() => {
-        if (formData.discountedprice != null && formData.discountedprice !== 0 && formData.discountedprice !== -1) {
+        if (formData.discountedprice != null && formData.discountedprice !== 0) {
             setHasDiscount(true);
         }
     }, []);

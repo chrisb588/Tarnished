@@ -1,5 +1,14 @@
 import apiClient from "../lib/apiClient";
 
+/** Omit when no discount — backend Form defaults discounted_price to 0 (FormData would stringify null as "null" → 422). */
+function appendDiscountedPrice(formData, discountedPrice) {
+  if (discountedPrice == null || discountedPrice === "") return;
+  const n = Number(discountedPrice);
+  if (Number.isFinite(n)) {
+    formData.append("discounted_price", n);
+  }
+}
+
 const createListing = async (
   merchantId,
   name,
@@ -15,7 +24,7 @@ const createListing = async (
   formData.append("merchant_id", merchantId);
   formData.append("name", name);
   formData.append("original_price", originalPrice);
-  formData.append("discounted_price", discountedPrice);
+  appendDiscountedPrice(formData, discountedPrice);
   if (image instanceof File) {
     formData.append("image", image);
   }
@@ -58,7 +67,7 @@ const updateListing = async (
   formData.append("merchant_id", merchantId);
   formData.append("name", name);
   formData.append("original_price", originalPrice);
-  formData.append("discounted_price", discountedPrice);
+  appendDiscountedPrice(formData, discountedPrice);
   if (image instanceof File) {
     formData.append("image", image);
   }

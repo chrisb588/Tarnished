@@ -108,6 +108,11 @@
   text-decoration: line-through;
 }
 
+.view-listing-full-price {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
 .view-listing-price-sep {
   color: var(--color-border);
 }
