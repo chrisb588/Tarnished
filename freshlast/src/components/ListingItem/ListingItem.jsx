@@ -1,79 +1,119 @@
 import { useNavigate } from 'react-router-dom';
-import './ListingItem.css'
+import './ListingItem.css';
 
 function getExpiryLabel(expiresAt) {
   if (!expiresAt) return null;
   const diffMs = new Date(expiresAt) - new Date();
   if (diffMs <= 0) return null;
   const hours = Math.ceil(diffMs / (1000 * 60 * 60));
-  if (hours < 24) return `Expires in ${hours}h`;
+  if (hours < 24) return { text: `${hours}h left`, urgent: hours <= 6 };
   const days = Math.ceil(hours / 24);
-  return `Expires in ${days}d`;
+  return { text: `${days}d left`, urgent: false };
 }
 
 export default function ListingItem({ listing, showEdit = false, onSelect, onSoldOut }) {
   const navigate = useNavigate();
-  const expiryLabel = getExpiryLabel(listing.expires_at);
+  const expiry = getExpiryLabel(listing.expires_at);
   const isSoldOut = listing.is_sold_out;
   const isDiscounted = !!listing.discounted_price;
 
+  const hasDiscount =
+    listing.original_price && listing.discounted_price &&
+    Number(listing.original_price) > Number(listing.discounted_price);
+
+  const discountPct = hasDiscount
+    ? Math.round(((listing.original_price - listing.discounted_price) / listing.original_price) * 100)
+    : 0;
+
   return (
-    <div
-      className={`listing-border${isSoldOut ? ' listing-border--sold-out' : ''}`}
+    <article
+      className={`
+    listing-card
+    ${isSoldOut ? ' listing-card--sold-out' : ''}
+    ${hasDiscount ? ' listing-card--sale' : ''}
+  `}
       onClick={onSelect ? () => onSelect(listing) : undefined}
+      role={onSelect ? 'button' : undefined}
+      tabIndex={onSelect ? 0 : undefined}
     >
-      <div className="listing-image">
-        {listing.image && <img src={listing.image} alt={listing.name} />}
-      </div>
-      <div className='listing-info'>
-        <p>
-          <span className='listing-name'>{listing.name}</span>
-          <br />
-          <span className={isDiscounted ? 'original-price' : 'full-price'}>
-            ₱{listing.original_price}
+      {/* IMAGE */}
+      <div className="listing-card__image">
+        {listing.image
+          ? <img src={listing.image} alt={listing.name} loading="lazy" />
+          : <div className="listing-card__placeholder">🥬</div>
+        }
+
+        {/* top-left: discount */}
+        {hasDiscount && !isSoldOut && (
+          <span className="listing-card__discount">-{discountPct}%</span>
+        )}
+
+        {/* top-right: status */}
+        {isSoldOut ? (
+          <span className="listing-card__status listing-card__status--soldout">Sold Out</span>
+        ) : listing.category ? (
+          <span className="listing-card__status">{listing.category}</span>
+        ) : null}
+
+        {/* bottom: expiry overlay */}
+        {expiry && !isSoldOut && (
+          <span className={`listing-card__expiry${expiry.urgent ? ' listing-card__expiry--urgent' : ''}`}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+            </svg>
+            {expiry.text}
           </span>
-          {isDiscounted && (
-            <>
-              &nbsp;|&nbsp;
-              <span className='discounted-price'>₱{listing.discounted_price}</span>
-            </>
-          )}
-          <br />
-          <span className='quantity'>{listing.quantity} {listing.unit}</span>
-          <br />
-          <span className='type'>Type: {listing.type}</span>
-          {expiryLabel && (
-            <>
-              <br />
-              <span className='expiry-label'>{expiryLabel}</span>
-            </>
-          )}
-          {isSoldOut && (
-            <>
-              <br />
-              <span className='sold-out-label'>Sold Out</span>
-            </>
-          )}
-        </p>
+        )}
       </div>
+
+      {/* INFO */}
+      <div className="listing-card__info">
+        <h3 className="listing-card__name">{listing.name}</h3>
+        {listing.merchant_name && (
+          <p className="listing-card__vendor">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l2-5h14l2 5" /><path d="M3 9v11h18V9" /><path d="M3 9h18" />
+            </svg>
+            {listing.merchant_name}
+          </p>
+        )}
+
+        <div className="listing-card__price-row">
+          <span className="listing-card__price">₱{listing.discounted_price}</span>
+          {hasDiscount && (
+            <span className="listing-card__price-original">₱{listing.original_price}</span>
+          )}
+        </div>
+
+        <div className="listing-card__meta">
+          {listing.quantity && (
+            <span className="listing-card__chip">{listing.quantity} {listing.unit}</span>
+          )}
+          {listing.type && (
+            <span className="listing-card__chip">{listing.type}</span>
+          )}
+        </div>
+      </div>
+
+      {/* ACTIONS */}
       {showEdit && (
-        <div className="listing-actions">
+        <div className="listing-card__actions">
           <button
-            className="edit-button-listing"
+            className="listing-card__btn listing-card__btn--ghost"
             onClick={(e) => { e.stopPropagation(); navigate(`/edit/${listing.id}`); }}
           >
             Edit
           </button>
           {onSoldOut && !isSoldOut && (
             <button
-              className="sold-out-button"
+              className="listing-card__btn listing-card__btn--danger"
               onClick={(e) => { e.stopPropagation(); onSoldOut(listing); }}
             >
-              Sold Out
+              Mark Sold Out
             </button>
           )}
         </div>
       )}
-    </div>
+    </article>
   );
 }

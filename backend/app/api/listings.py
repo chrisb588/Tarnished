@@ -87,7 +87,14 @@ async def create_listing(
 @router.get("/all", tags=["Listings"])
 async def get_all_listings():
     try:
-        data = supabase.table("listing").select("*").execute()
+        # Join with merchant table to get the vendor name
+        data = supabase.table("listing").select("*, merchant(name)").execute()
+        
+        # Flatten the merchant name into merchant_name for the frontend
+        for item in data.data:
+            if item.get("merchant"):
+                item["merchant_name"] = item["merchant"].get("name")
+        
         return data.data
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
@@ -97,13 +104,15 @@ async def get_all_listings():
 @router.get("", tags=["Listings"])
 async def get_listings(merchant_id: UUID):
     try:
-        data = (
+        # Verify merchant exists
+        merchant_data = (
             supabase.table("merchant")
-            .select("*")
+            .select("name")
             .eq("id", merchant_id)
             .single()
             .execute()
         )
+        merchant_name = merchant_data.data.get("name") if merchant_data.data else "Unknown Vendor"
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
@@ -114,6 +123,10 @@ async def get_listings(merchant_id: UUID):
             .eq("merchant_id", merchant_id)
             .execute()
         )
+
+        # Add merchant_name to each listing
+        for item in data.data:
+            item["merchant_name"] = merchant_name
 
         return data.data
     except Exception as e:
@@ -126,11 +139,16 @@ async def get_listing(listing_id: str):
     try:
         data = (
             supabase.table("listing")
-            .select("*")
+            .select("*, merchant(name)")
             .eq("id", listing_id)
             .single()
             .execute()
         )
+        
+        # Flatten merchant name
+        if data.data and data.data.get("merchant"):
+            data.data["merchant_name"] = data.data["merchant"].get("name")
+            
         return data.data
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
