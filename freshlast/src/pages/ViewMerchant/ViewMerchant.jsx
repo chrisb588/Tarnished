@@ -83,7 +83,7 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
   }, [paramId])
 
   const filteredListings = listings.filter(listing => {
-    const matchesCategory = selectedCategory === 'All' || listing.category === selectedCategory
+    const matchesCategory = selectedCategory === 'All' || listing.type === selectedCategory
     const matchesSearch = listing.name.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
   })

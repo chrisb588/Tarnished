@@ -7,7 +7,7 @@ import { createMerchant } from "../../api/admin";
 import { MapPicker } from "../../components/MapPicker";
 
 //import '../EditProfile/EditProfile.css'
-import './CreateProfile.css'
+import "./CreateProfile.css";
 
 export default function CreateProfile() {
   const [photo, setPhoto] = useState(null);
@@ -15,9 +15,8 @@ export default function CreateProfile() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [location, setLocation] = useState(null);
-  const [credentials, setCredentials] = useState(null) //real
+  const [credentials, setCredentials] = useState(null); //real
   const navigate = useNavigate();
-
 
   const [formData, setFormData] = useState({
     emailAddress: "",
@@ -34,17 +33,25 @@ export default function CreateProfile() {
     e.preventDefault();
     setError("");
 
-    if(!formData.emailAddress.trim()) return setError('Email Address is required')
-    if (!photo) return setError('Stall Photo is required')
-    if (!formData.stallName.trim()) return setError('Stall Name is required')
-    if (!formData.marketLocation.trim()) return setError('Market Location is required')
-    if (!formData.phoneNumber.trim()) return setError('Phone Number is required')
-    if (!formData.operatingHoursStart.trim() || !formData.operatingHoursEnd.trim()) return setError('Please enter your operating hours.')
-    if (formData.operatingHoursStart >= formData.operatingHoursEnd) return setError('Opening time must be earlier than closing time.')
-    if (formData.operatingDays.length === 0) return setError('Please select at least one operating day')
+    if (!formData.emailAddress.trim())
+      return setError("Email Address is required");
+    if (!photo) return setError("Stall Photo is required");
+    if (!formData.stallName.trim()) return setError("Stall Name is required");
+    if (!formData.marketLocation.trim())
+      return setError("Market Location is required");
+    if (!formData.phoneNumber.trim())
+      return setError("Phone Number is required");
+    if (
+      !formData.operatingHoursStart.trim() ||
+      !formData.operatingHoursEnd.trim()
+    )
+      return setError("Please enter your operating hours.");
+    if (formData.operatingHoursStart >= formData.operatingHoursEnd)
+      return setError("Opening time must be earlier than closing time.");
+    if (formData.operatingDays.length === 0)
+      return setError("Please select at least one operating day");
 
-
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       // Send request to create merchant endpoint
@@ -59,11 +66,11 @@ export default function CreateProfile() {
         formData.operatingHoursEnd,
         formData.operatingDays,
         formData.marketLocation,
+        "vegetable", // TODO: Hardcoded value for debugging purposes. Please add category input here
       );
 
       const { email, temp_password } = response.data;
       setCredentials({ email, temp_password });
-
     } catch (e) {
       setIsLoading(false);
       setError(String(e));
@@ -82,10 +89,16 @@ export default function CreateProfile() {
         {credentials && (
           <div className="credentials-banner">
             <p>Account created! Share these credentials with the vendor:</p>
-            <p><strong>Email:</strong> {credentials.email}</p>
-            <p><strong>Temporary Password:</strong> {credentials.temp_password}</p>
+            <p>
+              <strong>Email:</strong> {credentials.email}
+            </p>
+            <p>
+              <strong>Temporary Password:</strong> {credentials.temp_password}
+            </p>
 
-            <button onClick={() => navigate("/admin")}>Return to Dashboard</button>
+            <button onClick={() => navigate("/admin")}>
+              Return to Dashboard
+            </button>
           </div>
         )}
 

@@ -40,6 +40,7 @@ const createMerchant = async (
   end_operating_time, // should be only time
   operating_days, // should be an array consisting of exclusively "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
   location,
+  category,
 ) => {
   const formData = new FormData();
   formData.append("email", email);
@@ -52,6 +53,7 @@ const createMerchant = async (
   formData.append("end_operating_time", end_operating_time);
   formData.append("operating_days", JSON.stringify(operating_days));
   formData.append("location", location);
+  formData.append("category", category);
 
   const headers = {
     Authorization: `Bearer ${getAdminToken()}`,

@@ -1,5 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
-import './AppHeader.css';
+import { Link } from 'react-router-dom'
+import './AppHeader.css'
+import { useNavigate} from 'react-router-dom'
 
 const SearchIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
