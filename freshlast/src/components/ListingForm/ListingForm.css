@@ -1,358 +1,221 @@
-:root {
-  --lf-primary: #16a34a;
-  --lf-primary-hover: #15803d;
-  --lf-primary-soft: #f0fdf4;
-  --lf-border: #e5e7eb;
-  --lf-border-strong: #d1d5db;
-  --lf-text: #111827;
-  --lf-muted: #6b7280;
-  --lf-bg: #f9fafb;
-  --lf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --lf-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.06);
+* {
+  box-sizing: border-box;
 }
 
-.lf {
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 0 1.5rem 4rem;
-  font-family: inherit;
-  color: var(--lf-text);
-}
-
-/* ── HEADER ── */
-.lf__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.lf__title {
-  font-size: 1.875rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin: 0;
-}
-
-.lf__subtitle {
-  color: var(--lf-muted);
-  margin: 0.4rem 0 0;
-  font-size: 0.95rem;
-}
-
-.lf__publish {
-  background: var(--lf-primary);
-  color: #fff;
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
-}
-
-.lf__publish:hover {
-  background: var(--lf-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.35);
-}
-
-/* ── GRID ── */
-.lf__grid {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-.lf__main,
-.lf__side {
+/* Card container — matches edit-profile__form */
+.create-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 540px;
   gap: 1.25rem;
-}
-
-.lf__side {
-  position: sticky;
-  top: 1.5rem;
-}
-
-/* ── CARD ── */
-.lf__card {
-  background: #fff;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
   padding: 1.5rem;
-  border-radius: 16px;
-  border: 1px solid var(--lf-border);
-  box-shadow: var(--lf-shadow-sm);
-  transition: box-shadow 0.2s;
 }
 
-.lf__card:hover {
-  box-shadow: var(--lf-shadow-md);
+/* Section headings — small uppercase labels */
+.info-preface {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: -0.5rem;
 }
 
-.lf__card-head {
+.info-preface h4 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  text-align: left;
+}
+
+.info-preface p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  text-align: left;
+}
+
+/* All labels inside the form */
+.create-container label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+
+/* All inputs and selects — unified style */
+.create-container input[type="text"],
+.create-container input[type="number"],
+.create-container select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background-color: var(--color-white);
+  color: var(--color-text);
+  width: 100%;
+}
+
+.create-container input[type="text"]:focus,
+.create-container input[type="number"]:focus,
+.create-container select:focus {
+  border-color: var(--color-primary);
+}
+
+/* Image upload area — matches edit-profile__photo-box */
+.img-container {
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  width: 100%;
+  min-height: 120px;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  margin-bottom: 1.25rem;
-}
-
-.lf__card-head h3 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.lf__card-head p {
-  font-size: 0.85rem;
-  color: var(--lf-muted);
-  margin: 0.15rem 0 0;
-}
-
-.lf__step {
-  flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--lf-primary-soft);
-  color: var(--lf-primary);
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 0.85rem;
+  background-color: var(--color-bg);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  overflow: hidden;
 }
 
-.lf__savings {
-  margin-left: auto;
-  background: var(--lf-primary);
-  color: #fff;
-  padding: 0.3rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+.img-container:hover {
+  border-color: var(--color-primary);
 }
 
-/* ── FIELDS ── */
-.lf__field {
+.img-container label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  padding: 1rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.img-container.is-empty img {
+  height: 2.5rem;
+  width: 2.5rem;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.img-container.has-image {
+  min-height: 120px;
+  aspect-ratio: auto;
+}
+
+.img-container.has-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Product details section */
+.descriptionInput {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.quantityDiv {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.quantityWrapper {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  margin-bottom: 1rem;
+  flex: 1;
 }
 
-.lf__field:last-child {
-  margin-bottom: 0;
-}
-
-.lf__field label {
-  font-size: 0.825rem;
-  font-weight: 600;
-  color: var(--lf-text);
-}
-
-.lf__field input,
-.lf__field select {
+.quantityWrapper input[type="number"] {
   width: 100%;
-  padding: 0.65rem 0.85rem;
-  border-radius: 10px;
-  border: 1.5px solid var(--lf-border);
-  font-size: 0.95rem;
-  background: #fff;
-  color: var(--lf-text);
-  transition: border-color 0.18s, box-shadow 0.18s;
 }
 
-.lf__field input:hover,
-.lf__field select:hover {
-  border-color: var(--lf-border-strong);
-}
-
-.lf__field input:focus,
-.lf__field select:focus {
-  outline: none;
-  border-color: var(--lf-primary);
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
-}
-
-/* ── INPUT WITH PREFIX ── */
-.lf__input-prefix {
-  display: flex;
-  align-items: center;
-  border: 1.5px solid var(--lf-border);
-  border-radius: 10px;
-  background: #fff;
-  transition: border-color 0.18s, box-shadow 0.18s;
-}
-
-.lf__input-prefix:hover {
-  border-color: var(--lf-border-strong);
-}
-
-.lf__input-prefix:focus-within {
-  border-color: var(--lf-primary);
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
-}
-
-.lf__input-prefix span {
-  padding: 0 0.85rem;
-  color: var(--lf-muted);
-  font-weight: 600;
-  border-right: 1px solid var(--lf-border);
-  font-size: 0.95rem;
-}
-
-.lf__input-prefix input {
-  border: none !important;
-  background: transparent;
-  padding: 0.65rem 0.85rem;
-  width: 100%;
-  font-size: 0.95rem;
-  outline: none;
-}
-
-.lf__input-prefix input:focus {
-  box-shadow: none !important;
-}
-
-.lf__input-prefix--error,
-.lf__input-prefix--error:focus-within {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
-}
-
-.lf__error {
-  margin: 0.6rem 0 0;
-  color: #b91c1c;
-  font-size: 0.825rem;
-  font-weight: 500;
-}
-
-/* ── GROUPS ── */
-.lf__triple {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.4fr;
-  gap: 0.85rem;
-}
-
-.lf__double {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
-}
-
-/* ── UPLOAD ── */
-.lf__card--upload .lf__upload {
-  border: 2px dashed var(--lf-border);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1 / 1;
-  cursor: pointer;
-  overflow: hidden;
-  background: var(--lf-bg);
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.lf__upload:hover {
-  border-color: var(--lf-primary);
-  background: var(--lf-primary-soft);
-}
-
-.lf__upload img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.lf__upload--has-image {
-  border-style: solid;
-  padding: 0;
-}
-
-.lf__upload-empty {
-  text-align: center;
-  color: var(--lf-muted);
+.unitWrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1.5rem;
+  gap: 0.4rem;
+  min-width: 3rem;
 }
 
-.lf__upload-empty img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  opacity: 0.6;
+.discountedCheck {
+    display: flex;
+    align-self: center;
+}
+.discountedCheck label{
+    text-transform: none;
+    font-weight: 1rem;
+    font-weight: 400;
+    padding-left: 5px;
+    letter-spacing: 0.01em;
+    text-align: left;
+    font-size: 1rem;
 }
 
-.lf__upload-empty p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--lf-text);
+.unitWrapper select {
+  width: 100%;
 }
 
-.lf__upload-empty span {
-  font-size: 0.78rem;
+.categoryWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1.5;
 }
 
-/* ── TIP ── */
-.lf__tip {
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  padding: 1.25rem;
-  border-radius: 14px;
-  border: 1px solid #bbf7d0;
+.categoryWrapper select {
+  width: 100%;
 }
 
-.lf__tip h4 {
-  color: #166534;
-  margin: 0 0 0.5rem;
-  font-size: 0.95rem;
-  font-weight: 700;
+/* Pricing section */
+.priceInput {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  width: 100%;
 }
 
-.lf__tip p {
-  color: #15803d;
-  font-size: 0.85rem;
-  line-height: 1.55;
-  margin: 0;
+.pricing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
 }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  .lf__grid {
-    grid-template-columns: 1fr;
+.pricing input {
+  width: 100%;
+}
+
+@media only screen and (max-width: 450px) {
+  .create-container {
+    padding: 1rem;
   }
 
-  .lf__side {
-    position: static;
+  .quantityDiv {
+    gap: 0.5rem;
   }
 
-  .lf__triple {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .lf__triple .lf__field:last-child {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 560px) {
-
-  .lf__triple,
-  .lf__double {
-    grid-template-columns: 1fr;
-  }
-
-  .lf__publish {
-    width: 100%;
+  .priceInput {
+    gap: 0.5rem;
   }
 }
