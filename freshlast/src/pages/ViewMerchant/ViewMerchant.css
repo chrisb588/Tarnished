@@ -150,6 +150,9 @@
   font-size: 14px;
   cursor: pointer;
   font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .vm-primary-btn:hover {
@@ -166,6 +169,28 @@
   cursor: pointer;
   font-family: inherit;
   color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vm-back-btn {
+  background: #1DC423;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vm-back-btn:hover {
+  background: #18a81e;
 }
 
 .vm-secondary-btn:hover {
