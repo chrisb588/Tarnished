@@ -10,7 +10,7 @@ body {
 
 .dashboard {
   min-height: 100vh;
-  background-color: var(--color-white);
+  background-color: var(--color-bg);
 }
 
 /* Header */

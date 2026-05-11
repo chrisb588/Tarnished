@@ -32,7 +32,7 @@ function calculateExpiresAt(window) {
 
 const validateForm = (formData) => {
     console.log(formData)
-    const requiredFields = ["name", "quantity", "unit", "originalprice", "discountedprice", "image"]
+    const requiredFields = ["name", "quantity", "unit", "originalprice", "image"]
     const isMissingFields = requiredFields.some(field => formData[field] === "" || formData[field] === null);
     
     if (Number(formData.quantity) == 0){
@@ -45,11 +45,16 @@ const validateForm = (formData) => {
         return false
     }
 
-
-    if (Number(formData.discountedprice) >= Number(formData.originalprice)) {
+    if (formData.discountedprice !== null && Number(formData.discountedprice) >= Number(formData.originalprice)) {
         alert("Discounted price can't be higher than or equal to original price!")
         return false;
     }
+
+    //returns -1 as the discounted price if there is no discount so the backend doesn't explode
+    if (formData.discountedprice == null){
+        formData.discountedprice = -1
+    }
+
     if (isMissingFields) {
         alert("All fields are required! Please check your inputs.");
         return false;
@@ -67,11 +72,11 @@ export default function CreateListing(){
     const [formData, setFormData] = useState({
         image: null,
         name: "",
-        quantity: 0,
+        quantity: null,
         unit: "kg",
         type: "vegetable",
-        originalprice: 0,
-        discountedprice: 0,
+        originalprice: null,
+        discountedprice: null,
         availabilityWindow: 'ends_today',
     });
 
@@ -183,11 +188,16 @@ export default function CreateListing(){
 
     return (
         <div className='main-container'>
-            <Link to="/" className="floating-add-btn">
-                <p>Back to home</p>
-            </Link>
-
             <form className='main-body'>
+                <Link to="/dashboard" className="back-button">
+                    <p>← Back</p>
+                </Link>
+
+                <div className="create-preface">
+                    <h1>Create New Listing</h1>
+                    <p>Add a new product to your stall.</p>
+                </div>
+
                 <ListingForm 
                 formData={formData} 
                 setFormData={setFormData} 

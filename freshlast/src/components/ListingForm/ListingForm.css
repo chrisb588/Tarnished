@@ -1,228 +1,221 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-.create-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-    gap: 15px;
-    border: 2px solid black;
-    border-radius: 30px;
-    background-color: white;
-    padding: 0px 2rem 1rem;
+/* Card container — matches edit-profile__form */
+.create-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 540px;
+  gap: 1.25rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
 }
-.preface{
-    display: block;
-    place-self: start;
-    margin-bottom: -15px;
+
+/* Section headings — small uppercase labels */
+.info-preface {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: -0.5rem;
 }
-.preface h1{
-    margin-bottom: -15px;
+
+.info-preface h4 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  text-align: left;
 }
-.info-container-photo{
-    border: solid black 2px;
-    border-radius: 30px;
-    width: 95%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 10px;
-    padding: 0px 1.5rem 1rem;
-    text-align: left;
-    box-sizing: border-box;
+
+.info-preface p {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  text-align: left;
 }
-.img-container{
-    border: solid black 2px;
-    border-radius: 30px;
-    width: 10rem;
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    margin-top: 10px;
+
+/* All labels inside the form */
+.create-container label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
 }
-.img-container label{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
+
+/* All inputs and selects — unified style */
+.create-container input[type="text"],
+.create-container input[type="number"],
+.create-container select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background-color: var(--color-white);
+  color: var(--color-text);
+  width: 100%;
 }
-.img-container.is-empty img{
-    height: 40%;
-    width: 40%;
-    object-fit: contain;
+
+.create-container input[type="text"]:focus,
+.create-container input[type="number"]:focus,
+.create-container select:focus {
+  border-color: var(--color-primary);
 }
-.img-container.has-image{
-    width: 100%;      /* Let it expand to the parent container's width */
-    max-width: 20rem; /* Prevents it from getting TOO big */
-    aspect-ratio: auto; /* Allow the image to dictate the shape */    
+
+/* Image upload area — matches edit-profile__photo-box */
+.img-container {
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  width: 100%;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  overflow: hidden;
 }
+
+.img-container:hover {
+  border-color: var(--color-primary);
+}
+
+.img-container label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  padding: 1rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.img-container.is-empty img {
+  height: 2.5rem;
+  width: 2.5rem;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.img-container.has-image {
+  min-height: 120px;
+  aspect-ratio: auto;
+}
+
 .img-container.has-image img {
-    width: 100%;
-    height: auto;
-    display: block;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.info-preface{
-    width: 100%;
-    text-align: left;
-    margin-top: -1rem;
-}
-.info-preface h4{
-    text-align: left;
-    font-size: 20px;
-    margin-bottom: -1rem;
-}
-.info-container{
-    border: solid black 2px;
-    border-radius: 30px;
-    width: 95%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-    padding: 0px 1.5rem 16px;
-    text-align: left;
-    box-sizing: border-box;
-}
-.info-container h4{
-    text-align: left;
-    margin-bottom: -20px;
-}
-.info-container input[type="text"]{
-    background-color: white;
-    color: black;
-    height: 40px;
-    width: 100%;
-    border-radius: 5px;
-    border: black 2px solid;
-    padding: 3px 0.5rem;
-    font-size: 16px;
-}
-.info-container input[type="text"]:focus {
-    /* This removes the default blue/black square ring */
-    outline: none; 
-    
-    /* This ensures the border stays visible and rounded */
-    border: black 2px solid; 
-    
-    /* Optional: Add a subtle glow or change border color so users 
-       know which box they are typing in (Great for UX!) */
-    border-color: #2ce257; 
-    box-shadow: 0 0 5px #13c73d;
+/* Product details section */
+.descriptionInput {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
 }
 
-.descriptionInput{
+.quantityDiv {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.quantityWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.quantityWrapper input[type="number"] {
+  width: 100%;
+}
+
+.unitWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 3rem;
+}
+
+.discountedCheck {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 100%;
-    height: fit-content;
+    align-self: center;
 }
-.quantityDiv{
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
+.discountedCheck label{
+    text-transform: none;
+    font-weight: 1rem;
+    font-weight: 400;
+    padding-left: 5px;
+    letter-spacing: 0.01em;
+    text-align: left;
+    font-size: 1rem;
 }
-.quantityWrapper{
-    height: 50px;
+
+.unitWrapper select {
+  width: 100%;
 }
-.quantityWrapper input[type="number"]{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 2px; 
-    box-sizing: border-box;
-    padding: 3px 0.5rem;
-    max-width: 6.5rem;
-    font-size: 16px;
+
+.categoryWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1.5;
 }
-.quantityStepper{
-    display: flex;
-    gap: 5px;
+
+.categoryWrapper select {
+  width: 100%;
 }
-.stepper-button{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 10px;
-    aspect-ratio: 1/1;
-    box-sizing: border-box;
+
+/* Pricing section */
+.priceInput {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  width: 100%;
 }
-.unitWrapper{
-    width: fit-content;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+
+.pricing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
 }
-.unitWrapper select{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 2px;
-    width: 50px;
-    height: 50px;
-}
-.priceInput{
-    display: flex;
-    flex-direction: row;
-    align-self: flex-start;
-    gap: 30px;
-    margin-bottom: 5px;
-}
-.priceInput input{
-    background-color: white;
-    color: black;
-    border: black 2px solid;
-    border-radius: 5px;
-    height: 30px;
-    width: 100%;
-    max-width: 9rem;
-    padding: 3px 0.5rem;
-    font-size: 16px;
-}
-.pricing{
-    width: 100%;
+
+.pricing input {
+  width: 100%;
 }
 
 @media only screen and (max-width: 450px) {
-    body {
-        font-size: 12px;
-    }
-    p {
-        font-size: 9px;
-    }
-    .create-container{
-        min-width: 100%;
-        padding: 0px 1rem 1rem;
-    }
-    .create-container h1{
-        font-size: 18px;
-    }
-    .create-container h4{
-        font-size: 1.2rem;
-    }
-    .create-container p{
-        font-size: 0.9rem;
-    }
-    .info-preface {
-        margin-bottom: -0.7rem;
-    }
-    .quantityWrapper input{
-        max-width: 5rem;
-    }
-    .stepper-button {
-        width: 10px;
-    }
-    .quantityDiv {
-        gap: 10px;
-    }
-    .quantityDiv select{
-        width: 3rem;
-    }
-    .priceInput {
-        gap: 0.5rem;
-    }
+  .create-container {
+    padding: 1rem;
+  }
+
+  .quantityDiv {
+    gap: 0.5rem;
+  }
+
+  .priceInput {
+    gap: 0.5rem;
+  }
 }

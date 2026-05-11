@@ -10,6 +10,21 @@ Quality Assurance:
 */
 export default function ListingForm  ({formData, setFormData, handleChange, handleFileUpload, existingPreviewURL = null}) {
     const [previewURL, setPreviewURL] = useState(null)
+    const [hasDiscount, setHasDiscount] = useState(false)
+
+    useEffect(() => {
+        if (formData.discountedprice != null && formData.discountedprice !== 0 && formData.discountedprice !== -1) {
+            setHasDiscount(true);
+        }
+    }, []);
+
+    const handleDiscountToggle = (e) => {
+        const checked = e.target.checked;
+        setHasDiscount(checked);
+        if (!checked) {
+            setFormData(prev => ({ ...prev, discountedprice: null }));
+        }
+    };
 
     // for cleanup of memory in uploading images
     useEffect(() => {
@@ -42,11 +57,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
     // Bug 3 fixed
     return(
         <div className="create-container">
-            <div className="preface">
-                <h1>Create New Listing</h1>
-                <p>Add a new product to your stall.</p>
-            </div>
-            <div className="info-container-photo">
+
                 <div className="info-preface">
                     <h4>Product photo</h4>
                     <p>Please add a photo for your product</p>
@@ -62,11 +73,9 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                     accept="image/*"
                     style={{display: 'none'}}></input>
                 </div>
-            </div>
-            <div className="info-container">
                 <div className="info-preface">
                     <h4>Product Details</h4>
-                    <p>Enter details about your products</p>
+                    <p>Enter details about your product</p>
                 </div>
                 <div className="descriptionInput">
                     <label htmlFor="productName">Product Name</label>
@@ -81,8 +90,7 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                         />
                     <div className="quantityDiv">
                         <div className="quantityWrapper">
-                            <label htmlFor="quantity">Quantity Available</label>
-                            <br/>
+                            <label htmlFor="quantity">Quantity</label>
                                 <input 
                                     type="number" 
                                     name="quantity"
@@ -128,16 +136,24 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="info-container">
                 <div className="info-preface">
                     <h4>Pricing</h4>
                     <p>Enter your original and discounted prices</p>
                 </div>
+                <div className="discountedCheck">
+                    <input
+                        type='checkbox'
+                        id="discountedCheck"
+                        checked={hasDiscount}
+                        onChange={handleDiscountToggle}
+                    />
+                    <label 
+                        htmlFor='discountedCheck'
+                    >Does your product have a discount?</label>
+                </div>
                 <div className="priceInput">
                     <div className="pricing">
                         <label htmlFor="originalprice">Original Price</label>
-                        <br></br>
                         <input 
                             type="number"
                             value={formData.originalprice}
@@ -150,24 +166,24 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                             required
                         />
                     </div>
+                    {hasDiscount && (
                     <div className="pricing">
-                    <label htmlFor="discountedprice">Discounted Price</label>
-                    <br></br>
-                    <input 
-                        type="number" 
-                        name="discountedprice"
-                        value={formData.discountedprice}
-                        onChange={handleChange}
-                        id="discountedprice"
-                        min="0"
-                        step="1.00"
-                        placeholder="0.00"
-                        required
-                    />
+                        <label htmlFor="discountedprice">Discounted Price</label>
+                        <input 
+                            type="number" 
+                            name="discountedprice"
+                            value={formData.discountedprice ?? ""}
+                            onChange={handleChange}
+                            id="discountedprice"
+                            min="0"
+                            step="1.00"
+                            placeholder="0.00"
+                            required
+                        />
                     </div>
+                    )}
                 </div>
-            </div>
-            <div className="info-container">
+
                 <div className="info-preface">
                     <h4>Availability</h4>
                     <p>How long will this listing be available?</p>
@@ -187,7 +203,6 @@ export default function ListingForm  ({formData, setFormData, handleChange, hand
                         <option value="3_days">3 Days</option>
                     </select>
                 </div>
-            </div>
 
 
         </div>
