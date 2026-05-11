@@ -146,39 +146,28 @@
   color: #fff;
 }
 
-/* ICON / AVATAR BUTTONS */
-.app-header__icon-btn,
-.app-header__avatar {
+/* LOGOUT ICON BUTTON — reset global `button { padding }` so 40×40 isn't eaten by padding */
+.app-header__icon-btn {
   width: 40px;
   height: 40px;
+  padding: 0;
+  margin: 0;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
   background: #fff;
-  color: #4b5563;
+  color: #111827;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.app-header__icon-btn:hover,
-.app-header__avatar:hover {
+.app-header__icon-btn:hover {
   background: #f3f4f6;
   border-color: #d1d5db;
   color: #111827;
-}
-
-.app-header__avatar {
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  color: #fff;
-  border-color: transparent;
-}
-
-.app-header__avatar:hover {
-  background: linear-gradient(135deg, #15803d, #16a34a);
-  color: #fff;
 }
 
 /* CTA */
@@ -213,10 +202,6 @@
 
   .app-header__search {
     width: 180px;
-  }
-
-  .app-header__icon-btn {
-    display: none;
   }
 }
 

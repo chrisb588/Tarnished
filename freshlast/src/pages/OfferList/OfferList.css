@@ -25,7 +25,7 @@
   padding: 3rem 1rem 3.5rem;
   background:
     linear-gradient(rgba(15, 30, 20, 0.55), rgba(15, 30, 20, 0.55)),
-    url("https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop");
+    url("../../assets/carbon-market-3842.webp");
   background-size: cover;
   background-position: center;
 }

@@ -94,14 +94,6 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
         </div>
       </section>
 
-      {/* ── TRUST STRIP ── */}
-      <section className="offerlist__trust">
-        <div className="offerlist__container offerlist__trust-grid">
-          <div className="offerlist__trust-item"><LeafIcon /><div><h4>100% Fresh</h4><p>Harvested daily by local growers</p></div></div>
-          <div className="offerlist__trust-item"><TruckIcon /><div><h4>Same-Day</h4><p>Pickup ready within hours</p></div></div>
-          <div className="offerlist__trust-item"><HeartIcon /><div><h4>Support Local</h4><p>Every order supports a vendor</p></div></div>
-        </div>
-      </section>
 
       {/* ── SPOTLIGHT (calm, just 3) ── */}
       {spotlight.length > 0 && (
@@ -169,21 +161,6 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
         </div>
       </section>
 
-      {/* ── FARMERS FEATURE ── */}
-      <section className="offerlist__features">
-        <div className="offerlist__container">
-          <div className="offerlist__farmers-card">
-            <div className="offerlist__farmers-content">
-              <span className="offerlist__hero-eyebrow offerlist__hero-eyebrow--light">Stories</span>
-              <h3 className="offerlist__farmers-title">Meet our 2024 Top Farmers</h3>
-              <p className="offerlist__farmers-text">
-                Discover the people behind your food and the community that grows it.
-              </p>
-              <button className="offerlist__stories-btn">Read Stories</button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── FOOTER ── */}
       <footer className="offerlist__footer">
@@ -191,17 +168,11 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
           <div className="offerlist__footer-top">
             <div>
               <h3 className="offerlist__footer-brand">FreshLast</h3>
-              <p className="offerlist__footer-tagline">Fresh from Carbon Market</p>
-            </div>
-            <div className="offerlist__footer-links-group">
-              <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy</a><a href="#">Terms</a>
-            </div>
-            <div className="offerlist__footer-socials">
-              <a href="#"><FacebookIcon /></a><a href="#"><TwitterIcon /></a><a href="#"><InstagramIcon /></a>
+              <p className="offerlist__footer-tagline">Group: Tarnished</p>
             </div>
           </div>
           <div className="offerlist__footer-bottom">
-            <p>© 2024 FreshLast Marketplace. All rights reserved.</p>
+            <p>© 2025 FreshLast Marketplace. All rights reserved.</p>
           </div>
         </div>
       </footer>

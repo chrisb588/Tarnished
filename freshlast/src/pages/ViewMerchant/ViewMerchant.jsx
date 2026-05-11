@@ -236,38 +236,11 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
             <p className="vm-status">No products found.</p>
           )}
         </section>
-
-        {/* ── REVIEWS ── */}
-        <section className="vm-section">
-          <div className="vm-reviews__header">
-            <h3 className="vm-section__title">Customer Feedback</h3>
-            <div className="vm-reviews__rating">
-              <StarIcon size={18} fill="#f59e0b" color="#f59e0b" />
-              <span>4.9 Rating</span>
-            </div>
-          </div>
-
-          <div className="vm-reviews">
-            {reviews.map((review, i) => (
-              <div key={i} className="vm-review">
-                <div className="vm-review__top">
-                  <div className="vm-review__avatar">👤</div>
-                  <div>
-                    <h4 className="vm-review__name">{review.name}</h4>
-                    <p className="vm-review__meta">{review.tag} • {review.time}</p>
-                  </div>
-                </div>
-                <p className="vm-review__text">"{review.text}"</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
       </main>
 
       {/* ── FOOTER ── */}
       <footer className="vm-footer">
-        <p>© 2024 FreshLast Marketplace. All rights reserved.</p>
+        <p>© 2025 FreshLast Marketplace. All rights reserved.</p>
       </footer>
 
     </div>

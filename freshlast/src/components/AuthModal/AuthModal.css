@@ -30,13 +30,14 @@
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #f0f0f0;
+  background: #f0f0f000;
   color: #333;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.15s;
+  padding: 0px;
 }
 
 .auth-modal__close:hover {
