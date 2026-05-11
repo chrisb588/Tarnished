@@ -17,6 +17,15 @@ function StarIcon({ size = 16, fill = 'currentColor', color = 'currentColor' }) 
 
 const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Chicken', 'Pork', 'Beef', 'Seafood']
 
+const CATEGORY_TO_TYPE = {
+  Vegetables: 'vegetable',
+  Fruits: 'fruit',
+  Chicken: 'chicken',
+  Pork: 'pork',
+  Beef: 'beef',
+  Seafood: 'seafood',
+}
+
 const reviews = [
   { name: 'Sarah J.', tag: 'Verified Buyer', time: '2 days ago', text: 'The heirloom tomatoes are absolutely incredible. Delivery was fast and eco-friendly.' },
   { name: 'Michael R.', tag: 'Verified Buyer', time: '1 week ago', text: 'Best sweet corn in the valley. FreshLast made ordering so easy.' },
@@ -83,7 +92,7 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
   }, [paramId])
 
   const filteredListings = listings.filter(listing => {
-    const matchesCategory = selectedCategory === 'All' || listing.type === selectedCategory
+    const matchesCategory = selectedCategory === 'All' || listing.type === CATEGORY_TO_TYPE[selectedCategory]
     const matchesSearch = listing.name.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
   })
