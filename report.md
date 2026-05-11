@@ -1,8 +1,7 @@
 # Freshlast Codebase Audit Report
 
 **Date:** 2026-05-11  
-**Branch:** main  
-**Auditor:** Claude Code
+**Branch:** main
 
 ---
 
@@ -14,25 +13,25 @@ Freshlast is a student marketplace web app (CMSC 129) where vendors at Carbon Ma
 
 ## 2. Implementation Status
 
-| ID | Description | Status | Notes |
-|----|-------------|--------|-------|
-| SCRUM-1 | Vendor stall location sharing | ⚠️ Partial | MapPicker, stall image, and map view all work. Schedule display in `MerchantInfo.jsx` is hardcoded fake data — real operating hours/days fetched from API are never rendered. |
-| SCRUM-2 | Vendor creates a listing (picture, price, title) | ✅ Complete | All fields present; image uploads persist to Supabase Storage. Minor: debug `console.log` left in `CreateListing.jsx:34`. Route is unguarded (see bugs). |
-| SCRUM-3 | Vendor deletes or edits a listing | ✅ Complete | Edit, delete, and mark-sold-out all fully wired end-to-end. |
-| SCRUM-4 | Vendor edits/removes stall location pin | ✅ Complete | `EditProfile.jsx` pre-populates `MapPicker`; clear-pin button sets `lat=0, lng=0`. Stall name/section editable via `ProfileForm`. |
-| SCRUM-5 | Customer sees discounted/near-expiry produce | ⚠️ Partial | Browse list renders correctly. Gap: backend returns sold-out and expired listings — they appear in the customer browse list (only a "Sold Out" badge distinguishes them). |
-| SCRUM-6 | Customer views vendor details from listing | ⚠️ Partial | `ViewListing` and `ViewMerchant` pages work. Inherited bug: schedule shown to customers is hardcoded placeholder text (SCRUM-106/SCRUM-1). |
-| SCRUM-7 | Customer searches/filters produce | ⚠️ Partial | Keyword search and category filter work in `OfferList`. Price/discount filter missing. |
-| SCRUM-9 | Vendor login | ✅ Complete | Supabase email/password login, OTP magic link, and forced first-login password change all implemented. |
-| SCRUM-22 | Vendor edits profile information | ⚠️ Partial | Stall name, section, phone, hours, days, and stall image update all work. Missing: no UI to edit vendor categories (hardcoded to `"vegetable"` in CreateProfile). No personal name/email edit. |
-| SCRUM-45 | Admin creates and deletes vendor accounts | ⚠️ Partial | Create and delete both work end-to-end. Bug: `CreateProfile.jsx:69` hardcodes `category: "vegetable"` as a string; backend expects a JSON array — this will throw a 422 on category parsing. Comment in code: "TODO: Hardcoded value for debugging purposes." |
-| SCRUM-71 | Admin login + dashboard access control | ⚠️ Partial | **Critical bug:** After successful admin login, `navigate("/")` does not re-trigger the admin token verification effect (already ran at App mount). Admin cannot access `/admin` without a full page reload. |
-| SCRUM-19 | Supabase auth wired to backend | ⚠️ Partial | Vendor auth is Supabase-only (frontend). Backend non-admin routes (`/api/listings`, `/api/profile`) have **no auth or ownership verification** — any caller with a known UUID can modify any merchant's data. |
-| SCRUM-35 | Listing images persist to Supabase Storage | ✅ Complete | Uploads, updates (with old-file cleanup), and deletes all confirmed in `listings.py` and `profile.py`. |
-| SCRUM-103 | Filter logic in ViewMerchant page | ❌ Missing | `CategoryFilter` components rendered but not wired to any state setter. `setSelectedCategory` is defined but never called. Filter logic references `listing.category` — field does not exist; correct field is `listing.type`. Double broken. |
-| SCRUM-104 | Show all merchants screen | ❌ Missing | No customer-facing "browse all merchants" page. `ViewMerchant` is a single-merchant detail page. `AdminDashboard` is admin-only. No `/merchants` route in `App.jsx`. |
-| SCRUM-105 | Customer-facing map view | ❌ Missing | No standalone map showing all stall locations. Per-listing/per-merchant map views exist in `ViewListing` and `ViewMerchant`, but there is no browse-all-vendors-on-map screen. |
-| SCRUM-106 | Assign schedule for each day | ⚠️ Partial | Backend stores `operating_days`, `start_operating_time`, `end_operating_time`. `ProfileForm` lets vendors set these. But `MerchantInfo.jsx` ignores the fetched data and renders hardcoded placeholder strings. Additionally, the current model supports only one time range for all days — not per-day scheduling as the story implies. |
+| ID        | Description                                      | Status      | Notes                                                                                                                                                                                                                                                                                                                                    |
+| --------- | ------------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SCRUM-1   | Vendor stall location sharing                    | ⚠️ Partial  | MapPicker, stall image, and map view all work. Schedule display in `MerchantInfo.jsx` is hardcoded fake data — real operating hours/days fetched from API are never rendered.                                                                                                                                                            |
+| SCRUM-2   | Vendor creates a listing (picture, price, title) | ✅ Complete | All fields present; image uploads persist to Supabase Storage. Minor: debug `console.log` left in `CreateListing.jsx:34`. Route is unguarded (see bugs).                                                                                                                                                                                 |
+| SCRUM-3   | Vendor deletes or edits a listing                | ✅ Complete | Edit, delete, and mark-sold-out all fully wired end-to-end.                                                                                                                                                                                                                                                                              |
+| SCRUM-4   | Vendor edits/removes stall location pin          | ✅ Complete | `EditProfile.jsx` pre-populates `MapPicker`; clear-pin button sets `lat=0, lng=0`. Stall name/section editable via `ProfileForm`.                                                                                                                                                                                                        |
+| SCRUM-5   | Customer sees discounted/near-expiry produce     | ⚠️ Partial  | Browse list renders correctly. Gap: backend returns sold-out and expired listings — they appear in the customer browse list (only a "Sold Out" badge distinguishes them).                                                                                                                                                                |
+| SCRUM-6   | Customer views vendor details from listing       | ⚠️ Partial  | `ViewListing` and `ViewMerchant` pages work. Inherited bug: schedule shown to customers is hardcoded placeholder text (SCRUM-106/SCRUM-1).                                                                                                                                                                                               |
+| SCRUM-7   | Customer searches/filters produce                | ⚠️ Partial  | Keyword search and category filter work in `OfferList`. Price/discount filter missing.                                                                                                                                                                                                                                                   |
+| SCRUM-9   | Vendor login                                     | ✅ Complete | Supabase email/password login, OTP magic link, and forced first-login password change all implemented.                                                                                                                                                                                                                                   |
+| SCRUM-22  | Vendor edits profile information                 | ⚠️ Partial  | Stall name, section, phone, hours, days, and stall image update all work. Missing: no UI to edit vendor categories (hardcoded to `"vegetable"` in CreateProfile). No personal name/email edit.                                                                                                                                           |
+| SCRUM-45  | Admin creates and deletes vendor accounts        | ⚠️ Partial  | Create and delete both work end-to-end. Bug: `CreateProfile.jsx:69` hardcodes `category: "vegetable"` as a string; backend expects a JSON array — this will throw a 422 on category parsing. Comment in code: "TODO: Hardcoded value for debugging purposes."                                                                            |
+| SCRUM-71  | Admin login + dashboard access control           | ⚠️ Partial  | **Critical bug:** After successful admin login, `navigate("/")` does not re-trigger the admin token verification effect (already ran at App mount). Admin cannot access `/admin` without a full page reload.                                                                                                                             |
+| SCRUM-19  | Supabase auth wired to backend                   | ⚠️ Partial  | Vendor auth is Supabase-only (frontend). Backend non-admin routes (`/api/listings`, `/api/profile`) have **no auth or ownership verification** — any caller with a known UUID can modify any merchant's data.                                                                                                                            |
+| SCRUM-35  | Listing images persist to Supabase Storage       | ✅ Complete | Uploads, updates (with old-file cleanup), and deletes all confirmed in `listings.py` and `profile.py`.                                                                                                                                                                                                                                   |
+| SCRUM-103 | Filter logic in ViewMerchant page                | ❌ Missing  | `CategoryFilter` components rendered but not wired to any state setter. `setSelectedCategory` is defined but never called. Filter logic references `listing.category` — field does not exist; correct field is `listing.type`. Double broken.                                                                                            |
+| SCRUM-104 | Show all merchants screen                        | ❌ Missing  | No customer-facing "browse all merchants" page. `ViewMerchant` is a single-merchant detail page. `AdminDashboard` is admin-only. No `/merchants` route in `App.jsx`.                                                                                                                                                                     |
+| SCRUM-105 | Customer-facing map view                         | ❌ Missing  | No standalone map showing all stall locations. Per-listing/per-merchant map views exist in `ViewListing` and `ViewMerchant`, but there is no browse-all-vendors-on-map screen.                                                                                                                                                           |
+| SCRUM-106 | Assign schedule for each day                     | ⚠️ Partial  | Backend stores `operating_days`, `start_operating_time`, `end_operating_time`. `ProfileForm` lets vendors set these. But `MerchantInfo.jsx` ignores the fetched data and renders hardcoded placeholder strings. Additionally, the current model supports only one time range for all days — not per-day scheduling as the story implies. |
 
 ---
 
@@ -88,18 +87,18 @@ No customer-facing "all merchants" browse page and no customer-facing overview m
 
 ### Additional bugs not in Jira
 
-| # | Bug | File |
-|---|-----|------|
-| 1 | `/create` and `/edit/:id` routes have no auth guard — unauthenticated users can reach them; form fails silently with null `merchantId` | `App.jsx` lines 154–155 |
-| 2 | `error` state in `Home.jsx` and `ViewMerchant.jsx` is set but never rendered — fetch failures are silently swallowed | `Home.jsx`, `ViewMerchant.jsx` |
-| 3 | "Forgot your password?" button in `AuthForm.jsx` has no `onClick` handler | `AuthForm.jsx` |
-| 4 | `supabaseAdmin` exported from `supabaseClient.jsx` is never imported anywhere; it's a dead export that pulls `VITE_SUPABASE_SECRET_KEY` into the bundle if set | `supabaseClient.jsx` |
-| 5 | Sold-out and expired listings are returned by `GET /api/listings/all` with no server-side filtering | `backend/app/api/listings.py` |
-| 6 | Dead imports: `adminLogin` in `App.jsx:17`, `supabase` in `profile.js`, `useNavigate` in `AppHeader.jsx` | Multiple files |
-| 7 | Debug `console.log(formData)` left in `CreateListing.jsx:34` | `CreateListing.jsx` |
-| 8 | ESLint config missing `vitest` globals — 221 ESLint errors, mostly in test files | `eslint.config.js` |
-| 9 | `ChangePassword.jsx` uses `for` attribute instead of JSX `htmlFor` on `<label>` elements | `ChangePassword.jsx` lines 36, 42 |
-| 10 | VendorHeader "🔔 Notifications" button has no implementation | `VendorHeader.jsx` |
+| #   | Bug                                                                                                                                                            | File                              |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| 1   | `/create` and `/edit/:id` routes have no auth guard — unauthenticated users can reach them; form fails silently with null `merchantId`                         | `App.jsx` lines 154–155           |
+| 2   | `error` state in `Home.jsx` and `ViewMerchant.jsx` is set but never rendered — fetch failures are silently swallowed                                           | `Home.jsx`, `ViewMerchant.jsx`    |
+| 3   | "Forgot your password?" button in `AuthForm.jsx` has no `onClick` handler                                                                                      | `AuthForm.jsx`                    |
+| 4   | `supabaseAdmin` exported from `supabaseClient.jsx` is never imported anywhere; it's a dead export that pulls `VITE_SUPABASE_SECRET_KEY` into the bundle if set | `supabaseClient.jsx`              |
+| 5   | Sold-out and expired listings are returned by `GET /api/listings/all` with no server-side filtering                                                            | `backend/app/api/listings.py`     |
+| 6   | Dead imports: `adminLogin` in `App.jsx:17`, `supabase` in `profile.js`, `useNavigate` in `AppHeader.jsx`                                                       | Multiple files                    |
+| 7   | Debug `console.log(formData)` left in `CreateListing.jsx:34`                                                                                                   | `CreateListing.jsx`               |
+| 8   | ESLint config missing `vitest` globals — 221 ESLint errors, mostly in test files                                                                               | `eslint.config.js`                |
+| 9   | `ChangePassword.jsx` uses `for` attribute instead of JSX `htmlFor` on `<label>` elements                                                                       | `ChangePassword.jsx` lines 36, 42 |
+| 10  | VendorHeader "🔔 Notifications" button has no implementation                                                                                                   | `VendorHeader.jsx`                |
 
 ---
 
@@ -144,17 +143,15 @@ No customer-facing "all merchants" browse page and no customer-facing overview m
 
 Ordered by impact-to-effort ratio. All estimated under 30 minutes.
 
-| # | Fix | File | Time |
-|---|-----|------|------|
-| 1 | Fix admin login: replace `navigate("/")` with `window.location.replace("/")` | `AdminLoginPage.jsx` | 2 min |
-| 2 | Add `vercel.json` with SPA rewrite rule at repo root | new file | 2 min |
-| 3 | Fix ViewMerchant filter field: `listing.category` → `listing.type` | `ViewMerchant.jsx:99` | 1 min |
-| 4 | Wire CategoryFilter onClick to `setSelectedCategory` in ViewMerchant | `ViewMerchant.jsx:125` | 15 min |
-| 5 | Fix MerchantInfo schedule: render `operatingDays`/`operatingHoursStart`/`operatingHoursEnd` props instead of hardcoded strings | `MerchantInfo.jsx:58–76` | 15 min |
-| 6 | Add auth guard to `/create` and `/edit/:id` routes | `App.jsx:154–155` | 5 min |
-| 7 | Remove dead `supabaseAdmin` export and `VITE_SUPABASE_SECRET_KEY` | `supabaseClient.jsx` | 5 min |
-| 8 | Fix `CreateProfile` hardcoded category string → array (add category selector to ProfileForm) | `CreateProfile.jsx:69`, `ProfileForm.jsx` | 25 min |
-| 9 | Add `vitest` globals to ESLint config | `eslint.config.js` | 5 min |
-| 10 | Remove debug `console.log(formData)` | `CreateListing.jsx:34` | 1 min |
-| 11 | Render `error` state in `Home.jsx` and `ViewMerchant.jsx` | `Home.jsx`, `ViewMerchant.jsx` | 10 min |
-| 12 | Filter expired + sold-out listings from `GET /api/listings/all` | `backend/app/api/listings.py` | 10 min |
+| #   | Fix                                                                                                                            | File                                      | Time   |
+| --- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | ------ |
+| 2   | Add `vercel.json` with SPA rewrite rule at repo root                                                                           | new file                                  | 2 min  |
+| 4   | Wire CategoryFilter onClick to `setSelectedCategory` in ViewMerchant                                                           | `ViewMerchant.jsx:125`                    | 15 min |
+| 5   | Fix MerchantInfo schedule: render `operatingDays`/`operatingHoursStart`/`operatingHoursEnd` props instead of hardcoded strings | `MerchantInfo.jsx:58–76`                  | 15 min |
+| 6   | Add auth guard to `/create` and `/edit/:id` routes                                                                             | `App.jsx:154–155`                         | 5 min  |
+| 7   | Remove dead `supabaseAdmin` export and `VITE_SUPABASE_SECRET_KEY`                                                              | `supabaseClient.jsx`                      | 5 min  |
+| 8   | Fix `CreateProfile` hardcoded category string → array (add category selector to ProfileForm)                                   | `CreateProfile.jsx:69`, `ProfileForm.jsx` | 25 min |
+| 9   | Add `vitest` globals to ESLint config                                                                                          | `eslint.config.js`                        | 5 min  |
+| 10  | Remove debug `console.log(formData)`                                                                                           | `CreateListing.jsx:34`                    | 1 min  |
+| 11  | Render `error` state in `Home.jsx` and `ViewMerchant.jsx`                                                                      | `Home.jsx`, `ViewMerchant.jsx`            | 10 min |
+| 12  | Filter expired + sold-out listings from `GET /api/listings/all`                                                                | `backend/app/api/listings.py`             | 10 min |
