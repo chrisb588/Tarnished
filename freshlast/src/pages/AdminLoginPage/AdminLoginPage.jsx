@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminLoginPage.css";
 import { adminLogin } from "../../api/admin";
@@ -16,8 +16,7 @@ export default function AdminLoginPage() {
     try {
       await adminLogin(username, password);
 
-      navigate("/");
-      console.log("Admin is authenticated");
+      window.location.replace("/");
     } catch (error) {
       alert(error);
       console.log(error);
