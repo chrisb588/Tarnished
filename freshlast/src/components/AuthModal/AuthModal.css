@@ -1,45 +1,94 @@
-/* The background that covers the entire screen */
-.modal-overlay {
+.auth-modal__overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000; 
-  backdrop-filter: blur(4px); 
-}
-/* The actual white box in the middle */
-.modal-content {
-  background-color: white;
-  padding: 1rem 1rem 1rem 1rem;
-  border-radius: 12px;
-  border: 1px solid var(--color-secondary-border);
-  width: 60%;
-  max-width: 450px;
-  position: relative; /* Allows positioning of the close button */
-  color: #333333;
-  height: auto;          /* Let the box grow with the content */
-  max-height: 90vh;      /* Prevent it from being taller than the screen */
-  overflow-y: auto;      /* Add a scrollbar only if the screen is tiny */
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
 }
 
-.close-button {
+.auth-modal__card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.auth-modal__close {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   border: none;
-  font-size: 1.2rem;
+  background: #f0f0f0;
+  color: #333;
   cursor: pointer;
-  color: var(--color-secondary-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
 }
 
-.close-button:hover {
-    background-color: var(--color-border);
+.auth-modal__close:hover {
+  background: #e0e0e0;
+}
+
+.auth-modal__header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-modal__brand {
+  font-size: 15px;
+  font-weight: 700;
+  color: #166534;
+  margin-bottom: 8px;
+}
+
+.auth-modal__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 10px;
+}
+
+.auth-modal__subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.auth-modal__divider {
+  height: 1px;
+  background: #e5e5e0;
+  margin: 24px 0;
+}
+
+.auth-modal__signup {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.8;
+}
+
+.auth-modal__signup-link {
+  font-weight: 700;
+  color: #166534;
+  cursor: pointer;
+  margin: 0;
+}
+
+.auth-modal__signup-link:hover {
+  text-decoration: underline;
 }
