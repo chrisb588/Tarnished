@@ -11,6 +11,7 @@ export default function Home({ onLogout }) {
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSoldOut = async (listing) => {
     if (!confirm(`Mark "${listing.name}" as sold out?`)) return;
@@ -42,11 +43,17 @@ export default function Home({ onLogout }) {
     fetchListings();
   }, []);
 
+  const filteredListings = listings.filter(listing =>
+    listing.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="dashboard">
       <AppHeader
         session={true}
         onLogout={onLogout}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
       <main className="dashboard__content">
@@ -59,9 +66,9 @@ export default function Home({ onLogout }) {
           <p className="dashboard__status">Loading listings...</p>
         ) : error ? (
           <p className="dashboard__status dashboard__status--error">{error}</p>
-        ) : listings.length > 0 ? (
+        ) : filteredListings.length > 0 ? (
           <div className="dashboard__grid">
-            {listings.map((listing) => (
+            {filteredListings.map((listing) => (
               <ListingItem
                 key={listing.id}
                 listing={listing}
@@ -73,8 +80,12 @@ export default function Home({ onLogout }) {
           </div>
         ) : (
           <div className="dashboard__empty">
-            <p className="dashboard__status">You have no listings yet.</p>
-            <Link to="/create" className="dashboard__add-btn">Create your first listing</Link>
+            <p className="dashboard__status">
+              {searchQuery ? 'No listings match your search.' : 'You have no listings yet.'}
+            </p>
+            {!searchQuery && (
+              <Link to="/create" className="dashboard__add-btn">Create your first listing</Link>
+            )}
           </div>
         )}
       </main>

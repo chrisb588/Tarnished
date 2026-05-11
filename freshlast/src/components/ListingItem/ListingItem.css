@@ -31,7 +31,7 @@
     height: 100%;
 }
 
-.edit-button{
+.edit-button-listing{
     background-color: white;
     color: #1a1a1a;
     width: 100%;
@@ -42,7 +42,7 @@
     cursor: pointer;
 }
 
-.edit-button:hover {
+.edit-button-listing:hover {
     background-color: rgb(164, 234, 156);
     border-color: #aaa;
 }
