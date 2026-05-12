@@ -136,6 +136,7 @@ export default function OfferList({ session, onLogout, onLoginClick, isAdmin }) 
             <div className="offerlist__hero-actions">
               <Link to="/create" className="offerlist__hero-btn offerlist__hero-btn--primary">+ Add New Listing</Link>
               <Link to="/dashboard" className="offerlist__hero-btn offerlist__hero-btn--secondary">View My Listings</Link>
+              <Link to="/profile" className="offerlist__hero-btn offerlist__hero-btn--secondary">Edit Profile</Link>
             </div>
           </div>
         </section>

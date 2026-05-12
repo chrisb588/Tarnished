@@ -3,6 +3,8 @@ import "./ProfileForm.css";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+const CATEGORIES = ["Fruits", "Vegetables", "Beef", "Chicken", "Pork", "Seafood"];
+
 const DAY_FULL_NAMES = {
   Mon: "Monday",
   Tue: "Tuesday",
@@ -29,6 +31,10 @@ export default function ProfileForm({
   useEffect(() => {
     console.log("Schedule:", formData.schedule);
   }, [formData.schedule]);
+
+  useEffect(() => {
+    console.log("formData:", formData);
+  }, [formData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,6 +75,29 @@ export default function ProfileForm({
             const existing = prev.schedule.find((e) => e.day === day);
             return existing ?? { day, startTime: "", endTime: "" };
           }),
+    }));
+  };
+
+  const toggleCategory = (cat) => {
+    const val = cat.toLowerCase();
+    setFormData((prev) => ({
+      ...prev,
+      category: prev.category.includes(val)
+        ? prev.category.filter((c) => c !== val)
+        : [...prev.category, val],
+    }));
+  };
+
+  const allCategoriesSelected = CATEGORIES.every((c) =>
+    formData.category.includes(c.toLowerCase())
+  );
+
+  const toggleAllCategories = () => {
+    setFormData((prev) => ({
+      ...prev,
+      category: allCategoriesSelected
+        ? []
+        : CATEGORIES.map((c) => c.toLowerCase()),
     }));
   };
 
@@ -184,8 +213,44 @@ export default function ProfileForm({
         <input id="phoneNumber" name="phoneNumber" type="tel"
           className="edit-profile__input"
           value={formData.phoneNumber}
+          maxLength={13}
           onChange={handleChange}
+          onKeyDown={(e) => {
+            const allowed = /^[0-9+]$/;
+            const control = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Home", "End"];
+            if (!allowed.test(e.key) && !control.includes(e.key) && !e.ctrlKey && !e.metaKey) {
+              e.preventDefault();
+            }
+          }}
         />
+      </div>
+
+      {/* What are you selling? */}
+      <div className="edit-profile__field">
+        <div className="edit-profile__days-header">
+          <label className="edit-profile__label edit-profile__label--required">
+            What are you selling?
+          </label>
+          <button
+            type="button"
+            className="edit-profile__select-all-btn"
+            onClick={toggleAllCategories}
+          >
+            {allCategoriesSelected ? "Unselect All" : "Select All"}
+          </button>
+        </div>
+        <div className="edit-profile__days">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`edit-profile__day-btn ${formData.category.includes(cat.toLowerCase()) ? "edit-profile__day-btn--active" : ""}`}
+              onClick={() => toggleCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Operating Days */}
