@@ -14,6 +14,13 @@ const LeafIcon = () => (
   </svg>
 );
 
+const UserIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+  </svg>
+);
+
 export default function AppHeader({ session, onLogout, onLoginClick, searchQuery, onSearchChange }) {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
@@ -75,8 +82,16 @@ export default function AppHeader({ session, onLogout, onLoginClick, searchQuery
                   </Link>
                 )}
               </nav>
+              <Link
+                to={`/merchant/${session.user.id}`}
+                className="app-header__icon-btn"
+                title="My Profile"
+                aria-label="View my merchant profile"
+              >
+                <UserIcon />
+              </Link>
               <button className="app-header__icon-btn" type="button" onClick={onLogout} title="Log out" aria-label="Log out">
-              <IoLogOut></IoLogOut>
+                <IoLogOut />
               </button>
             </>
           ) : onLoginClick ? (

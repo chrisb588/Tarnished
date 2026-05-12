@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import { getAllListings } from '../../api/listings'
+import { getProfile } from '../../api/profile'
 import AppHeader from '../../components/AppHeader/AppHeader.jsx'
 import './OfferList.css'
 
@@ -40,6 +41,7 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
   const [listings, setListings] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [showAll, setShowAll] = useState(false)
+  const [stallName, setStallName] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -49,6 +51,13 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
       setIsLoading(false)
     })()
   }, [])
+
+  useEffect(() => {
+    if (!session?.user?.id) return
+    getProfile(session.user.id).then(data => {
+      if (data?.name) setStallName(data.name)
+    })
+  }, [session])
 
   const filteredListings = useMemo(() => listings.filter((l) => {
     const cat = (l.category || l.type || '').toLowerCase()
@@ -76,23 +85,37 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
       />
 
       {/* ── HERO ── */}
-      <section className="offerlist__hero">
-        <div className="offerlist__hero-content">
-          <span className="offerlist__hero-eyebrow">Carbon Market • Daily Fresh</span>
-          <h2 className="offerlist__hero-heading">Fresh from the vendors of Carbon Market.</h2>
-          <p className="offerlist__hero-sub">Locally sourced produce, meat, and seafood.</p>
-          <div className="offerlist__search-bar">
-            <SearchIcon />
-            <input
-              type="text"
-              className="offerlist__search-input"
-              placeholder="Search carrots, seafood, organic beef…"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+      {session ? (
+        <section className="offerlist__hero offerlist__hero--dashboard">
+          <div className="offerlist__hero-content">
+            <span className="offerlist__hero-eyebrow">Vendor Dashboard</span>
+            <h2 className="offerlist__hero-heading">Welcome back, {stallName || 'Merchant'}</h2>
+            <p className="offerlist__hero-sub">Manage your stall and listings from here.</p>
+            <div className="offerlist__hero-actions">
+              <Link to="/create" className="offerlist__hero-btn offerlist__hero-btn--primary">+ Add New Listing</Link>
+              <Link to="/dashboard" className="offerlist__hero-btn offerlist__hero-btn--secondary">View My Listings</Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="offerlist__hero">
+          <div className="offerlist__hero-content">
+            <span className="offerlist__hero-eyebrow">Carbon Market • Daily Fresh</span>
+            <h2 className="offerlist__hero-heading">Fresh from the vendors of Carbon Market.</h2>
+            <p className="offerlist__hero-sub">Locally sourced produce, meat, and seafood.</p>
+            <div className="offerlist__search-bar">
+              <SearchIcon />
+              <input
+                type="text"
+                className="offerlist__search-input"
+                placeholder="Search carrots, seafood, organic beef…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
 
       {/* ── SPOTLIGHT (calm, just 3) ── */}
