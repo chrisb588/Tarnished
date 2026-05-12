@@ -70,7 +70,6 @@ BEGIN
     current_timestamp,
     current_timestamp
   );
-
   INSERT INTO storage.buckets (id, name, public)
   VALUES ('media', 'media', true)
   ON CONFLICT (id) DO NOTHING;
@@ -99,9 +98,6 @@ BEGIN
     name,
     latitude,
     longitude,
-    start_operating_time,
-    end_operating_time,
-    operating_days,
     location,
     location_photo,
     category,
@@ -112,15 +108,17 @@ BEGIN
     'Sample Merchant',
     10.3157,
     123.8854,
-    '08:00:00',
-    '18:00:00',
-    ARRAY['Mon', 'Wed', 'Fri'],
     'Cebu City, Philippines',
     photo_url,
     ARRAY['vegetable'],
     '+639123456789'
   );
+
+  INSERT INTO public.schedule (merchant_id, day, start_time, end_time)
+  VALUES
+    (merchant_id, 'Mon', '08:00:00', '17:00:00');
 END $$;
+
 
 -- Dummy listing for testing
 

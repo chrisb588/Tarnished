@@ -125,9 +125,13 @@ def test_create_merchant_success(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                    "Wed": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                    "Fri": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -158,9 +162,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -184,9 +190,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "67",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -210,9 +218,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": "not-a-coordinate",
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -236,9 +246,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": "not-a-coordinate",
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -253,7 +265,7 @@ def test_create_merchant_unprocessable_payload(client):
     )
     assert response.status_code == 422
 
-    # Test invalid start operating time
+    # Test invalid day entry in operating days
     response = client.post(
         "/api/admin/create",
         data={
@@ -262,9 +274,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:0:0",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Monday": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -279,7 +293,7 @@ def test_create_merchant_unprocessable_payload(client):
     )
     assert response.status_code == 422
 
-    # Test invalid end operating time
+    # Test invalid start time in operating days
     response = client.post(
         "/api/admin/create",
         data={
@@ -288,9 +302,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:0:0",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "not-a-valid-time", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -305,7 +321,7 @@ def test_create_merchant_unprocessable_payload(client):
     )
     assert response.status_code == 422
 
-    # Test invalid operating days
+    # Test invalid end time in operating days
     response = client.post(
         "/api/admin/create",
         data={
@@ -314,9 +330,35 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Monday"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "not-a-valid-time"},
+                }
+            ),
+            "location": "Cebu City",
+            "category": json.dumps(["vegetable"]),
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+        headers={"Authorization": f"Bearer {generate_test_admin_token()}"},
+    )
+    assert response.status_code == 422
+
+    # Test empty JSON in operating days
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "merchant@example.com",
+            "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "operating_days": json.dumps({}),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -340,9 +382,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -360,9 +404,11 @@ def test_create_merchant_unprocessable_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["veggies"]),
         },
@@ -385,9 +431,11 @@ def test_create_merchant_user_already_exists(client):
         "phone_number": "+639123456789",
         "latitude": 10.3157,
         "longitude": 123.8854,
-        "start_operating_time": "08:00:00",
-        "end_operating_time": "17:00:00",
-        "operating_days": json.dumps(["Mon"]),
+        "operating_days": json.dumps(
+            {
+                "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+            }
+        ),
         "location": "Cebu City",
         "category": json.dumps(["vegetable"]),
     }
@@ -415,9 +463,11 @@ def test_create_merchant_incomplete_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -440,9 +490,11 @@ def test_create_merchant_incomplete_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -465,9 +517,11 @@ def test_create_merchant_incomplete_payload(client):
             "name": "Test Merchant",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -490,9 +544,11 @@ def test_create_merchant_incomplete_payload(client):
             "name": "Test Merchant",
             "phone_number": "+639123456789",
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -515,9 +571,11 @@ def test_create_merchant_incomplete_payload(client):
             "name": "Test Merchant",
             "phone_number": "+639123456789",
             "latitude": 10.3157,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -532,7 +590,7 @@ def test_create_merchant_incomplete_payload(client):
     )
     assert response.status_code == 422
 
-    # No start operating time
+    # Test no operating days
     response = client.post(
         "/api/admin/create",
         data={
@@ -541,8 +599,6 @@ def test_create_merchant_incomplete_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -557,7 +613,7 @@ def test_create_merchant_incomplete_payload(client):
     )
     assert response.status_code == 422
 
-    # No end operating time
+    # Test no start time in operating days
     response = client.post(
         "/api/admin/create",
         data={
@@ -566,8 +622,39 @@ def test_create_merchant_incomplete_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"end_time": "17:00:00"},
+                }
+            ),
+            "location": "Cebu City",
+            "category": json.dumps(["vegetable"]),
+        },
+        files={
+            "location_photo": (
+                "test.jpg",
+                io.BytesIO(b"fake-image-bytes"),
+                "image/jpeg",
+            ),
+        },
+        headers={"Authorization": f"Bearer {generate_test_admin_token()}"},
+    )
+    assert response.status_code == 422
+
+    # Test no end time in operating days
+    response = client.post(
+        "/api/admin/create",
+        data={
+            "email": "merchant@example.com",
+            "name": "Test Merchant",
+            "phone_number": "+639123456789",
+            "latitude": 10.3157,
+            "longitude": 123.8854,
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -591,9 +678,11 @@ def test_create_merchant_incomplete_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "18:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "category": json.dumps(["vegetable"]),
         },
         files={
@@ -616,35 +705,12 @@ def test_create_merchant_incomplete_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
-            "location": "Cebu City",
-            "category": json.dumps(["vegetable"]),
-        },
-        headers={"Authorization": f"Bearer {generate_test_admin_token()}"},
-    )
-    assert response.status_code == 422
-
-    # No operating days
-    response = client.post(
-        "/api/admin/create",
-        data={
-            "email": "merchant@example.com",
-            "name": "Test Merchant",
-            "phone_number": "+639123456789",
-            "latitude": 10.3157,
-            "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "18:00:00",
-            "location": "Cebu City",
-            "category": json.dumps(["vegetable"]),
-        },
-        files={
-            "location_photo": (
-                "test.jpg",
-                io.BytesIO(b"fake-image-bytes"),
-                "image/jpeg",
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
             ),
+            "category": json.dumps(["vegetable"]),
         },
         headers={"Authorization": f"Bearer {generate_test_admin_token()}"},
     )
@@ -659,9 +725,11 @@ def test_create_merchant_incomplete_payload(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "18:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
         },
         files={
@@ -685,9 +753,11 @@ def test_create_merchant_no_headers(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -714,9 +784,11 @@ def test_create_merchant_invalid_headers(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -742,9 +814,11 @@ def test_create_merchant_invalid_headers(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -771,9 +845,11 @@ def test_create_merchant_invalid_token(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -800,9 +876,11 @@ def test_create_merchant_expired_token(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -832,9 +910,11 @@ def test_delete_merchant_success(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -877,9 +957,11 @@ def test_delete_merchant_no_headers(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -913,9 +995,11 @@ def test_delete_merchant_invalid_headers(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -960,9 +1044,11 @@ def test_delete_merchant_invalid_token(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -997,9 +1083,11 @@ def test_delete_merchant_expired_token(client):
             "phone_number": "+639123456789",
             "latitude": 10.3157,
             "longitude": 123.8854,
-            "start_operating_time": "08:00:00",
-            "end_operating_time": "17:00:00",
-            "operating_days": json.dumps(["Mon", "Wed", "Fri"]),
+            "operating_days": json.dumps(
+                {
+                    "Mon": {"start_time": "08:00:00", "end_time": "17:00:00"},
+                }
+            ),
             "location": "Cebu City",
             "category": json.dumps(["vegetable"]),
         },
@@ -1040,9 +1128,10 @@ def test_get_all_merchants_success(client):
     assert data["phone_number"] == "+639123456789"
     assert data["latitude"] == 10.3157
     assert data["longitude"] == 123.8854
-    assert data["start_operating_time"] == "08:00:00"
-    assert data["end_operating_time"] == "18:00:00"
-    assert data["operating_days"] == ["Mon", "Wed", "Fri"]
+    assert len(data["operating_days"]) == 1
+    assert data["operating_days"][0]["day"] == "Mon"
+    assert data["operating_days"][0]["start_time"] == "08:00:00"
+    assert data["operating_days"][0]["end_time"] == "17:00:00"
     assert data["location"] == "Cebu City, Philippines"
     assert (
         data["location_photo"]

@@ -13,8 +13,6 @@ const updateProfile = async (
   latitude,
   longitude,
   location_photo,
-  start_operating_time,
-  end_operating_time,
   operating_days,
   location,
   category,
@@ -28,9 +26,7 @@ const updateProfile = async (
   if (location_photo instanceof File) {
     formData.append("location_photo", location_photo);
   }
-  formData.append("start_operating_time", start_operating_time);
-  formData.append("end_operating_time", end_operating_time);
-  formData.append("operating_days", JSON.stringify(operating_days));
+  formData.append("operating_days", JSON.stringify(operating_days)); // this should contain a list of days ("Mon", "Tue", "Wed", etc), then for each day, it contains an object with "start_time" and "end_time" fields
   formData.append("location", location);
   formData.append("category", JSON.stringify(category));
   return await apiClient.put(`/profile/${id}`, formData);
