@@ -35,7 +35,10 @@ export default function EditProfile({ onSave, onLogout }) {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-        if (!user) { setError("User details cannot be retrieved"); return; }
+        if (!user) {
+          setError("User details cannot be retrieved");
+          return;
+        }
         userId = user.id;
       }
 
@@ -48,14 +51,18 @@ export default function EditProfile({ onSave, onLogout }) {
           marketLocation: data.location || "",
           phoneNumber: data.phone_number || "",
           schedule: (data.operating_days || []).map((day) => ({
-            day,
-            startTime: data.start_operating_time || "",
-            endTime: data.end_operating_time || "",
+            day: day["day"],
+            start_time: day.start_time || "",
+            end_time: day.end_time || "",
           })),
           category: data.category || [],
         });
         if (data.location_photo) setPhotoPreview(data.location_photo);
-        setLocation(data.latitude && data.longitude ? { lat: data.latitude, lng: data.longitude } : null);
+        setLocation(
+          data.latitude && data.longitude
+            ? { lat: data.latitude, lng: data.longitude }
+            : null,
+        );
       }
       setProfileLoaded(true);
     };
@@ -74,11 +81,11 @@ export default function EditProfile({ onSave, onLogout }) {
     if (formData.schedule.length === 0)
       return setError("Please select at least one operating day");
     for (const entry of formData.schedule) {
-      if (!entry.startTime || !entry.endTime)
+      if (!entry.start_time || !entry.end_time)
         return setError(`Please enter operating hours for all selected days`);
-      if (entry.startTime >= entry.endTime)
+      if (entry.start_time >= entry.end_time)
         return setError(
-          `Opening time must be earlier than closing time for ${entry.day}`
+          `Opening time must be earlier than closing time for ${entry.day}`,
         );
     }
 
@@ -97,7 +104,6 @@ export default function EditProfile({ onSave, onLogout }) {
         formData.marketLocation,
         formData.category,
       );
-
     } catch (e) {
       setError(String(e));
       setIsLoading(false);

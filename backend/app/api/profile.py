@@ -16,7 +16,7 @@ router = APIRouter()
 
 # Get merchant details
 @router.get("/{id}", tags=["Profile"])
-async def get_listing(id: str):
+async def get_merchant(id: str):
     try:
         return (
             supabase.table("merchant")
@@ -31,7 +31,7 @@ async def get_listing(id: str):
 
 # Edit merchant details
 @router.put("/{id}", tags=["Profile"])
-async def update_listing(
+async def update_merchant(
     id: str,
     name: str = Form(...),
     phone_number: PhPhone = Form(...),
@@ -200,6 +200,7 @@ async def update_listing(
             return (
                 supabase.from_("merchant")
                 .select("*, operating_days:schedule(*)")
+                .eq("id", id)
                 .single()
                 .execute()
                 .data
