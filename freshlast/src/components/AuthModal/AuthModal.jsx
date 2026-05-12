@@ -46,7 +46,7 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
           <p className="auth-modal__subtitle">Manage your harvest and connect with customers.</p>
         </div>
 
-        <AuthForm onSuccess={onSuccess} />
+        <AuthForm onSuccess={onSuccess} onClose={onClose} />
       </div>
     </div>
   );

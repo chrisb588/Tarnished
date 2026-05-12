@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import MerchantDisplayAdmin from '../../components/MerchantDisplayAdmin/MerchantDisplayAdmin'
 import { getAllMerchants, deleteMerchant } from '../../api/admin';
 
-export default function AdminDashboard(){
+export default function AdminDashboard({ onAdminLogout }){
 const navigate = useNavigate();
 const [merchants, setMerchants] = useState([]);
 const [isLoading, setIsLoading] = useState(true);
@@ -28,9 +28,14 @@ const handleDelete = async (id) => {
 
     return (
         <div className='admin-container'>
-            <Link to="/" className="floating-add-btn">
-                <p>Back to home</p>
-            </Link>
+            <div className='admin-top-bar'>
+                <Link to="/" className="floating-add-btn">
+                    <p>Back to home</p>
+                </Link>
+                <button className='admin-logout-btn' onClick={onAdminLogout}>
+                    Log Out
+                </button>
+            </div>
             <div className='admin-dashboard'>
                 <h3>Users</h3>
                 {isLoading && <p>Loading merchants...</p>}

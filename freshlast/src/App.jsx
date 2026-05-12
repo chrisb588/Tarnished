@@ -14,7 +14,7 @@ import ViewListing from "./pages/ViewListing/ViewListing";
 import ViewMerchant from "./pages/ViewMerchant/ViewMerchant";
 import AdminLoginPage from "./pages/AdminLoginPage/AdminLoginPage";
 import "./App.css";
-import { adminLogin, getAdminToken, verifyAdminToken } from "./api/admin";
+import { adminLogin, getAdminToken, verifyAdminToken, adminLogout } from "./api/admin";
 import AuthModal from "./components/AuthModal/AuthModal";
 
 export default function App() {
@@ -118,6 +118,11 @@ export default function App() {
     setProfileComplete(null);
   };
 
+  const handleAdminLogout = () => {
+    adminLogout();
+    setIsAdmin(false);
+  };
+
   if (session === undefined || verifying || verifyingAdmin) {
     return (
       <div style={{ display: "grid", placeItems: "center", height: "100vh" }}>
@@ -191,7 +196,7 @@ export default function App() {
         <Route path="/viewMerchant/:id" element={<ViewMerchant />} />
         <Route
           path="/admin"
-          element={!isAdmin ? <Navigate to="/" replace /> : <AdminDashboard />}
+          element={!isAdmin ? <Navigate to="/" replace /> : <AdminDashboard onAdminLogout={handleAdminLogout} />}
         />
         <Route
           path="/editProfile/:id"

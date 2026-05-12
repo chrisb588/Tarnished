@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import './AuthForm.css'
 
-export default function AuthForm({ onSuccess }) {
+export default function AuthForm({ onSuccess, onClose }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -60,7 +60,7 @@ export default function AuthForm({ onSuccess }) {
           {loading ? "Processing..." : "Log In"}
         </button>
 
-        <button type="button" className="admin-login" onClick={() => navigate('/adminLoginPage')}>
+        <button type="button" className="admin-login" onClick={() => { onClose?.(); navigate('/adminLoginPage'); }}>
           Logging in as an administrator?
         </button>
       </form>
