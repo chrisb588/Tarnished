@@ -16,7 +16,7 @@ const SORT_OPTIONS = [
 ]
 const SORT_LABELS = Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))
 
-export default function Home({ session, onLogout }) {
+export default function Home({ session, onLogout, isAdmin }) {
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -93,6 +93,7 @@ export default function Home({ session, onLogout }) {
         onLogout={onLogout}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        isAdmin={isAdmin}
       />
 
       <main className="dashboard__content">
@@ -117,6 +118,7 @@ export default function Home({ session, onLogout }) {
                 </div>
               )}
             </div>
+            <Link to="/profile" className="dashboard__edit-btn">Edit Profile</Link>
             <Link to="/create" className="dashboard__add-btn">+ Add new listing</Link>
           </div>
         </div>

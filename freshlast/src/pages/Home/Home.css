@@ -176,6 +176,25 @@ body {
   background-color: var(--color-primary);
 }
 
+.dashboard__edit-btn {
+  padding: 0.5rem 1.25rem;
+  background: transparent;
+  border: 1.5px solid var(--color-primary-hover);
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary-hover);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dashboard__edit-btn:hover {
+  background-color: var(--color-primary-hover);
+  color: #fff;
+}
+
 /* Grid */
 .dashboard__grid {
   display: grid;

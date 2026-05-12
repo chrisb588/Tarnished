@@ -21,7 +21,7 @@ const UserIcon = () => (
   </svg>
 );
 
-export default function AppHeader({ session, onLogout, onLoginClick, searchQuery, onSearchChange }) {
+export default function AppHeader({ session, onLogout, onLoginClick, searchQuery, onSearchChange, isAdmin }) {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
 
@@ -57,6 +57,12 @@ export default function AppHeader({ session, onLogout, onLoginClick, searchQuery
                 >×</button>
               )}
             </div>
+          )}
+
+          {isAdmin && (
+            <Link to="/admin" className="app-header__nav-link">
+              Admin Dashboard
+            </Link>
           )}
 
           {session && onLogout ? (

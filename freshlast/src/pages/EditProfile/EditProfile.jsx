@@ -23,9 +23,7 @@ export default function EditProfile({ onSave, onLogout }) {
     stallName: "",
     marketLocation: "",
     phoneNumber: "",
-    operatingHoursStart: "",
-    operatingHoursEnd: "",
-    operatingDays: [],
+    schedule: [],
     category: [],
   });
 
@@ -49,9 +47,11 @@ export default function EditProfile({ onSave, onLogout }) {
           stallName: data.name || "",
           marketLocation: data.location || "",
           phoneNumber: data.phone_number || "",
-          operatingHoursStart: data.start_operating_time || "",
-          operatingHoursEnd: data.end_operating_time || "",
-          operatingDays: data.operating_days || [],
+          schedule: (data.operating_days || []).map((day) => ({
+            day,
+            startTime: data.start_operating_time || "",
+            endTime: data.end_operating_time || "",
+          })),
           category: data.category || [],
         });
         if (data.location_photo) setPhotoPreview(data.location_photo);
@@ -71,15 +71,16 @@ export default function EditProfile({ onSave, onLogout }) {
       return setError("Market Location is required");
     if (!formData.phoneNumber.trim())
       return setError("Phone Number is required");
-    if (
-      !formData.operatingHoursStart.trim() ||
-      !formData.operatingHoursEnd.trim()
-    )
-      return setError("Please enter your operating hours.");
-    if (formData.operatingHoursStart >= formData.operatingHoursEnd)
-      return setError("Opening time must be earlier than closing time.");
-    if (formData.operatingDays.length === 0)
+    if (formData.schedule.length === 0)
       return setError("Please select at least one operating day");
+    for (const entry of formData.schedule) {
+      if (!entry.startTime || !entry.endTime)
+        return setError(`Please enter operating hours for all selected days`);
+      if (entry.startTime >= entry.endTime)
+        return setError(
+          `Opening time must be earlier than closing time for ${entry.day}`
+        );
+    }
 
     setIsLoading(true);
 
@@ -92,9 +93,7 @@ export default function EditProfile({ onSave, onLogout }) {
         location?.lat ?? 0,
         location?.lng ?? 0,
         photo,
-        formData.operatingHoursStart,
-        formData.operatingHoursEnd,
-        formData.operatingDays,
+        formData.schedule,
         formData.marketLocation,
         formData.category,
       );

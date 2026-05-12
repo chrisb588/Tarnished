@@ -16,7 +16,7 @@ const markerIcon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
-export default function ViewListing({ session, onLogout, onLoginClick }) {
+export default function ViewListing({ session, onLogout, onLoginClick, isAdmin }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [listing, setListing] = useState(null);
@@ -48,14 +48,14 @@ export default function ViewListing({ session, onLogout, onLoginClick }) {
 
   if (isLoading) return (
     <div className="vl-container">
-      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} />
+      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} isAdmin={isAdmin} />
       <p className="vl-status">Loading...</p>
     </div>
   );
 
   if (error || !listing) return (
     <div className="vl-container">
-      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} />
+      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} isAdmin={isAdmin} />
       <p className="vl-status vl-status--error">{error || 'Listing not found.'}</p>
       <div style={{ textAlign: 'center' }}>
         <button className="vl-back__btn" onClick={() => navigate(-1)}>← Go Back</button>
@@ -84,6 +84,7 @@ export default function ViewListing({ session, onLogout, onLoginClick }) {
         session={session}
         onLogout={onLogout}
         onLoginClick={onLoginClick}
+        isAdmin={isAdmin}
       />
 
       {/* ── BREADCRUMB ── */}

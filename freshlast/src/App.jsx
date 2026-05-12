@@ -158,6 +158,7 @@ export default function App() {
               session={session}
               onLogout={handleLogout}
               onLoginClick={() => setShowLoginModal(true)}
+              isAdmin={isAdmin}
             />
           }
         />
@@ -170,6 +171,7 @@ export default function App() {
               session={session}
               onLogout={handleLogout}
               onLoginClick={() => setShowLoginModal(true)}
+              isAdmin={isAdmin}
             />
           }
         />
@@ -180,6 +182,7 @@ export default function App() {
               session={session}
               onLogout={handleLogout}
               onLoginClick={() => setShowLoginModal(true)}
+              isAdmin={isAdmin}
             />
           }
         />
@@ -213,6 +216,7 @@ export default function App() {
               session={session}
               onLogout={handleLogout}
               onLoginClick={() => setShowLoginModal(true)}
+              isAdmin={isAdmin}
             />
           }
         />
@@ -236,7 +240,7 @@ export default function App() {
             ) : !profileComplete ? (
               <Navigate to="/profile" replace />
             ) : (
-              <Home session={session} onLogout={handleLogout} />
+              <Home session={session} onLogout={handleLogout} isAdmin={isAdmin} />
             )
           }
         />

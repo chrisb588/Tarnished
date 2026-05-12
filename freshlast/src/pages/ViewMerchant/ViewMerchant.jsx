@@ -36,7 +36,7 @@ const SORT_OPTIONS = [
 ]
 const SORT_LABELS = Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))
 
-export default function ViewMerchant({ session, onLogout, onLoginClick }) {
+export default function ViewMerchant({ session, onLogout, onLoginClick, isAdmin }) {
   const navigate = useNavigate()
   const { id: paramId } = useParams()
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -131,16 +131,18 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
     }
   })
 
+  const isOwner = !!session?.user && session.user.id === merchantData?.id
+
   if (isLoading) return (
     <div className="vm-container">
-      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} searchQuery={searchQuery} onSearchChange={setSearchQuery} isAdmin={isAdmin} />
       <p className="vm-status">Loading merchant profile...</p>
     </div>
   )
 
   if (error || !merchantData) return (
     <div className="vm-container">
-      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <AppHeader session={session} onLogout={onLogout} onLoginClick={onLoginClick} searchQuery={searchQuery} onSearchChange={setSearchQuery} isAdmin={isAdmin} />
       <p className="vm-status vm-status--error">{error || 'Merchant not found.'}</p>
       <div style={{ textAlign: 'center' }}>
         <button className="vm-secondary-btn" onClick={() => navigate(-1)}>← Go Back</button>
@@ -157,6 +159,7 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
         onLoginClick={onLoginClick}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        isAdmin={isAdmin}
       />
 
       {/* ── HERO ── */}
@@ -233,6 +236,11 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
                 Back
               </button>
+              {isOwner && (
+                <button className="vm-edit-profile-btn" onClick={() => navigate('/profile')}>
+                  Edit Profile
+                </button>
+              )}
             </div>
           </div>
         </section>

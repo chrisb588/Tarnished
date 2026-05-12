@@ -44,7 +44,7 @@ const SORT_OPTIONS = [
 ]
 const SORT_LABELS = Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))
 
-export default function OfferList({ session, onLogout, onLoginClick }) {
+export default function OfferList({ session, onLogout, onLoginClick, isAdmin }) {
   const navigate = useNavigate()
   const [selectedCategory, setSelectedCategory] = useState('All Produce')
   const [searchQuery, setSearchQuery] = useState('')
@@ -123,6 +123,7 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
         onLoginClick={onLoginClick}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        isAdmin={isAdmin}
       />
 
       {/* ── HERO ── */}

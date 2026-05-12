@@ -1,7 +1,17 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import "./ProfileForm.css";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const DAY_FULL_NAMES = {
+  Mon: "Monday",
+  Tue: "Tuesday",
+  Wed: "Wednesday",
+  Thu: "Thursday",
+  Fri: "Friday",
+  Sat: "Saturday",
+  Sun: "Sunday",
+};
 
 export default function ProfileForm({
   isCreating,
@@ -16,26 +26,49 @@ export default function ProfileForm({
 }) {
   const fileInputRef = useRef(null);
 
+  useEffect(() => {
+    console.log("Schedule:", formData.schedule);
+  }, [formData.schedule]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleDay = (day) => {
+  const handleScheduleTimeChange = (day, field, value) => {
     setFormData((prev) => ({
       ...prev,
-      operatingDays: prev.operatingDays.includes(day)
-        ? prev.operatingDays.filter((d) => d !== day)
-        : [...prev.operatingDays, day],
+      schedule: prev.schedule.map((entry) =>
+        entry.day === day ? { ...entry, [field]: value } : entry
+      ),
     }));
   };
 
-  const allDaysSelected = DAYS.every((d) => formData.operatingDays.includes(d));
+  const toggleDay = (day) => {
+    setFormData((prev) => {
+      const exists = prev.schedule.some((entry) => entry.day === day);
+      return {
+        ...prev,
+        schedule: exists
+          ? prev.schedule.filter((entry) => entry.day !== day)
+          : [...prev.schedule, { day, startTime: "", endTime: "" }],
+      };
+    });
+  };
+
+  const allDaysSelected = DAYS.every((d) =>
+    formData.schedule.some((entry) => entry.day === d)
+  );
 
   const toggleAllDays = () => {
     setFormData((prev) => ({
       ...prev,
-      operatingDays: allDaysSelected ? [] : [...DAYS],
+      schedule: allDaysSelected
+        ? []
+        : DAYS.map((day) => {
+            const existing = prev.schedule.find((e) => e.day === day);
+            return existing ?? { day, startTime: "", endTime: "" };
+          }),
     }));
   };
 
@@ -155,29 +188,6 @@ export default function ProfileForm({
         />
       </div>
 
-      {/* Operating Hours */}
-      <div className="edit-profile__field">
-        <label className="edit-profile__label edit-profile__label--required">
-          Operating Hours
-        </label>
-        <div className="edit-profile__hours">
-          <input
-            name="operatingHoursStart"
-            type="time"
-            className="edit-profile__time-input"
-            value={formData.operatingHoursStart}
-            onChange={handleChange}
-          />
-          <input
-            name="operatingHoursEnd"
-            type="time"
-            className="edit-profile__time-input"
-            value={formData.operatingHoursEnd}
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-
       {/* Operating Days */}
       <div className="edit-profile__field">
         <div className="edit-profile__days-header">
@@ -197,7 +207,7 @@ export default function ProfileForm({
             <button
               key={day}
               type="button"
-              className={`edit-profile__day-btn ${formData.operatingDays.includes(day) ? "edit-profile__day-btn--active" : ""}`}
+              className={`edit-profile__day-btn ${formData.schedule.some((e) => e.day === day) ? "edit-profile__day-btn--active" : ""}`}
               onClick={() => toggleDay(day)}
             >
               {day}
@@ -205,6 +215,33 @@ export default function ProfileForm({
           ))}
         </div>
       </div>
+
+      {/* Per-day Operating Hours */}
+      {formData.schedule.map(({ day, startTime, endTime }) => (
+        <div key={day} className="edit-profile__field">
+          <label className="edit-profile__label edit-profile__label--required">
+            {DAY_FULL_NAMES[day]} Operating Hours
+          </label>
+          <div className="edit-profile__hours">
+            <input
+              type="time"
+              className="edit-profile__time-input"
+              value={startTime}
+              onChange={(e) =>
+                handleScheduleTimeChange(day, "startTime", e.target.value)
+              }
+            />
+            <input
+              type="time"
+              className="edit-profile__time-input"
+              value={endTime}
+              onChange={(e) =>
+                handleScheduleTimeChange(day, "endTime", e.target.value)
+              }
+            />
+          </div>
+        </div>
+      ))}
 
       <button
         type="submit"
