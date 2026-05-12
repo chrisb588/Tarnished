@@ -36,9 +36,7 @@ const createMerchant = async (
   latitude,
   longitude,
   location_photo,
-  start_operating_time, // should be only time
-  end_operating_time, // should be only time
-  operating_days, // should be an array consisting of exclusively "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+  operating_days,
   location,
   category,
 ) => {
@@ -49,9 +47,7 @@ const createMerchant = async (
   formData.append("latitude", latitude);
   formData.append("longitude", longitude);
   formData.append("location_photo", location_photo);
-  formData.append("start_operating_time", start_operating_time);
-  formData.append("end_operating_time", end_operating_time);
-  formData.append("operating_days", JSON.stringify(operating_days));
+  formData.append("operating_days", JSON.stringify(operating_days)); // this should contain a list of days ("Mon", "Tue", "Wed", etc), then for each day, it contains an object with "start_time" and "end_time" fields
   formData.append("location", location);
   formData.append("category", category);
 
