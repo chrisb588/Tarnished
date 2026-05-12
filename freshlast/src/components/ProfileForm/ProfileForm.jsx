@@ -3,7 +3,7 @@ import "./ProfileForm.css";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const CATEGORIES = ["Fruits", "Vegetables", "Beef", "Chicken", "Pork", "Seafood"];
+const CATEGORIES = ["Fruit", "Vegetable", "Beef", "Chicken", "Pork", "Seafood"];
 
 const DAY_FULL_NAMES = {
   Mon: "Monday",
@@ -45,7 +45,7 @@ export default function ProfileForm({
     setFormData((prev) => ({
       ...prev,
       schedule: prev.schedule.map((entry) =>
-        entry.day === day ? { ...entry, [field]: value } : entry
+        entry.day === day ? { ...entry, [field]: value } : entry,
       ),
     }));
   };
@@ -57,13 +57,13 @@ export default function ProfileForm({
         ...prev,
         schedule: exists
           ? prev.schedule.filter((entry) => entry.day !== day)
-          : [...prev.schedule, { day, startTime: "", endTime: "" }],
+          : [...prev.schedule, { day, start_time: "", end_time: "" }],
       };
     });
   };
 
   const allDaysSelected = DAYS.every((d) =>
-    formData.schedule.some((entry) => entry.day === d)
+    formData.schedule.some((entry) => entry.day === d),
   );
 
   const toggleAllDays = () => {
@@ -73,7 +73,7 @@ export default function ProfileForm({
         ? []
         : DAYS.map((day) => {
             const existing = prev.schedule.find((e) => e.day === day);
-            return existing ?? { day, startTime: "", endTime: "" };
+            return existing ?? { day, start_time: "", end_time: "" };
           }),
     }));
   };
@@ -89,7 +89,7 @@ export default function ProfileForm({
   };
 
   const allCategoriesSelected = CATEGORIES.every((c) =>
-    formData.category.includes(c.toLowerCase())
+    formData.category.includes(c.toLowerCase()),
   );
 
   const toggleAllCategories = () => {
@@ -210,15 +210,31 @@ export default function ProfileForm({
         >
           Phone Number
         </label>
-        <input id="phoneNumber" name="phoneNumber" type="tel"
+        <input
+          id="phoneNumber"
+          name="phoneNumber"
+          type="tel"
           className="edit-profile__input"
           value={formData.phoneNumber}
           maxLength={13}
           onChange={handleChange}
           onKeyDown={(e) => {
             const allowed = /^[0-9+]$/;
-            const control = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Home", "End"];
-            if (!allowed.test(e.key) && !control.includes(e.key) && !e.ctrlKey && !e.metaKey) {
+            const control = [
+              "Backspace",
+              "Delete",
+              "ArrowLeft",
+              "ArrowRight",
+              "Tab",
+              "Home",
+              "End",
+            ];
+            if (
+              !allowed.test(e.key) &&
+              !control.includes(e.key) &&
+              !e.ctrlKey &&
+              !e.metaKey
+            ) {
               e.preventDefault();
             }
           }}
@@ -282,7 +298,7 @@ export default function ProfileForm({
       </div>
 
       {/* Per-day Operating Hours */}
-      {formData.schedule.map(({ day, startTime, endTime }) => (
+      {formData.schedule.map(({ day, start_time, end_time }) => (
         <div key={day} className="edit-profile__field">
           <label className="edit-profile__label edit-profile__label--required">
             {DAY_FULL_NAMES[day]} Operating Hours
@@ -291,17 +307,17 @@ export default function ProfileForm({
             <input
               type="time"
               className="edit-profile__time-input"
-              value={startTime}
+              value={start_time}
               onChange={(e) =>
-                handleScheduleTimeChange(day, "startTime", e.target.value)
+                handleScheduleTimeChange(day, "start_time", e.target.value)
               }
             />
             <input
               type="time"
               className="edit-profile__time-input"
-              value={endTime}
+              value={end_time}
               onChange={(e) =>
-                handleScheduleTimeChange(day, "endTime", e.target.value)
+                handleScheduleTimeChange(day, "end_time", e.target.value)
               }
             />
           </div>

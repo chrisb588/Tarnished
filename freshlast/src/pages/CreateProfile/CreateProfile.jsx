@@ -24,6 +24,7 @@ export default function CreateProfile() {
     marketLocation: "",
     phoneNumber: "",
     schedule: [],
+    category: [],
   });
 
   //use effect here
@@ -42,12 +43,15 @@ export default function CreateProfile() {
     if (formData.schedule.length === 0)
       return setError("Please select at least one operating day");
     for (const entry of formData.schedule) {
-      if (!entry.startTime || !entry.endTime)
+      if (!entry.start_time || !entry.end_time)
         return setError(`Please enter operating hours for all selected days`);
-      if (entry.startTime >= entry.endTime)
+      if (entry.start_time >= entry.end_time)
         return setError(
-          `Opening time must be earlier than closing time for ${entry.day}`
+          `Opening time must be earlier than closing time for ${entry.day}`,
         );
+      if (formData.category.length == 0) {
+        return setError("Please select at least one category");
+      }
     }
 
     setIsLoading(true);
@@ -63,7 +67,7 @@ export default function CreateProfile() {
         photo,
         formData.schedule,
         formData.marketLocation,
-        "vegetable", // TODO: Hardcoded value for debugging purposes. Please add category input here
+        formData.category,
       );
 
       const { email, temp_password } = response.data;
