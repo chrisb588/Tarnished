@@ -49,19 +49,7 @@ SEEDED_DATA = {
             "merchant_id": "11111111-1111-1111-1111-111111111111",
             "day": "Mon",
             "start_time": "08:00:00",
-            "end_time": "12:00:00",
-        },
-        {
-            "merchant_id": "11111111-1111-1111-1111-111111111111",
-            "day": "Tue",
-            "start_time": "08:00:00",
-            "end_time": "12:00:00",
-        },
-        {
-            "merchant_id": "11111111-1111-1111-1111-111111111111",
-            "day": "Wed",
-            "start_time": "09:00:00",
-            "end_time": "14:00:00",
+            "end_time": "17:00:00",
         },
     ],
     "listing": [
@@ -108,14 +96,9 @@ def cleanup(supabase_local):
         supabase_local.auth.admin.delete_user(merchant["id"])
 
     for table in reversed(TABLES):
-        if table == "schedule":
-            supabase_local.table("schedule").delete().not_.in_(
-                "merchant_id", list(SEEDED_IDS)
-            ).execute()
-        else:
-            supabase_local.table(table).delete().neq(
-                "id", "00000000-0000-0000-0000-000000000000"
-            ).filter("id", "not.in", f"({','.join(SEEDED_IDS)})").execute()
+        supabase_local.table(table).delete().neq(
+            "id", "00000000-0000-0000-0000-000000000000"
+        ).filter("id", "not.in", f"({','.join(SEEDED_IDS)})").execute()
 
     for table in TABLES:
         supabase_local.table(table).upsert(SEEDED_DATA[table]).execute()

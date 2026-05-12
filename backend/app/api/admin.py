@@ -18,7 +18,8 @@ from models.enums.category import Category
 from models.operating_hours import OperatingHours
 from models.ph_phone import PhPhone
 from models.profile import Merchant
-from pydantic import EmailStr, Json
+from models.schedule import Schedule
+from pydantic import EmailStr
 
 router = APIRouter()
 load_dotenv()
@@ -98,6 +99,13 @@ async def create_merchant(
             detail="Operating days not in proper JSON format.",
         )
 
+    # Raise error if operating days is empty
+    if len(parsed_days) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Operating days cannot be empty.",
+        )
+
     # Validate operating days
     for day, sched in parsed_days.items():
         if day not in WEEK:
@@ -163,14 +171,12 @@ async def create_merchant(
             (
                 supabase_admin.table("schedule")
                 .insert(
-                    json.dumps(
-                        {
-                            "merchant_id": UUID(user_id),
-                            "day": day,
-                            "start_time": sched.start_time,
-                            "end_time": sched.end_time,
-                        }
-                    )
+                    Schedule(
+                        merchant_id=UUID(user_id),
+                        day=day,
+                        start_time=sched.start_time,
+                        end_time=sched.end_time,
+                    ).model_dump(mode="json")
                 )
                 .execute()
             )
@@ -192,7 +198,7 @@ async def create_merchant(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"FATAL: Failed to clean up resources after merchant insert failure: {cleanup_error}",
             )
-        print("world")
+        print(original_error)
 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=original_error

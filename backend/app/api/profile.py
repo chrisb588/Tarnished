@@ -1,16 +1,15 @@
 import json
 import re
-from datetime import time
 from uuid import UUID, uuid4
 
 from constants.week import WEEK
 from core.supabase import supabase
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from models.enums.category import Category
-from models.enums.weekday import Weekday
 from models.operating_hours import OperatingHours
 from models.ph_phone import PhPhone
 from models.profile import Merchant
+from models.schedule import Schedule
 
 router = APIRouter()
 
@@ -64,6 +63,13 @@ async def update_listing(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             detail="Operating days not in proper JSON format.",
+        )
+
+    # Raise error if operating days is empty
+    if len(parsed_days) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Operating days cannot be empty.",
         )
 
     # Validate operating days
@@ -150,14 +156,12 @@ async def update_listing(
             for day in new_days - old_days:
                 sched = parsed_days[day]
                 supabase.table("schedule").insert(
-                    json.dumps(
-                        {
-                            "merchant_id": id,
-                            "day": day,
-                            "start_time": sched.start_time,
-                            "end_time": sched.end_time,
-                        }
-                    )
+                    Schedule(
+                        merchant_id=UUID(id),
+                        day=day,
+                        start_time=sched.start_time,
+                        end_time=sched.end_time,
+                    ).model_dump(mode="json")
                 ).execute()
                 inserted_days.append(day)
 
@@ -179,8 +183,8 @@ async def update_listing(
                     supabase.table("schedule").update(
                         json.dumps(
                             {
-                                "start_time": sched.start_time,
-                                "end_time": sched.end_time,
+                                "start_time": str(sched.start_time),
+                                "end_time": str(sched.end_time),
                             }
                         )
                     ).eq("merchant_id", id).eq("day", day).execute()
@@ -193,7 +197,13 @@ async def update_listing(
                 )
                 supabase.storage.from_("media").remove([old_image_path])
 
-            return data.data[0]
+            return (
+                supabase.from_("merchant")
+                .select("*, operating_days:schedule(*)")
+                .single()
+                .execute()
+                .data
+            )
 
         except Exception as e:
             # Rollback schedule changes
@@ -204,22 +214,20 @@ async def update_listing(
             for day in deleted_days:
                 old = old_schedule[day]
                 supabase.table("schedule").insert(
-                    json.dumps(
-                        {
-                            "merchant_id": id,
-                            "day": day,
-                            "start_time": old["start_time"],
-                            "end_time": old["end_time"],
-                        }
-                    )
+                    Schedule(
+                        merchant_id=id,
+                        day=day,
+                        start_time=old["start_time"],
+                        end_time=old["end_time"],
+                    ).model_dump(mode="json")
                 ).execute()
             for day in updated_days:
                 old = old_schedule[day]
                 supabase.table("schedule").update(
                     json.dumps(
                         {
-                            "start_time": old["start_time"],
-                            "end_time": old["end_time"],
+                            "start_time": str(old["start_time"]),
+                            "end_time": str(old["end_time"]),
                         }
                     )
                 ).eq("merchant_id", id).eq("day", day).execute()
