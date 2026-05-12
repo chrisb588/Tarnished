@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import { getAllListings } from '../../api/listings'
@@ -34,6 +34,16 @@ const InstagramIcon = () => (<svg width="18" height="18" viewBox="0 0 24 24" fil
 const CATEGORIES = ['All Produce', 'Vegetables', 'Fruits', 'Chicken', 'Pork', 'Beef', 'Seafood']
 const PREVIEW_COUNT = 6
 
+const SORT_OPTIONS = [
+  { value: 'newest',        label: '↓ Newest First' },
+  { value: 'oldest',        label: '↑ Oldest First' },
+  { value: 'price-asc',     label: '$ Lowest Price' },
+  { value: 'price-desc',    label: '$ Highest Price' },
+  { value: 'discount-desc', label: '% Largest Discount' },
+  { value: 'discount-asc',  label: '% Smallest Discount' },
+]
+const SORT_LABELS = Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))
+
 export default function OfferList({ session, onLogout, onLoginClick }) {
   const navigate = useNavigate()
   const [selectedCategory, setSelectedCategory] = useState('All Produce')
@@ -42,6 +52,9 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
   const [isLoading, setIsLoading] = useState(true)
   const [showAll, setShowAll] = useState(false)
   const [stallName, setStallName] = useState('')
+  const [sortBy, setSortBy] = useState('newest')
+  const [sortOpen, setSortOpen] = useState(false)
+  const sortDropdownRef = useRef(null)
 
   useEffect(() => {
     (async () => {
@@ -59,6 +72,15 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
     })
   }, [session])
 
+  useEffect(() => {
+    const handler = (e) => {
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(e.target))
+        setSortOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
   const filteredListings = useMemo(() => listings.filter((l) => {
     const cat = (l.category || l.type || '').toLowerCase()
     const sel = selectedCategory.toLowerCase()
@@ -67,8 +89,27 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
     return matchCat && matchSearch
   }), [listings, selectedCategory, searchQuery])
 
-  const spotlight = useMemo(() => listings.slice(0, 3), [listings])
-  const visible = showAll ? filteredListings : filteredListings.slice(0, PREVIEW_COUNT)
+  const sortedListings = useMemo(() => [...filteredListings].sort((a, b) => {
+    const priceA = (a.discounted_price > 0 && a.discounted_price < a.original_price) ? a.discounted_price : a.original_price
+    const priceB = (b.discounted_price > 0 && b.discounted_price < b.original_price) ? b.discounted_price : b.original_price
+    const discA = a.original_price > 0 && a.discounted_price > 0 && a.original_price > a.discounted_price
+      ? (a.original_price - a.discounted_price) / a.original_price : 0
+    const discB = b.original_price > 0 && b.discounted_price > 0 && b.original_price > b.discounted_price
+      ? (b.original_price - b.discounted_price) / b.original_price : 0
+    switch (sortBy) {
+      case 'oldest':        return new Date(a.created_at) - new Date(b.created_at)
+      case 'price-asc':     return priceA - priceB
+      case 'price-desc':    return priceB - priceA
+      case 'discount-desc': return discB - discA
+      case 'discount-asc':  return discA - discB
+      default:              return new Date(b.created_at) - new Date(a.created_at)
+    }
+  }), [filteredListings, sortBy])
+
+  const spotlight = useMemo(() => [...listings]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 3), [listings])
+  const visible = showAll ? sortedListings : sortedListings.slice(0, PREVIEW_COUNT)
 
   const handleViewAll = () => {
     setShowAll(prev => !prev)
@@ -145,6 +186,24 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
                 {filteredListings.length} item{filteredListings.length === 1 ? '' : 's'} in {selectedCategory}
               </p>
             </div>
+            <div className="sort-dropdown" ref={sortDropdownRef}>
+              <button className="sort-btn" onClick={() => setSortOpen(o => !o)}>
+                {SORT_LABELS[sortBy]} ▾
+              </button>
+              {sortOpen && (
+                <div className="sort-dropdown__menu">
+                  {SORT_OPTIONS.map(opt => (
+                    <button
+                      key={opt.value}
+                      className={`sort-dropdown__option${sortBy === opt.value ? ' sort-dropdown__option--active' : ''}`}
+                      onClick={() => { setSortBy(opt.value); setSortOpen(false) }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="offerlist__categories-inner">
@@ -168,12 +227,12 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
                   <ListingItem key={l.id} listing={l} showEdit={false} onSelect={(x) => navigate(`/viewListing/${x.id}`)} />
                 ))}
               </div>
-              {filteredListings.length > PREVIEW_COUNT && (
+              {sortedListings.length > PREVIEW_COUNT && (
                 <div className="offerlist__view-all-wrap">
                   <button className="offerlist__view-all" onClick={handleViewAll}>
                     {showAll
                       ? 'Show Less ↑'
-                      : `View All ${filteredListings.length} Items →`}
+                      : `View All ${sortedListings.length} Items →`}
                   </button>
                 </div>
               )}

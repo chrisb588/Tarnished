@@ -83,7 +83,7 @@ export default function AppHeader({ session, onLogout, onLoginClick, searchQuery
                 )}
               </nav>
               <Link
-                to={`/merchant/${session.user.id}`}
+                to={`/merchant/${session?.user?.id ?? ''}`}
                 className="app-header__icon-btn"
                 title="My Profile"
                 aria-label="View my merchant profile"

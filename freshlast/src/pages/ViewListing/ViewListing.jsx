@@ -63,6 +63,11 @@ export default function ViewListing({ session, onLogout, onLoginClick }) {
     </div>
   );
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return null;
+    return new Date(dateStr).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
   const originalPrice = Number(listing.original_price);
   const discountedPrice = Number(listing.discounted_price);
   const hasDiscount =
@@ -141,6 +146,12 @@ export default function ViewListing({ session, onLogout, onLoginClick }) {
                 <span className="vl-info__card-label">TYPE</span>
                 <span className="vl-info__card-value">{listing.type || listing.category || '—'}</span>
               </div>
+              {formatDate(listing.created_at) && (
+                <div className="vl-info__card">
+                  <span className="vl-info__card-label">LISTED ON</span>
+                  <span className="vl-info__card-value">{formatDate(listing.created_at)}</span>
+                </div>
+              )}
             </div>
 
             {listing.description && (

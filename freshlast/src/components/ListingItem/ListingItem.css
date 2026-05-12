@@ -112,6 +112,12 @@
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
 }
 
+.listing-card__discount--none {
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: none;
+    font-weight: 600;
+}
+
 .listing-card__expiry {
     position: absolute;
     bottom: 10px;
@@ -212,6 +218,12 @@
     color: #4b5563;
     font-weight: 500;
     text-transform: capitalize;
+}
+
+.listing-card__date {
+    font-size: 10px;
+    color: #9ca3af;
+    margin: 6px 0 0;
 }
 
 /* ACTIONS */

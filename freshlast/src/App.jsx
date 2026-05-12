@@ -236,7 +236,7 @@ export default function App() {
             ) : !profileComplete ? (
               <Navigate to="/profile" replace />
             ) : (
-              <Home onLogout={handleLogout} />
+              <Home session={session} onLogout={handleLogout} />
             )
           }
         />

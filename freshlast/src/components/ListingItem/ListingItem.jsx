@@ -1,6 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import './ListingItem.css';
 
+function formatDate(dateStr) {
+  if (!dateStr) return null;
+  return new Date(dateStr).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 function getExpiryLabel(expiresAt) {
   if (!expiresAt) return null;
   const diffMs = new Date(expiresAt) - new Date();
@@ -50,8 +55,10 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
         }
 
         {/* top-left: discount */}
-        {hasDiscount && !isSoldOut && (
-          <span className="listing-card__discount">-{discountPct}%</span>
+        {!isSoldOut && (
+          <span className={`listing-card__discount${!hasDiscount ? ' listing-card__discount--none' : ''}`}>
+            {hasDiscount ? `-${discountPct}%` : 'No Discount'}
+          </span>
         )}
 
         {/* top-right: status */}
@@ -99,6 +106,9 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
             <span className="listing-card__chip">{listing.type}</span>
           )}
         </div>
+        {formatDate(listing.created_at) && (
+          <p className="listing-card__date">Listed {formatDate(listing.created_at)}</p>
+        )}
       </div>
 
       {/* ACTIONS */}

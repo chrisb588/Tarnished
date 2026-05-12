@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import ListingItem from '../../components/ListingItem/ListingItem.jsx'
 import AppHeader from '../../components/AppHeader/AppHeader.jsx'
@@ -26,6 +26,15 @@ const CATEGORY_TO_TYPE = {
   Seafood: 'seafood',
 }
 
+const SORT_OPTIONS = [
+  { value: 'newest',        label: '↓ Newest First' },
+  { value: 'oldest',        label: '↑ Oldest First' },
+  { value: 'price-asc',     label: '$ Lowest Price' },
+  { value: 'price-desc',    label: '$ Highest Price' },
+  { value: 'discount-desc', label: '% Largest Discount' },
+  { value: 'discount-asc',  label: '% Smallest Discount' },
+]
+const SORT_LABELS = Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))
 
 export default function ViewMerchant({ session, onLogout, onLoginClick }) {
   const navigate = useNavigate()
@@ -36,6 +45,9 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [merchantData, setMerchantData] = useState(null)
+  const [sortBy, setSortBy] = useState('newest')
+  const [sortOpen, setSortOpen] = useState(false)
+  const sortDropdownRef = useRef(null)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -87,10 +99,36 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
     fetchListings()
   }, [paramId])
 
+  useEffect(() => {
+    const handler = (e) => {
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(e.target))
+        setSortOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
   const filteredListings = listings.filter(listing => {
     const matchesCategory = selectedCategory === 'All' || listing.type === CATEGORY_TO_TYPE[selectedCategory]
     const matchesSearch = listing.name.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
+  })
+
+  const sortedListings = [...filteredListings].sort((a, b) => {
+    const priceA = (a.discounted_price > 0 && a.discounted_price < a.original_price) ? a.discounted_price : a.original_price
+    const priceB = (b.discounted_price > 0 && b.discounted_price < b.original_price) ? b.discounted_price : b.original_price
+    const discA = a.original_price > 0 && a.discounted_price > 0 && a.original_price > a.discounted_price
+      ? (a.original_price - a.discounted_price) / a.original_price : 0
+    const discB = b.original_price > 0 && b.discounted_price > 0 && b.original_price > b.discounted_price
+      ? (b.original_price - b.discounted_price) / b.original_price : 0
+    switch (sortBy) {
+      case 'oldest':        return new Date(a.created_at) - new Date(b.created_at)
+      case 'price-asc':     return priceA - priceB
+      case 'price-desc':    return priceB - priceA
+      case 'discount-desc': return discB - discA
+      case 'discount-asc':  return discA - discB
+      default:              return new Date(b.created_at) - new Date(a.created_at)
+    }
   })
 
   if (isLoading) return (
@@ -201,7 +239,27 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
 
         {/* ── PRODUCTS ── */}
         <section className="vm-section">
-          <h3 className="vm-section__title">Featured Products</h3>
+          <div className="vm-section__header">
+            <h3 className="vm-section__title">Featured Products</h3>
+            <div className="sort-dropdown" ref={sortDropdownRef}>
+              <button className="sort-btn" onClick={() => setSortOpen(o => !o)}>
+                {SORT_LABELS[sortBy]} ▾
+              </button>
+              {sortOpen && (
+                <div className="sort-dropdown__menu">
+                  {SORT_OPTIONS.map(opt => (
+                    <button
+                      key={opt.value}
+                      className={`sort-dropdown__option${sortBy === opt.value ? ' sort-dropdown__option--active' : ''}`}
+                      onClick={() => { setSortBy(opt.value); setSortOpen(false) }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Category filters */}
           <div className="vm-filters">
@@ -229,9 +287,9 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
 
           {isLoading ? (
             <p className="vm-status">Loading listings...</p>
-          ) : filteredListings.length > 0 ? (
+          ) : sortedListings.length > 0 ? (
             <div className="vm-grid">
-              {filteredListings.map(listing => (
+              {sortedListings.map(listing => (
                 <ListingItem
                   key={listing.id}
                   listing={listing}
