@@ -181,12 +181,10 @@ async def update_merchant(
                     or sched.end_time != old["end_time"]
                 ):
                     supabase.table("schedule").update(
-                        json.dumps(
-                            {
-                                "start_time": str(sched.start_time),
-                                "end_time": str(sched.end_time),
-                            }
-                        )
+                        {
+                            "start_time": str(sched.start_time),
+                            "end_time": str(sched.end_time),
+                        }
                     ).eq("merchant_id", id).eq("day", day).execute()
                     updated_days.append(day)
 
@@ -225,12 +223,10 @@ async def update_merchant(
             for day in updated_days:
                 old = old_schedule[day]
                 supabase.table("schedule").update(
-                    json.dumps(
-                        {
-                            "start_time": str(old["start_time"]),
-                            "end_time": str(old["end_time"]),
-                        }
-                    )
+                    {
+                        "start_time": str(old["start_time"]),
+                        "end_time": str(old["end_time"]),
+                    }
                 ).eq("merchant_id", id).eq("day", day).execute()
 
             # Cleanup any uploaded image
