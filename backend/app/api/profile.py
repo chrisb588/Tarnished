@@ -214,7 +214,7 @@ async def update_merchant(
                 old = old_schedule[day]
                 supabase.table("schedule").insert(
                     Schedule(
-                        merchant_id=id,
+                        merchant_id=UUID(id),
                         day=day,
                         start_time=old["start_time"],
                         end_time=old["end_time"],
