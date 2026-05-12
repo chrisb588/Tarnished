@@ -164,8 +164,8 @@ export default function OfferList({ session, onLogout, onLoginClick }) {
         <section className="offerlist__section">
           <div className="offerlist__container">
             <div className="offerlist__section-head">
-              <h2 className="offerlist__title">Today's Picks</h2>
-              <p className="offerlist__subtitle">A small, hand-curated selection</p>
+              <h2 className="offerlist__title">Latest Deals</h2>
+              <p className="offerlist__subtitle">The latest deals from our selection</p>
             </div>
             <div className="offerlist__grid offerlist__grid--3">
               {spotlight.map(l => (
