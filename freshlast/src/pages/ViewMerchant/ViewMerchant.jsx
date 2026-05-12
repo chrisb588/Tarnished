@@ -26,10 +26,6 @@ const CATEGORY_TO_TYPE = {
   Seafood: 'seafood',
 }
 
-const reviews = [
-  { name: 'Sarah J.', tag: 'Verified Buyer', time: '2 days ago', text: 'The heirloom tomatoes are absolutely incredible. Delivery was fast and eco-friendly.' },
-  { name: 'Michael R.', tag: 'Verified Buyer', time: '1 week ago', text: 'Best sweet corn in the valley. FreshLast made ordering so easy.' },
-]
 
 export default function ViewMerchant({ session, onLogout, onLoginClick }) {
   const navigate = useNavigate()
@@ -149,49 +145,52 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
           </div>
 
           <div className="vm-merchant-card__body">
-            <div>
-              <h3 className="vm-merchant-card__name">{merchantData.stallName || 'Unnamed Stall'}</h3>
-              <div className="vm-merchant-card__meta">
-                {merchantData.marketLocation && (
-                  <span>📍 {merchantData.marketLocation}</span>
-                )}
-                {merchantData.operatingHoursStart && (
-                  <span>🕐 {merchantData.operatingHoursStart} – {merchantData.operatingHoursEnd}</span>
-                )}
-                {merchantData.phoneNumber && (
-                  <span>📞 {merchantData.phoneNumber}</span>
-                )}
-                <div className="vm-merchant-card__rating">
-                  <StarIcon size={16} fill="#f59e0b" color="#f59e0b" />
-                  <span>4.9 (120 reviews)</span>
+              <div className="vm-merchant-card__info">
+                <div>
+                <h3 className="vm-merchant-card__name">{merchantData.stallName || 'Unnamed Stall'}</h3>
+                  <div className="vm-merchant-card__tags">
+                  {merchantData.category?.map((cat, i) => (
+                    <span key={i} className="vm-merchant-card__tag">{cat}</span>
+                  ))}
+                </div>
+                  <div className="vm-merchant-card__meta">
+                    {merchantData.marketLocation && (
+                      <span>📍 {merchantData.marketLocation}</span>
+                    )}
+                    {merchantData.phoneNumber && (
+                      <span>📞 {merchantData.phoneNumber}</span>
+                    )}
+                  </div>
+                </div>
+                <div className='schedule-box'>
+                <h4 className='schedule-title'>Schedule:</h4>
+                <div className='schedule-overview'>
+
+                  <div className='schedule-container'>
+                    <p>Monday:</p>
+                    <p>10PM-12AM</p>
+                    <p>Tuesday:</p>
+                    <p>CLOSED</p>
+                    <p>Wednesday:</p>
+                    <p>CLOSED</p>
+                    <p>Thursday:</p>
+                    <p>CLOSED</p>
+                  </div>
+                  <div className='schedule-container'>
+                    <p>Friday:</p>
+                    <p>10PM-12AM</p>
+                    <p>Saturday:</p>
+                    <p>10PM-12AM</p>
+                    <p>Sunday:</p>
+                    <p>10PM-12AM</p>
+                    <br></br>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <p className="vm-merchant-card__story">
-              Welcome to {merchantData.stallName}! We pride ourselves on providing the freshest produce straight to your table.
-              {merchantData.operatingHoursStart && ` Open from ${merchantData.operatingHoursStart} to ${merchantData.operatingHoursEnd}.`}
-            </p>
-
-            <div className="vm-merchant-card__tags">
-              <span className="vm-merchant-card__tag">Fresh</span>
-              <span className="vm-merchant-card__tag">Local</span>
-              <span className="vm-merchant-card__tag">Quality</span>
-              {merchantData.category?.map((cat, i) => (
-                <span key={i} className="vm-merchant-card__tag">{cat}</span>
-              ))}
-            </div>
 
             <div className="vm-merchant-card__buttons">
-              {merchantData.phoneNumber && (
-                <button
-                  className="vm-primary-btn"
-                  onClick={() => window.location.href = `tel:${merchantData.phoneNumber}`}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
-                  Contact Seller
-                </button>
-              )}
               <button className="vm-back-btn" onClick={() => navigate(-1)}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
                 Back
