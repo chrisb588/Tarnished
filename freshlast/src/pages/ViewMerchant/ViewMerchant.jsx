@@ -145,9 +145,9 @@ export default function ViewMerchant({ session, onLogout, onLoginClick }) {
           </div>
 
           <div className="vm-merchant-card__body">
+          <h3 className="vm-merchant-card__name">{merchantData.stallName || 'Unnamed Stall'}</h3>
               <div className="vm-merchant-card__info">
-                <div>
-                <h3 className="vm-merchant-card__name">{merchantData.stallName || 'Unnamed Stall'}</h3>
+                <div className='vm-merchant-card__tag-details'>
                   <div className="vm-merchant-card__tags">
                   {merchantData.category?.map((cat, i) => (
                     <span key={i} className="vm-merchant-card__tag">{cat}</span>

@@ -70,7 +70,8 @@
 
 .vm-merchant-card__info {
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
 .vm-merchant-card__avatar {
@@ -143,6 +144,12 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.vm-merchant-card__tag-details {
+  padding-right: 2rem;
+  padding-left: 1px;
+  border-right: 1px solid #e5e7eb;
 }
 
 /* ── BUTTONS ── */
@@ -352,12 +359,17 @@
 /* ── SCHEDULE OVERVIEW ── */
 
 .schedule-box {
-  padding-top: 0.7rem;
+  padding-left: 2rem;
 }
 
 .schedule-title {
-  margin-block-start: 0px;
-  margin-block-end: 0px;
+  margin-block-start: 0;
+  margin-block-end: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #166534;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .schedule-overview {
@@ -368,14 +380,25 @@
 }
 
 .schedule-container {
-  display: grid; 
-  gap: 1px;
-  grid-template-columns: 1fr 1fr;
+  display: grid;
+  gap: 4px 12px;
+  grid-template-columns: auto 1fr;
 }
 
 .schedule-container p {
-  margin-block-start: 0px;
-  margin-block-end: 0px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.schedule-container p:nth-child(odd) {
+  font-weight: 600;
+  color: #374151;
+}
+
+.schedule-container p:nth-child(even) {
+  color: #6b7280;
 }
 
 /* ── RESPONSIVE ── */
@@ -411,6 +434,35 @@
 
   .vm-merchant-card__buttons {
     justify-content: center;
+  }
+
+  .vm-merchant-card__info {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .vm-merchant-card__tag-details {
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding-right: 0;
+    padding-bottom: 1.5rem;
+    width: 100%;
+  }
+
+  .schedule-box {
+    padding-left: 0;
+    width: 100%;
+  }
+
+  .schedule-overview {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+
+  .schedule-container {
+    flex: 1;
+    min-width: 0;
   }
 
   .vm-reviews__header {
