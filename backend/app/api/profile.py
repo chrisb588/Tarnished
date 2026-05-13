@@ -14,6 +14,22 @@ from models.schedule import Schedule
 router = APIRouter()
 
 
+# Get all merchant accounts
+@router.get("/all", tags=["Profile"])
+def get_all_merchants():
+    try:
+        return (
+            supabase.from_("merchant")
+            .select("*, operating_days:schedule(*)")
+            .execute()
+            .data
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
+
+
 # Get merchant details
 @router.get("/{id}", tags=["Profile"])
 async def get_merchant(id: str):

@@ -68,17 +68,6 @@ const createMerchant = async (
   });
 };
 
-const getAllMerchants = async () => {
-  const headers = {
-    Authorization: `Bearer ${getAdminToken()}`,
-  };
-
-  const response = await apiClient.get(`/admin/merchants`, {
-    headers: headers,
-  });
-  return response.data;
-};
-
 const deleteMerchant = async (id) => {
   const headers = {
     Authorization: `Bearer ${getAdminToken()}`,
@@ -95,6 +84,5 @@ export {
   verifyAdminToken,
   adminLogout,
   createMerchant,
-  getAllMerchants,
   deleteMerchant,
 };

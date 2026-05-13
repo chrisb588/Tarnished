@@ -39,4 +39,9 @@ const updateProfile = async (
   return await apiClient.put(`/profile/${id}`, formData);
 };
 
-export { getProfile, updateProfile };
+const getAllMerchants = async () => {
+  const response = await apiClient.get(`/profile/all`);
+  return response.data;
+};
+
+export { getProfile, updateProfile, getAllMerchants };
