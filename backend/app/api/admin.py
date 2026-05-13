@@ -205,24 +205,6 @@ async def create_merchant(
         )
 
 
-# Get all merchant accounts
-@router.get("/merchants", tags=["Admin"])
-def get_all_merchants(
-    _: None = Depends(verify_admin),
-):
-    try:
-        return (
-            supabase_admin.from_("merchant")
-            .select("*, operating_days:schedule(*)")
-            .execute()
-            .data
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
-        )
-
-
 # Delete a merchant account
 @router.delete("/delete/{id}", tags=["Admin"])
 def delete_merchant(

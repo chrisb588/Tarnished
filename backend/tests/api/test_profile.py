@@ -516,3 +516,28 @@ def test_update_merchant_incomplete_payload(client):
         },
     )
     assert response.status_code == 422
+
+
+def test_get_all_merchants_success(client):
+    response = client.get(
+        "/api/profile/all",
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    data = data[0]
+    assert data["id"] == "11111111-1111-1111-1111-111111111111"
+    assert data["name"] == "Sample Merchant"
+    assert data["phone_number"] == "+639123456789"
+    assert data["latitude"] == 10.3157
+    assert data["longitude"] == 123.8854
+    assert len(data["operating_days"]) == 1
+    assert data["operating_days"][0]["day"] == "Mon"
+    assert data["operating_days"][0]["start_time"] == "08:00:00"
+    assert data["operating_days"][0]["end_time"] == "17:00:00"
+    assert data["location"] == "Cebu City, Philippines"
+    assert (
+        data["location_photo"]
+        == "http://127.0.0.1:54321/storage/v1/object/public/media/11111111-1111-1111-1111-111111111111/profile/22222222-2222-2222-2222-222222222222"
+    )
+    assert data["category"] == ["vegetable"]
