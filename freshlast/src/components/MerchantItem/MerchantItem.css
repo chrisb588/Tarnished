@@ -1,0 +1,323 @@
+/* ============================
+   merchant CARD
+============================ */
+.merchant-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.merchant-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.09);
+    border-color: #d1d5db;
+}
+
+.merchant-card:focus-visible {
+    outline: 2px solid #16a34a;
+    outline-offset: 2px;
+}
+
+.merchant-card--sold-out {
+    opacity: 0.7;
+}
+
+.merchant-card--sold-out:hover {
+    transform: none;
+}
+
+.merchant-card--sold-out .merchant-card__image img {
+    filter: grayscale(100%);
+}
+
+.merchant-card--sale {
+    border: 1px solid #bbf7d0;
+    background: linear-gradient(
+        to bottom,
+        rgba(240, 253, 244, 0.6),
+        #ffffff 28%
+    );
+}
+
+/* IMAGE */
+.merchant-card__image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+.merchant-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.merchant-card:hover .merchant-card__image img {
+    transform: scale(1.06);
+}
+
+.merchant-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    opacity: 0.5;
+}
+
+/* OVERLAYS */
+.merchant-card__status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    color: #111827;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.merchant-card__status--soldout {
+    background: #ef4444;
+    color: #fff;
+}
+
+.merchant-card__discount {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+}
+
+.merchant-card__discount--none {
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: none;
+    font-weight: 600;
+}
+
+.merchant-card__expiry {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.merchant-card__expiry--urgent {
+    background: rgba(234, 88, 12, 0.95);
+    animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* INFO */
+.merchant-card__info {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.merchant-card__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.merchant-card__vendor {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* PRICE */
+.merchant-card__price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.merchant-card__price {
+    font-size: 18px;
+    font-weight: 800;
+    color: #14532d;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.merchant-card__price-original {
+    font-size: 13px;
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+/* META */
+.merchant-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.merchant-card__chip {
+    font-size: 10px;
+    background: #f3f4f6;
+    padding: 3px 8px;
+    border-radius: 999px;
+    color: #4b5563;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.merchant-card__date {
+    font-size: 10px;
+    color: #9ca3af;
+    margin: 6px 0 0;
+}
+
+/* ACTIONS */
+.merchant-card__actions {
+    display: flex;
+    gap: 8px;
+    padding: 0 14px 14px;
+}
+
+.merchant-card__btn {
+    flex: 1;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.merchant-card__btn--ghost {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.merchant-card__btn--ghost:hover {
+    background: #e5e7eb;
+}
+
+.merchant-card__btn--danger {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.merchant-card__btn--danger:hover {
+    background: #dc2626;
+    color: #fff;
+    border-color: #dc2626;
+}
+
+.merchant-card__schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.merchant-card__schedule-entry {
+    font-size: 11px;
+    border-left: 2px solid #1d9e75;
+    padding: 2px 0 2px 8px;
+    color: var(--color-text-primary);
+}
+
+.merchant-card__schedule-entry .schedule-day {
+    font-weight: 500;
+}
+
+.merchant-card__schedule-entry .schedule-time {
+    color: #6b7280;
+}
+
+@media (max-width: 640px) {
+    .merchant-card {
+        border-radius: 14px;
+    }
+
+    .merchant-card__image {
+        aspect-ratio: 1 / 1;
+    }
+
+    .merchant-card__info {
+        padding: 10px;
+        gap: 4px;
+    }
+
+    .merchant-card__name {
+        font-size: 13px;
+    }
+
+    .merchant-card__price {
+        font-size: 16px;
+    }
+
+    .merchant-card__vendor,
+    .merchant-card__chip,
+    .merchant-card__price-original {
+        font-size: 10px;
+    }
+
+    .merchant-card__actions {
+        flex-direction: column;
+    }
+}
