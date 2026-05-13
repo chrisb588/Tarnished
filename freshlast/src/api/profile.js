@@ -41,6 +41,7 @@ const updateProfile = async (
 
 const getAllMerchants = async () => {
   const response = await apiClient.get(`/profile/all`);
+  console.log(response.data);
   return response.data;
 };
 
