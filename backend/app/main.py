@@ -34,3 +34,8 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Freshlast API"}
+
+
+@app.get("/health")
+async def check_health():
+    return {"message": "OK"}

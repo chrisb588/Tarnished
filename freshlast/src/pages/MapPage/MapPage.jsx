@@ -1,9 +1,43 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllMerchants } from '../../api/profile';
+import { getListingsByMerchant } from '../../api/listings';
 import AppHeader from '../../components/AppHeader/AppHeader';
 import VendorMap from '../../components/VendorMap/VendorMap';
 import './MapPage.css';
+
+function MapListingCard({ listing, onClick }) {
+  const isSoldOut = listing.is_sold_out;
+  const original = Number(listing.original_price);
+  const discounted = Number(listing.discounted_price);
+  const hasDiscount = original > 0 && discounted > 0 && original > discounted;
+  const discountPct = hasDiscount ? Math.round(((original - discounted) / original) * 100) : 0;
+  const displayPrice = hasDiscount ? discounted : original;
+
+  return (
+    <button
+      className={`map-listing-card${isSoldOut ? ' map-listing-card--sold-out' : ''}`}
+      style={{ backgroundImage: listing.image ? `url(${listing.image})` : 'none' }}
+      onClick={onClick}
+    >
+      {!isSoldOut && hasDiscount && (
+        <span className="map-listing-card__discount">-{discountPct}%</span>
+      )}
+      {isSoldOut && (
+        <span className="map-listing-card__sold-out">Sold Out</span>
+      )}
+      <div className="map-listing-card__footer">
+        <span className="map-listing-card__name">{listing.name}</span>
+        <div className="map-listing-card__price-row">
+          <span className="map-listing-card__price">₱{displayPrice}</span>
+          {hasDiscount && (
+            <span className="map-listing-card__price-original">₱{original}</span>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
 
 const DEFAULT_LAT = 10.3157;
 const DEFAULT_LNG = 123.8854;
@@ -29,28 +63,85 @@ function formatDays(operatingDays) {
 export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
   const [merchants, setMerchants] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
+  const [userLocatedByGps, setUserLocatedByGps] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMerchant, setSelectedMerchant] = useState(null);
+  const [merchantListings, setMerchantListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const mapRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) =>
-        setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
-      () => setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG })
-    );
+    let cancelled = false;
 
     getAllMerchants()
       .then((data) => {
+        if (cancelled) return;
         const withCoords = (Array.isArray(data) ? data : []).filter(
           (m) => m.latitude && m.longitude && m.latitude !== 0 && m.longitude !== 0
         );
         setMerchants(withCoords);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    (async () => {
+      let reloadOnGeoSuccess = false;
+      try {
+        const perm = await navigator.permissions?.query?.({ name: 'geolocation' });
+        reloadOnGeoSuccess = perm?.state === 'prompt';
+      } catch {
+        reloadOnGeoSuccess = !sessionStorage.getItem('freshlast_map_geo_post_prompt');
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          if (cancelled) return;
+          if (reloadOnGeoSuccess) {
+            try {
+              sessionStorage.setItem('freshlast_map_geo_post_prompt', '1');
+            } catch {
+              /* ignore */
+            }
+            window.location.reload();
+            return;
+          }
+          setUserLocation({ lat: coords.latitude, lng: coords.longitude });
+          setUserLocatedByGps(true);
+        },
+        () => {
+          if (cancelled) return;
+          setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
+          setUserLocatedByGps(false);
+        }
+      );
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  useEffect(() => {
+    if (!selectedMerchant) {
+      setMerchantListings([]);
+      return;
+    }
+    let cancelled = false;
+    getListingsByMerchant(selectedMerchant.id)
+      .then((data) => {
+        if (cancelled) return;
+        const sorted = (Array.isArray(data) ? data : [])
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 3);
+        setMerchantListings(sorted);
+      })
+      .catch(() => {
+        if (!cancelled) setMerchantListings([]);
+      });
+    return () => { cancelled = true; };
+  }, [selectedMerchant]);
 
   const effectiveLocation = userLocation ?? { lat: DEFAULT_LAT, lng: DEFAULT_LNG };
 
@@ -108,6 +199,7 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
               ref={mapRef}
               merchants={merchants}
               userLocation={effectiveLocation}
+              showUserLocationPin={userLocatedByGps}
               selectedMerchantId={selectedMerchant?.id ?? null}
               onPinClick={setSelectedMerchant}
             />
@@ -148,6 +240,39 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
                   )}
                 </span>
               </div>
+              <div>
+                <h4 className="map-page__card-photo-title">
+                  Stall Photo:
+                </h4>
+              </div>
+              <div className="map-page__card-photo">
+                {selectedMerchant.location_photo ? (
+                  <img
+                    src={selectedMerchant.location_photo}
+                    alt={`${selectedMerchant.name ?? 'Stall'} photo`}
+                  />
+                ) : (
+                  <span className="map-page__card-photo-placeholder">
+                    {selectedMerchant.name?.trim()?.charAt(0)?.toUpperCase() ?? '?'}
+                  </span>
+                )}
+              </div>
+              {merchantListings.length > 0 && (
+                <>
+                  <div>
+                    <h4 className="map-page__card-photo-title">Latest Deals:</h4>
+                  </div>
+                  <div className="map-page__card-listings">
+                    {merchantListings.map((l) => (
+                      <MapListingCard
+                        key={l.id}
+                        listing={l}
+                        onClick={() => navigate(`/viewListing/${l.id}`)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
               <button
                 className="map-page__card-cta"
                 onClick={() => navigate(`/merchant/${selectedMerchant.id}`)}

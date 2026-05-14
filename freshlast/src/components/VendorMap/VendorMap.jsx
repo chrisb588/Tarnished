@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -29,6 +29,16 @@ function createPinIcon(selected) {
   });
 }
 
+const USER_HERE_ICON = L.divIcon({
+  className: 'vendor-map__user-marker',
+  html: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,0.35))">
+    <circle cx="10" cy="10" r="8" fill="#2563eb" stroke="white" stroke-width="3"/>
+    <circle cx="10" cy="10" r="3" fill="white"/>
+  </svg>`,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
+
 function MapController({ mapRef }) {
   const map = useMap();
   useEffect(() => {
@@ -38,7 +48,13 @@ function MapController({ mapRef }) {
 }
 
 const VendorMap = forwardRef(function VendorMap(
-  { merchants, userLocation, selectedMerchantId, onPinClick },
+  {
+    merchants,
+    userLocation,
+    showUserLocationPin = false,
+    selectedMerchantId,
+    onPinClick,
+  },
   ref
 ) {
   const mapInstanceRef = useRef(null);
@@ -67,6 +83,17 @@ const VendorMap = forwardRef(function VendorMap(
             eventHandlers={{ click: () => onPinClick(m) }}
           />
         ))}
+        {showUserLocationPin && (
+          <Marker
+            position={[userLocation.lat, userLocation.lng]}
+            icon={USER_HERE_ICON}
+            alt="You are here"
+          >
+            <Tooltip direction="top" offset={[0, -14]} opacity={1} permanent>
+              You are here
+            </Tooltip>
+          </Marker>
+        )}
       </MapContainer>
       <button
         className="vendor-map__recenter"

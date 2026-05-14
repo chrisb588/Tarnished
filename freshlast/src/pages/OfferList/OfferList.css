@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem 1rem 3.5rem;
+  padding: 3rem 1rem 1.5rem;
   background:
     linear-gradient(rgba(15, 30, 20, 0.55), rgba(15, 30, 20, 0.55)),
     url("../../assets/carbon-market-3842.webp");
@@ -140,6 +140,40 @@
   font-size: 1rem;
   background: transparent;
   color: #111827;
+}
+
+.offerlist__hero-map-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.offerlist__hero-map-link:visited {
+  color: #fff;
+}
+
+.offerlist__hero-map-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #fff;
+  transform: translateY(-1px);
+}
+
+.offerlist__hero-map-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 
 /* =========================
@@ -512,7 +546,7 @@
   /* HERO */
   .offerlist__hero {
     min-height: 300px;
-    padding: 3rem 1rem 3.5rem;
+    padding: 1rem 1rem 1.0rem;
   }
 
   .offerlist__hero-heading {
