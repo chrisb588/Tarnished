@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -38,8 +38,24 @@ function LocationMarker({ position, onLocationChange }) {
 
 export function MapPicker({ initialLat, initialLng, onLocationChange }) {
   const hasInitial = initialLat != null && initialLat !== 0 && initialLng != null && initialLng !== 0;
-  const center = [hasInitial ? initialLat : DEFAULT_LAT, hasInitial ? initialLng : DEFAULT_LNG];
-  const [markerPos, setMarkerPos] = useState(hasInitial ? center : null);
+
+  const [resolvedCenter, setResolvedCenter] = useState(
+    hasInitial ? [initialLat, initialLng] : null
+  );
+  const [markerPos, setMarkerPos] = useState(hasInitial ? [initialLat, initialLng] : null);
+
+  useEffect(() => {
+    if (hasInitial) return;
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setResolvedCenter([coords.latitude, coords.longitude]);
+      },
+      () => {
+        setResolvedCenter([DEFAULT_LAT, DEFAULT_LNG]);
+      },
+      { timeout: 8000 }
+    );
+  }, []);
 
   const handleLocationChange = useCallback(
     ({ lat, lng }) => {
@@ -49,8 +65,16 @@ export function MapPicker({ initialLat, initialLng, onLocationChange }) {
     [onLocationChange]
   );
 
+  if (!resolvedCenter) {
+    return (
+      <div style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6', borderRadius: '8px' }}>
+        Locating you…
+      </div>
+    );
+  }
+
   return (
-    <MapContainer center={center} zoom={15} style={{ height: '300px', width: '100%' }}>
+    <MapContainer center={resolvedCenter} zoom={15} style={{ height: '300px', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="© OpenStreetMap contributors"
