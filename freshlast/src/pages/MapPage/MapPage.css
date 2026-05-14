@@ -95,7 +95,7 @@
 .map-page__overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 1100;
 }
 
 .map-page__card {
@@ -106,7 +106,7 @@
   background: #fff;
   border-radius: 16px 16px 0 0;
   padding: 20px 20px 32px;
-  z-index: 300;
+  z-index: 1200;
   transform: translateY(100%);
   transition: transform 0.3s ease;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
