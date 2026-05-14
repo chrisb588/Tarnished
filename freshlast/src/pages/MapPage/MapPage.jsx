@@ -29,6 +29,7 @@ function formatDays(operatingDays) {
 export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
   const [merchants, setMerchants] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
+  const [userLocatedByGps, setUserLocatedByGps] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMerchant, setSelectedMerchant] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,9 +38,14 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
-      ({ coords }) =>
-        setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
-      () => setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG })
+      ({ coords }) => {
+        setUserLocation({ lat: coords.latitude, lng: coords.longitude });
+        setUserLocatedByGps(true);
+      },
+      () => {
+        setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
+        setUserLocatedByGps(false);
+      }
     );
 
     getAllMerchants()
@@ -108,6 +114,7 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
               ref={mapRef}
               merchants={merchants}
               userLocation={effectiveLocation}
+              showUserLocationPin={userLocatedByGps}
               selectedMerchantId={selectedMerchant?.id ?? null}
               onPinClick={setSelectedMerchant}
             />
@@ -147,6 +154,23 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
                     selectedMerchant.longitude
                   )}
                 </span>
+              </div>
+              <div>
+                <h4 className="map-page__card-photo-title">
+                  Stall Photo:
+                </h4>
+              </div>
+              <div className="map-page__card-photo">
+                {selectedMerchant.location_photo ? (
+                  <img
+                    src={selectedMerchant.location_photo}
+                    alt={`${selectedMerchant.name ?? 'Stall'} photo`}
+                  />
+                ) : (
+                  <span className="map-page__card-photo-placeholder">
+                    {selectedMerchant.name?.trim()?.charAt(0)?.toUpperCase() ?? '?'}
+                  </span>
+                )}
               </div>
               <button
                 className="map-page__card-cta"

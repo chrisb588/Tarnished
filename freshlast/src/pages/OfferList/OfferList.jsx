@@ -247,6 +247,9 @@ export default function OfferList({
           b.original_price > b.discounted_price
             ? (b.original_price - b.discounted_price) / b.original_price
             : 0;
+        const soldA = a.is_sold_out ? 1 : 0;
+        const soldB = b.is_sold_out ? 1 : 0;
+        if (soldA !== soldB) return soldA - soldB;
         switch (sortBy) {
           case "oldest":
             return new Date(a.created_at) - new Date(b.created_at);
@@ -346,6 +349,13 @@ export default function OfferList({
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+            <Link
+              className="offerlist__hero-map-link"
+              to="/map"
+              aria-label="Open map to find deals near you"
+            >
+              Find deals near you -->
+            </Link>
           </div>
         </section>
       )}

@@ -5,6 +5,12 @@
 }
 
 
+.leaflet-container .vendor-map__user-marker {
+  background: transparent;
+  border: none;
+}
+
+
 .vendor-map__recenter {
   position: absolute;
   bottom: 88px;

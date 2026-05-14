@@ -60,7 +60,7 @@ export default function AppHeader({ session, onLogout, onLoginClick, searchQuery
           )}
 
           <Link to="/map" className="app-header__nav-link">
-            Map
+            Vendor Map
           </Link>
 
           {isAdmin && (

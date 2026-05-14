@@ -5,13 +5,18 @@ import VendorMap from './VendorMap';
 vi.mock('react-leaflet', () => ({
   MapContainer: ({ children }) => <div data-testid="map-container">{children}</div>,
   TileLayer: () => null,
-  Marker: ({ position, eventHandlers }) => (
+  Tooltip: ({ children }) => (
+    <span data-testid="you-are-here-tooltip">{children}</span>
+  ),
+  Marker: ({ position, eventHandlers, children }) => (
     <div
       data-testid="marker"
       data-lat={position[0]}
       data-lng={position[1]}
       onClick={() => eventHandlers?.click?.()}
-    />
+    >
+      {children}
+    </div>
   ),
   useMap: () => ({ flyTo: vi.fn(), getZoom: vi.fn(() => 15) }),
 }));
@@ -71,5 +76,51 @@ describe('VendorMap', () => {
       />
     );
     expect(screen.getByRole('button', { name: /re-center/i })).toBeInTheDocument();
+  });
+
+  it('does not render the user-location tooltip when showUserLocationPin is false', () => {
+    render(
+      <VendorMap
+        merchants={merchants}
+        userLocation={{ lat: 10.3157, lng: 123.8854 }}
+        selectedMerchantId={null}
+        onPinClick={vi.fn()}
+        showUserLocationPin={false}
+      />
+    );
+    expect(screen.queryByTestId('you-are-here-tooltip')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('marker')).toHaveLength(2);
+  });
+
+  it('renders user location tooltip when showUserLocationPin is true', () => {
+    render(
+      <VendorMap
+        merchants={merchants}
+        userLocation={{ lat: 10.318, lng: 123.88 }}
+        selectedMerchantId={null}
+        onPinClick={vi.fn()}
+        showUserLocationPin
+      />
+    );
+    expect(screen.getByTestId('you-are-here-tooltip')).toHaveTextContent(/you are here/i);
+    expect(screen.getAllByTestId('marker')).toHaveLength(3);
+    const userMarker = screen.getByTestId('you-are-here-tooltip').closest('[data-testid="marker"]');
+    expect(userMarker).toHaveAttribute('data-lat', '10.318');
+    expect(userMarker).toHaveAttribute('data-lng', '123.88');
+  });
+
+  it('does not call onPinClick when clicking the user location marker', () => {
+    const onPinClick = vi.fn();
+    render(
+      <VendorMap
+        merchants={merchants}
+        userLocation={{ lat: 10.318, lng: 123.88 }}
+        selectedMerchantId={null}
+        onPinClick={onPinClick}
+        showUserLocationPin
+      />
+    );
+    fireEvent.click(screen.getByTestId('you-are-here-tooltip').closest('[data-testid="marker"]'));
+    expect(onPinClick).not.toHaveBeenCalled();
   });
 });
