@@ -59,6 +59,10 @@ export default function AppHeader({ session, onLogout, onLoginClick, searchQuery
             </div>
           )}
 
+          <Link to="/map" className="app-header__nav-link">
+            Map
+          </Link>
+
           {isAdmin && (
             <Link to="/admin" className="app-header__nav-link">
               Admin Dashboard

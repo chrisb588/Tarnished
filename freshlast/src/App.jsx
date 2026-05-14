@@ -13,6 +13,7 @@ import CreateProfile from "./pages/CreateProfile/CreateProfile";
 import ViewListing from "./pages/ViewListing/ViewListing";
 import ViewMerchant from "./pages/ViewMerchant/ViewMerchant";
 import AdminLoginPage from "./pages/AdminLoginPage/AdminLoginPage";
+import MapPage from "./pages/MapPage/MapPage";
 import "./App.css";
 import { adminLogin, getAdminToken, verifyAdminToken, adminLogout } from "./api/admin";
 import AuthModal from "./components/AuthModal/AuthModal";
@@ -214,6 +215,17 @@ export default function App() {
         />
 
         {/* PUBLIC */}
+        <Route
+          path="/map"
+          element={
+            <MapPage
+              session={session}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+              isAdmin={isAdmin}
+            />
+          }
+        />
         <Route
           path="/offers"
           element={
