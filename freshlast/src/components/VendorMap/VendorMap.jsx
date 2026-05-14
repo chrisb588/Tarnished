@@ -14,11 +14,18 @@ L.Icon.Default.mergeOptions({
 });
 
 function createPinIcon(selected) {
+  const fill = selected ? '#f59e0b' : '#16a34a';
+  const shadow = selected
+    ? '0 0 0 3px rgba(245,158,11,0.3), 0 2px 8px rgba(0,0,0,0.4)'
+    : '0 2px 6px rgba(0,0,0,0.35)';
   return L.divIcon({
     className: '',
-    html: `<div class="vendor-pin${selected ? ' vendor-pin--selected' : ''}"></div>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="36" viewBox="0 0 24 36" style="filter:drop-shadow(${shadow})">
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 24 12 24S24 21 24 12C24 5.373 18.627 0 12 0z" fill="${fill}" stroke="white" stroke-width="2"/>
+      <circle cx="12" cy="12" r="5" fill="white"/>
+    </svg>`,
+    iconSize: [24, 36],
+    iconAnchor: [12, 36],
   });
 }
 
