@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllMerchants } from '../../api/profile';
+import { getListingsByMerchant } from '../../api/listings';
 import AppHeader from '../../components/AppHeader/AppHeader';
 import VendorMap from '../../components/VendorMap/VendorMap';
+import ListingItem from '../../components/ListingItem/ListingItem';
 import './MapPage.css';
 
 const DEFAULT_LAT = 10.3157;
@@ -32,31 +34,82 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
   const [userLocatedByGps, setUserLocatedByGps] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMerchant, setSelectedMerchant] = useState(null);
+  const [merchantListings, setMerchantListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const mapRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        setUserLocation({ lat: coords.latitude, lng: coords.longitude });
-        setUserLocatedByGps(true);
-      },
-      () => {
-        setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
-        setUserLocatedByGps(false);
-      }
-    );
+    let cancelled = false;
 
     getAllMerchants()
       .then((data) => {
+        if (cancelled) return;
         const withCoords = (Array.isArray(data) ? data : []).filter(
           (m) => m.latitude && m.longitude && m.latitude !== 0 && m.longitude !== 0
         );
         setMerchants(withCoords);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    (async () => {
+      let reloadOnGeoSuccess = false;
+      try {
+        const perm = await navigator.permissions?.query?.({ name: 'geolocation' });
+        reloadOnGeoSuccess = perm?.state === 'prompt';
+      } catch {
+        reloadOnGeoSuccess = !sessionStorage.getItem('freshlast_map_geo_post_prompt');
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          if (cancelled) return;
+          if (reloadOnGeoSuccess) {
+            try {
+              sessionStorage.setItem('freshlast_map_geo_post_prompt', '1');
+            } catch {
+              /* ignore */
+            }
+            window.location.reload();
+            return;
+          }
+          setUserLocation({ lat: coords.latitude, lng: coords.longitude });
+          setUserLocatedByGps(true);
+        },
+        () => {
+          if (cancelled) return;
+          setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
+          setUserLocatedByGps(false);
+        }
+      );
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  useEffect(() => {
+    if (!selectedMerchant) {
+      setMerchantListings([]);
+      return;
+    }
+    let cancelled = false;
+    getListingsByMerchant(selectedMerchant.id)
+      .then((data) => {
+        if (cancelled) return;
+        const sorted = (Array.isArray(data) ? data : [])
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 3);
+        setMerchantListings(sorted);
+      })
+      .catch(() => {
+        if (!cancelled) setMerchantListings([]);
+      });
+    return () => { cancelled = true; };
+  }, [selectedMerchant]);
 
   const effectiveLocation = userLocation ?? { lat: DEFAULT_LAT, lng: DEFAULT_LNG };
 
@@ -172,6 +225,23 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
                   </span>
                 )}
               </div>
+              {merchantListings.length > 0 && (
+                <>
+                  <div>
+                    <h4 className="map-page__card-photo-title">Latest Deals:</h4>
+                  </div>
+                  <div className="map-page__card-listings">
+                    {merchantListings.map((l) => (
+                      <ListingItem
+                        key={l.id}
+                        listing={l}
+                        showEdit={false}
+                        onSelect={(x) => navigate(`/viewListing/${x.id}`)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
               <button
                 className="map-page__card-cta"
                 onClick={() => navigate(`/merchant/${selectedMerchant.id}`)}

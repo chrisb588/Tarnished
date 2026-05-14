@@ -111,6 +111,8 @@
   transition: transform 0.3s ease;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
   border-top: 1px solid #e5e7eb;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .map-page__card--visible {
@@ -207,6 +209,21 @@
   font-size: 2.25rem;
   font-weight: 700;
   color: #9ca3af;
+}
+
+.map-page__card-listings {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.map-page__card-listings .listing-card {
+  min-width: 160px;
+  max-width: 180px;
+  flex-shrink: 0;
 }
 
 .map-page__card-cta {
