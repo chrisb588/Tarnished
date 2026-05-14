@@ -202,7 +202,7 @@ export default function App() {
         <Route
           path="/editProfile/:id"
           element={
-            !isLoggedIn ? (
+            !isLoggedIn && !isAdmin ? (
               <Navigate to="/" replace />
             ) : (
               <EditProfile onLogout={handleLogout} />
