@@ -123,7 +123,7 @@ const CATEGORIES = [
   "Beef",
   "Seafood",
 ];
-const PREVIEW_COUNT = 6;
+const PREVIEW_COUNT = 8;
 
 const SORT_OPTIONS = [
   { value: "newest", label: "↓ Newest First" },
