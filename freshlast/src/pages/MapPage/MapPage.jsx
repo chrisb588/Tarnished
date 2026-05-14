@@ -4,8 +4,40 @@ import { getAllMerchants } from '../../api/profile';
 import { getListingsByMerchant } from '../../api/listings';
 import AppHeader from '../../components/AppHeader/AppHeader';
 import VendorMap from '../../components/VendorMap/VendorMap';
-import ListingItem from '../../components/ListingItem/ListingItem';
 import './MapPage.css';
+
+function MapListingCard({ listing, onClick }) {
+  const isSoldOut = listing.is_sold_out;
+  const original = Number(listing.original_price);
+  const discounted = Number(listing.discounted_price);
+  const hasDiscount = original > 0 && discounted > 0 && original > discounted;
+  const discountPct = hasDiscount ? Math.round(((original - discounted) / original) * 100) : 0;
+  const displayPrice = hasDiscount ? discounted : original;
+
+  return (
+    <button
+      className={`map-listing-card${isSoldOut ? ' map-listing-card--sold-out' : ''}`}
+      style={{ backgroundImage: listing.image ? `url(${listing.image})` : 'none' }}
+      onClick={onClick}
+    >
+      {!isSoldOut && hasDiscount && (
+        <span className="map-listing-card__discount">-{discountPct}%</span>
+      )}
+      {isSoldOut && (
+        <span className="map-listing-card__sold-out">Sold Out</span>
+      )}
+      <div className="map-listing-card__footer">
+        <span className="map-listing-card__name">{listing.name}</span>
+        <div className="map-listing-card__price-row">
+          <span className="map-listing-card__price">₱{displayPrice}</span>
+          {hasDiscount && (
+            <span className="map-listing-card__price-original">₱{original}</span>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
 
 const DEFAULT_LAT = 10.3157;
 const DEFAULT_LNG = 123.8854;
@@ -232,11 +264,10 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
                   </div>
                   <div className="map-page__card-listings">
                     {merchantListings.map((l) => (
-                      <ListingItem
+                      <MapListingCard
                         key={l.id}
                         listing={l}
-                        showEdit={false}
-                        onSelect={(x) => navigate(`/viewListing/${x.id}`)}
+                        onClick={() => navigate(`/viewListing/${l.id}`)}
                       />
                     ))}
                   </div>
