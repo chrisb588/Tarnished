@@ -130,6 +130,15 @@ async def create_merchant(
 
     user_id = create_response.user.id
 
+    # Mark password as not yet changed so first login forces the change-password screen
+    try:
+        supabase_admin.auth.admin.update_user_by_id(
+            user_id,
+            {"user_metadata": {"password_changed": False}},
+        )
+    except Exception:
+        pass
+
     # Upload the image to the bucket
     image_path = f"{user_id}/profile/{uuid4()}"
     try:
