@@ -36,6 +36,24 @@ const SORT_OPTIONS = [
 ]
 const SORT_LABELS = Object.fromEntries(SORT_OPTIONS.map(o => [o.value, o.label]))
 
+const DAYS_ORDERED = [
+  { short: 'Mon', label: 'Monday' },
+  { short: 'Tue', label: 'Tuesday' },
+  { short: 'Wed', label: 'Wednesday' },
+  { short: 'Thu', label: 'Thursday' },
+  { short: 'Fri', label: 'Friday' },
+  { short: 'Sat', label: 'Saturday' },
+  { short: 'Sun', label: 'Sunday' },
+]
+
+function formatTime(timeStr) {
+  if (!timeStr) return ''
+  const [h, m] = timeStr.split(':').map(Number)
+  const period = h < 12 ? 'AM' : 'PM'
+  const hour = h % 12 === 0 ? 12 : h % 12
+  return `${hour}:${String(m).padStart(2, '0')}${period}`
+}
+
 export default function ViewMerchant({ session, onLogout, onLoginClick, isAdmin }) {
   const navigate = useNavigate()
   const { id: paramId } = useParams()
@@ -206,25 +224,31 @@ export default function ViewMerchant({ session, onLogout, onLoginClick, isAdmin 
                 <div className='schedule-box'>
                 <h4 className='schedule-title'>Schedule:</h4>
                 <div className='schedule-overview'>
-
                   <div className='schedule-container'>
-                    <p>Monday:</p>
-                    <p>10PM-12AM</p>
-                    <p>Tuesday:</p>
-                    <p>CLOSED</p>
-                    <p>Wednesday:</p>
-                    <p>CLOSED</p>
-                    <p>Thursday:</p>
-                    <p>CLOSED</p>
+                    {DAYS_ORDERED.slice(0, 4).map(({ short, label }) => {
+                      const entry = merchantData.operatingDays?.find(d => d.day === short)
+                      return (
+                        <>
+                          <p key={short + '-label'}>{label}:</p>
+                          <p key={short + '-val'}>
+                            {entry ? `${formatTime(entry.start_time)}-${formatTime(entry.end_time)}` : 'CLOSED'}
+                          </p>
+                        </>
+                      )
+                    })}
                   </div>
                   <div className='schedule-container'>
-                    <p>Friday:</p>
-                    <p>10PM-12AM</p>
-                    <p>Saturday:</p>
-                    <p>10PM-12AM</p>
-                    <p>Sunday:</p>
-                    <p>10PM-12AM</p>
-                    <br></br>
+                    {DAYS_ORDERED.slice(4).map(({ short, label }) => {
+                      const entry = merchantData.operatingDays?.find(d => d.day === short)
+                      return (
+                        <>
+                          <p key={short + '-label'}>{label}:</p>
+                          <p key={short + '-val'}>
+                            {entry ? `${formatTime(entry.start_time)}-${formatTime(entry.end_time)}` : 'CLOSED'}
+                          </p>
+                        </>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
