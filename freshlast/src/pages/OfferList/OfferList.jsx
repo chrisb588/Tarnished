@@ -349,13 +349,18 @@ export default function OfferList({
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Link
-              className="offerlist__hero-map-link"
-              to="/map"
-              aria-label="Open map to find deals near you"
-            >
-              Find deals near you -->
-            </Link>
+            <div className="offerlist__hero-links">
+              <Link
+                className="offerlist__hero-map-link"
+                to="/map"
+                aria-label="Open map to find deals near you"
+              >
+                Find deals near you →
+              </Link>
+              <a className="offerlist__hero-map-link offerlist__hero-map-link--filled" href="#browse-merchants">
+                Browse by Merchant →
+              </a>
+            </div>
           </div>
         </section>
       )}
@@ -478,7 +483,7 @@ export default function OfferList({
       {/* ── BROWSE BY MERCHANT ── */}
       <section
         className="offerlist__section offerlist__section--alt"
-        id="browse"
+        id="browse-merchants"
       >
         <div className="offerlist__container">
           <div className="offerlist__section-head">

@@ -142,11 +142,18 @@
   color: #111827;
 }
 
+.offerlist__hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.1rem;
+}
+
 .offerlist__hero-map-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1.1rem;
   padding: 0.75rem 1.5rem;
   border-radius: 999px;
   border: 2px solid #fff;
@@ -174,6 +181,21 @@
 .offerlist__hero-map-link:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
+}
+
+.offerlist__hero-map-link--filled {
+  background: #fff;
+  border-color: transparent;
+  color: black;
+}
+
+.offerlist__hero-map-link--filled:visited {
+  color: black;
+}
+
+.offerlist__hero-map-link--filled:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: transparent;
 }
 
 /* =========================
