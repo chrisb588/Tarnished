@@ -86,37 +86,19 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
         if (!cancelled) setIsLoading(false);
       });
 
-    (async () => {
-      let reloadOnGeoSuccess = false;
-      try {
-        const perm = await navigator.permissions?.query?.({ name: 'geolocation' });
-        reloadOnGeoSuccess = perm?.state === 'prompt';
-      } catch {
-        reloadOnGeoSuccess = !sessionStorage.getItem('freshlast_map_geo_post_prompt');
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        if (cancelled) return;
+        setUserLocation({ lat: coords.latitude, lng: coords.longitude });
+        setUserLocatedByGps(true);
+        mapRef.current?.flyTo(coords.latitude, coords.longitude, 15);
+      },
+      () => {
+        if (cancelled) return;
+        setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
+        setUserLocatedByGps(false);
       }
-
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          if (cancelled) return;
-          if (reloadOnGeoSuccess) {
-            try {
-              sessionStorage.setItem('freshlast_map_geo_post_prompt', '1');
-            } catch {
-              /* ignore */
-            }
-            window.location.reload();
-            return;
-          }
-          setUserLocation({ lat: coords.latitude, lng: coords.longitude });
-          setUserLocatedByGps(true);
-        },
-        () => {
-          if (cancelled) return;
-          setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
-          setUserLocatedByGps(false);
-        }
-      );
-    })();
+    );
 
     return () => {
       cancelled = true;
