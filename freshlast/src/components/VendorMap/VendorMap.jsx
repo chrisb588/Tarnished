@@ -81,7 +81,17 @@ const VendorMap = forwardRef(function VendorMap(
             position={[m.latitude, m.longitude]}
             icon={createPinIcon(m.id === selectedMerchantId)}
             eventHandlers={{ click: () => onPinClick(m) }}
-          />
+          >
+            <Tooltip
+              direction="top"
+              offset={[0, -38]}
+              opacity={1}
+              permanent
+              className="vendor-map__store-label"
+            >
+              {m.name.length > 10 ? m.name.slice(0, 10) + '…' : m.name}
+            </Tooltip>
+          </Marker>
         ))}
         {showUserLocationPin && (
           <Marker
