@@ -8,3 +8,4 @@ class Category(Enum):
     PORK = "pork"
     BEEF = "beef"
     SEAFOOD = "seafood"
+    RICE = "rice"

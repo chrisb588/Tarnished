@@ -85,7 +85,7 @@ async def create_merchant(
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail="Invalid data format for category field. It should be an array containing 'vegetable', 'fruit', 'chicken', 'pork', 'beef', and/or 'seafood'",
+                detail="Invalid data format for category field. It should be an array containing 'vegetable', 'fruit', 'chicken', 'pork', 'beef', 'rice', and/or 'seafood'",
             )
 
     # Parse operating days

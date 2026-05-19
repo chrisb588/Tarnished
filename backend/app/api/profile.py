@@ -67,7 +67,7 @@ async def update_merchant(
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail="Invalid data format for operating days field. It should be an array containing 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', and/or 'Sat'",
+                detail="Invalid data format for category field. It should be an array containing 'vegetable', 'fruit', 'chicken', 'pork', 'beef', 'rice', and/or 'seafood'",
             )
 
     # Parse operating days

@@ -3,7 +3,15 @@ import "./ProfileForm.css";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const CATEGORIES = ["Fruit", "Vegetable", "Beef", "Chicken", "Pork", "Seafood"];
+const CATEGORIES = [
+  "Fruit",
+  "Vegetable",
+  "Beef",
+  "Chicken",
+  "Pork",
+  "Seafood",
+  "Rice",
+];
 
 const DAY_FULL_NAMES = {
   Mon: "Monday",

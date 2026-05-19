@@ -122,6 +122,7 @@ const CATEGORIES = [
   "Pork",
   "Beef",
   "Seafood",
+  "Rice",
 ];
 const PREVIEW_COUNT = 8;
 
@@ -357,7 +358,10 @@ export default function OfferList({
               >
                 Find deals near you →
               </Link>
-              <a className="offerlist__hero-map-link offerlist__hero-map-link--filled" href="#browse-merchants">
+              <a
+                className="offerlist__hero-map-link offerlist__hero-map-link--filled"
+                href="#browse-merchants"
+              >
                 Browse by Merchant →
               </a>
             </div>
