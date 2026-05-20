@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { IoLogOut } from 'react-icons/io5';
+import { IoLogOut, IoMapOutline } from 'react-icons/io5';
 import { useCart } from '../../contexts/CartContext';
 import './AppHeader.css';
 
@@ -180,6 +180,7 @@ export default function AppHeader({
 }) {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
+  const isMapPage = location.pathname === '/map';
   const { itemCount } = useCart();
   const [showCart, setShowCart] = useState(false);
   const cartRef = useRef(null);
@@ -232,7 +233,14 @@ export default function AppHeader({
             </div>
           )}
 
-          <Link to="/map" className="app-header__nav-link">Vendor Map</Link>
+          <Link
+            to="/map"
+            className={`app-header__icon-btn${isMapPage ? ' app-header__icon-btn--active' : ''}`}
+            aria-label="Vendor Map"
+            title="Vendor Map"
+          >
+            <IoMapOutline size={18} />
+          </Link>
 
           {isAdmin && (
             <Link to="/admin" className="app-header__nav-link">Admin Dashboard</Link>

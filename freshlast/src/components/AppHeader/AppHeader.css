@@ -1,7 +1,7 @@
 .app-header {
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 1003;
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: saturate(180%) blur(14px);
     -webkit-backdrop-filter: saturate(180%) blur(14px);
@@ -180,6 +180,19 @@
     background: #f3f4f6;
     border-color: #d1d5db;
     color: #111827;
+}
+
+.app-header__icon-btn--active {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+}
+
+.app-header__icon-btn--active:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    border-color: transparent;
+    color: #fff;
 }
 
 /* CTA */

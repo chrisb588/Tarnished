@@ -356,14 +356,8 @@ export default function OfferList({
                 to="/map"
                 aria-label="Open map to find deals near you"
               >
-                Find deals near you →
+                Find vendors near you →
               </Link>
-              <a
-                className="offerlist__hero-map-link offerlist__hero-map-link--filled"
-                href="#browse-merchants"
-              >
-                Browse by Merchant →
-              </a>
             </div>
           </div>
         </section>
