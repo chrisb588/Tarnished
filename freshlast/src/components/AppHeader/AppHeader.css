@@ -514,3 +514,36 @@
         right: -8px;
     }
 }
+
+.cart-dropdown__confirm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cart-dropdown__confirm-text {
+    font-size: 12px;
+    color: #6b7280;
+    flex: 1;
+}
+
+.cart-dropdown__confirm-yes {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cart-dropdown__confirm-no {
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: transparent;
+    color: #6b7280;
+    font-size: 12px;
+    cursor: pointer;
+}

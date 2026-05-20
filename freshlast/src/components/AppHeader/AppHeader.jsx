@@ -39,7 +39,8 @@ function isExpired(expiresAt) {
 }
 
 function CartDropdown({ onClose }) {
-  const { cartItems, itemCount, total, updateQuantity, removeFromCart, clearCart } = useCart();
+  const [confirmClear, setConfirmClear] = useState(false);
+  const { cartItems, total, updateQuantity, removeFromCart, clearCart } = useCart();
   const navigate = useNavigate();
 
   if (cartItems.length === 0) {
@@ -139,14 +140,30 @@ function CartDropdown({ onClose }) {
           >
             🗺 View on Map
           </button>
-          <button
-            className="cart-dropdown__clear-btn"
-            onClick={() => {
-              if (window.confirm('Clear your entire cart?')) clearCart();
-            }}
-          >
-            Clear
-          </button>
+          {confirmClear ? (
+            <div className="cart-dropdown__confirm">
+              <span className="cart-dropdown__confirm-text">Clear cart?</span>
+              <button
+                className="cart-dropdown__confirm-yes"
+                onClick={() => { clearCart(); setConfirmClear(false); }}
+              >
+                Yes
+              </button>
+              <button
+                className="cart-dropdown__confirm-no"
+                onClick={() => setConfirmClear(false)}
+              >
+                No
+              </button>
+            </div>
+          ) : (
+            <button
+              className="cart-dropdown__clear-btn"
+              onClick={() => setConfirmClear(true)}
+            >
+              Clear
+            </button>
+          )}
         </div>
       </div>
     </div>
