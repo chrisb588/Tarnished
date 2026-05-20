@@ -6,6 +6,7 @@ import { getAllMerchants, getProfile } from "../../api/profile";
 import AppHeader from "../../components/AppHeader/AppHeader.jsx";
 import "./OfferList.css";
 import MerchantItem from "../../components/MerchantItem/MerchantItem.jsx";
+import { useLanguage } from "../../context/languageContext.jsx";
 
 /* ---------- icons ---------- */
 const SearchIcon = () => (
@@ -158,6 +159,7 @@ export default function OfferList({
   const [sortBy, setSortBy] = useState("newest");
   const [sortOpen, setSortOpen] = useState(false);
   const sortDropdownRef = useRef(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     (async () => {
@@ -299,31 +301,31 @@ export default function OfferList({
       {session ? (
         <section className="offerlist__hero offerlist__hero--dashboard">
           <div className="offerlist__hero-content">
-            <span className="offerlist__hero-eyebrow">Vendor Dashboard</span>
+            <span className="offerlist__hero-eyebrow">
+              {t("vendor_dashboard")}
+            </span>
             <h2 className="offerlist__hero-heading">
-              Welcome back, {stallName || "Merchant"}
+              {t("welcome_back")}, {stallName || "Merchant"}
             </h2>
-            <p className="offerlist__hero-sub">
-              Manage your stall and listings from here.
-            </p>
+            <p className="offerlist__hero-sub">{t("dashboard_sub")}</p>
             <div className="offerlist__hero-actions">
               <Link
                 to="/create"
                 className="offerlist__hero-btn offerlist__hero-btn--primary"
               >
-                + Add New Listing
+                {t("add_listing")}
               </Link>
               <Link
                 to="/dashboard"
                 className="offerlist__hero-btn offerlist__hero-btn--secondary"
               >
-                View My Listings
+                {t("view_listings")}
               </Link>
               <Link
                 to="/profile"
                 className="offerlist__hero-btn offerlist__hero-btn--secondary"
               >
-                Edit Profile
+                {t("edit_profile")}
               </Link>
             </div>
           </div>
@@ -331,21 +333,15 @@ export default function OfferList({
       ) : (
         <section className="offerlist__hero">
           <div className="offerlist__hero-content">
-            <span className="offerlist__hero-eyebrow">
-              Carbon Market • Daily Fresh
-            </span>
-            <h2 className="offerlist__hero-heading">
-              Fresh from the vendors of Carbon Market.
-            </h2>
-            <p className="offerlist__hero-sub">
-              Locally sourced produce, meat, and seafood.
-            </p>
+            <span className="offerlist__hero-eyebrow">{t("hero_eyebrow")}</span>
+            <h2 className="offerlist__hero-heading">{t("hero_heading")}</h2>
+            <p className="offerlist__hero-sub">{t("hero_sub")}</p>
             <div className="offerlist__search-bar">
               <SearchIcon />
               <input
                 type="text"
                 className="offerlist__search-input"
-                placeholder="Search for merchants or carrots, seafood, organic beef…"
+                placeholder={t("search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -356,13 +352,13 @@ export default function OfferList({
                 to="/map"
                 aria-label="Open map to find deals near you"
               >
-                Find deals near you →
+                {t("find_deals")}
               </Link>
               <a
                 className="offerlist__hero-map-link offerlist__hero-map-link--filled"
                 href="#browse-merchants"
               >
-                Browse by Merchant →
+                {t("browse_merchant")}
               </a>
             </div>
           </div>
@@ -374,10 +370,8 @@ export default function OfferList({
         <section className="offerlist__section">
           <div className="offerlist__container">
             <div className="offerlist__section-head">
-              <h2 className="offerlist__title">Latest Deals</h2>
-              <p className="offerlist__subtitle">
-                The latest deals from our selection
-              </p>
+              <h2 className="offerlist__title">{t("latest_deals")}</h2>
+              <p className="offerlist__subtitle">{t("latest_deals_sub")}</p>
             </div>
             <div className="offerlist__grid offerlist__grid--3">
               {spotlight.map((l) => (
@@ -401,10 +395,10 @@ export default function OfferList({
         <div className="offerlist__container">
           <div className="offerlist__section-head">
             <div>
-              <h2 className="offerlist__title">Browse by Category</h2>
+              <h2 className="offerlist__title">{t("browse_category")}</h2>
               <p className="offerlist__subtitle">
-                {filteredListings.length} item
-                {filteredListings.length === 1 ? "" : "s"} in{" "}
+                {filteredListings.length}
+                {filteredListings.length === 1 ? t("item") : t("items")} in{" "}
                 {selectedListingCategory}
               </p>
             </div>
@@ -450,7 +444,7 @@ export default function OfferList({
           </div>
 
           {isLoading ? (
-            <p className="offerlist__status">Loading listings…</p>
+            <p className="offerlist__status">{t("loading_listings")}</p>
           ) : visible.length > 0 ? (
             <>
               <div className="offerlist__grid">
@@ -477,9 +471,7 @@ export default function OfferList({
               )}
             </>
           ) : (
-            <p className="offerlist__status">
-              No products found in this category.
-            </p>
+            <p className="offerlist__status">{t("no_products")}</p>
           )}
         </div>
       </section>
@@ -492,11 +484,12 @@ export default function OfferList({
         <div className="offerlist__container">
           <div className="offerlist__section-head">
             <div>
-              <h2 className="offerlist__title">Browse Merchants</h2>
+              <h2 className="offerlist__title">{t("browse_merchants")}</h2>
               <p className="offerlist__subtitle">
-                {filteredMerchants.length} item
-                {filteredMerchants.length === 1 ? "" : "s"} in{" "}
-                {selectedMerchantCategory}
+                {filteredMerchants.length}
+                {filteredMerchants.length === 1
+                  ? t("item")
+                  : t("items")} in {selectedMerchantCategory}
               </p>
             </div>
           </div>
@@ -517,7 +510,7 @@ export default function OfferList({
           </div>
 
           {isLoading ? (
-            <p className="offerlist__status">Loading merchants…</p>
+            <p className="offerlist__status">{t("loading_merchants")}</p>
           ) : filteredMerchants.length > 0 ? (
             <>
               <div className="offerlist__grid">
@@ -531,9 +524,7 @@ export default function OfferList({
               </div>
             </>
           ) : (
-            <p className="offerlist__status">
-              No merchants found in this category.
-            </p>
+            <p className="offerlist__status">{t("no_merchants")}</p>
           )}
         </div>
       </section>
