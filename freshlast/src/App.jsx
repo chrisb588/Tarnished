@@ -14,6 +14,7 @@ import ViewListing from "./pages/ViewListing/ViewListing";
 import ViewMerchant from "./pages/ViewMerchant/ViewMerchant";
 import AdminLoginPage from "./pages/AdminLoginPage/AdminLoginPage";
 import MapPage from "./pages/MapPage/MapPage";
+import CartMap from "./pages/CartMap/CartMap";
 import "./App.css";
 import { adminLogin, getAdminToken, verifyAdminToken, adminLogout } from "./api/admin";
 import AuthModal from "./components/AuthModal/AuthModal";
@@ -219,6 +220,17 @@ export default function App() {
           path="/map"
           element={
             <MapPage
+              session={session}
+              onLogout={handleLogout}
+              onLoginClick={() => setShowLoginModal(true)}
+              isAdmin={isAdmin}
+            />
+          }
+        />
+        <Route
+          path="/cart-map"
+          element={
+            <CartMap
               session={session}
               onLogout={handleLogout}
               onLoginClick={() => setShowLoginModal(true)}
