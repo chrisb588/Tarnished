@@ -97,6 +97,7 @@ export default function ViewMerchant({
   const [sortBy, setSortBy] = useState("newest");
   const [sortOpen, setSortOpen] = useState(false);
   const sortDropdownRef = useRef(null);
+  const { t } = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -230,7 +231,7 @@ export default function ViewMerchant({
           onSearchChange={setSearchQuery}
           isAdmin={isAdmin}
         />
-        <p className="vm-status">Loading merchant profile...</p>
+        <p className="vm-status">{t("vm_loading_profile")}</p>
       </div>
     );
 
@@ -246,7 +247,7 @@ export default function ViewMerchant({
           isAdmin={isAdmin}
         />
         <p className="vm-status vm-status--error">
-          {error || "Merchant not found."}
+          {error || t("vm_merchant_not_found")}
         </p>
         <div style={{ textAlign: "center" }}>
           <button className="vm-secondary-btn" onClick={() => navigate(-1)}>
@@ -275,7 +276,7 @@ export default function ViewMerchant({
           </h2>
           <p className="vm-hero__subtitle">
             {merchantData.marketLocation
-              ? `Located in ${merchantData.marketLocation}`
+              ? `${t("vm_located_in")} ${merchantData.marketLocation}`
               : "Fresh produce grown sustainably"}
           </p>
         </div>
@@ -331,7 +332,7 @@ export default function ViewMerchant({
                           <p key={short + "-val"}>
                             {entry
                               ? `${formatTime(entry.start_time)}-${formatTime(entry.end_time)}`
-                              : "CLOSED"}
+                              : t("vm_closed")}
                           </p>
                         </>
                       );
@@ -348,7 +349,7 @@ export default function ViewMerchant({
                           <p key={short + "-val"}>
                             {entry
                               ? `${formatTime(entry.start_time)}-${formatTime(entry.end_time)}`
-                              : "CLOSED"}
+                              : t("vm_closed")}
                           </p>
                         </>
                       );
@@ -373,14 +374,14 @@ export default function ViewMerchant({
                   <line x1="19" y1="12" x2="5" y2="12" />
                   <polyline points="12 19 5 12 12 5" />
                 </svg>
-                Back
+                {t("vm_back")}
               </button>
               {isOwner && (
                 <button
                   className="vm-edit-profile-btn"
                   onClick={() => navigate("/profile")}
                 >
-                  Edit Profile
+                  {t("dashboard_edit_profile")}
                 </button>
               )}
             </div>
@@ -390,7 +391,7 @@ export default function ViewMerchant({
         {/* ── PRODUCTS ── */}
         <section className="vm-section">
           <div className="vm-section__header">
-            <h3 className="vm-section__title">Featured Products</h3>
+            <h3 className="vm-section__title">{t("vm_featured_products")}</h3>
             <div className="sort-dropdown" ref={sortDropdownRef}>
               <button
                 className="sort-btn"
@@ -455,7 +456,7 @@ export default function ViewMerchant({
               ))}
             </div>
           ) : (
-            <p className="vm-status">No products found.</p>
+            <p className="vm-status">{t("vm_no_products")}</p>
           )}
         </section>
       </main>
