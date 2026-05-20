@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../contexts/CartContext';
 import './ListingItem.css';
 
 function formatDate(dateStr) {
@@ -18,6 +19,8 @@ function getExpiryLabel(expiresAt) {
 
 export default function ListingItem({ listing, showEdit = false, onSelect, onSoldOut }) {
   const navigate = useNavigate();
+  const { cartItems, addToCart, removeFromCart, updateQuantity } = useCart();
+
   const expiry = getExpiryLabel(listing.expires_at);
   const isSoldOut = listing.is_sold_out;
 
@@ -35,6 +38,9 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
     : 0;
 
   const displayPrice = hasDiscount ? discounted : original;
+
+  const cartItem = cartItems.find((item) => item.listingId === listing.id);
+  const inCart = !!cartItem;
 
   return (
     <article
@@ -54,21 +60,18 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
           : <div className="listing-card__placeholder">🥬</div>
         }
 
-        {/* top-left: discount */}
         {!isSoldOut && (
           <span className={`listing-card__discount${!hasDiscount ? ' listing-card__discount--none' : ''}`}>
             {hasDiscount ? `-${discountPct}%` : 'No Discount'}
           </span>
         )}
 
-        {/* top-right: status */}
         {isSoldOut ? (
           <span className="listing-card__status listing-card__status--soldout">Sold Out</span>
         ) : listing.category ? (
           <span className="listing-card__status">{listing.category}</span>
         ) : null}
 
-        {/* bottom: expiry overlay */}
         {expiry && !isSoldOut && (
           <span className={`listing-card__expiry${expiry.urgent ? ' listing-card__expiry--urgent' : ''}`}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -111,7 +114,7 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
         )}
       </div>
 
-      {/* ACTIONS */}
+      {/* ACTIONS — vendor edit mode */}
       {showEdit && (
         <div className="listing-card__actions">
           <button
@@ -126,6 +129,52 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
               onClick={(e) => { e.stopPropagation(); onSoldOut(listing); }}
             >
               Mark Sold Out
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* CART ROW — browse mode */}
+      {!showEdit && (
+        <div className="listing-card__cart-row">
+          {isSoldOut ? (
+            <button className="listing-card__cart-btn listing-card__cart-btn--disabled" disabled>
+              Sold Out
+            </button>
+          ) : inCart ? (
+            <div className="listing-card__stepper">
+              <button
+                aria-label="−"
+                className="listing-card__stepper-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (cartItem.quantity === 1) removeFromCart(listing.id);
+                  else updateQuantity(listing.id, cartItem.quantity - 1);
+                }}
+              >
+                −
+              </button>
+              <span className="listing-card__stepper-qty">{cartItem.quantity}</span>
+              <button
+                aria-label="+"
+                className="listing-card__stepper-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateQuantity(listing.id, cartItem.quantity + 1);
+                }}
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              className="listing-card__cart-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                addToCart(listing, { id: listing.merchant_id, name: listing.merchant_name });
+              }}
+            >
+              + Add to Cart
             </button>
           )}
         </div>
