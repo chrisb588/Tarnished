@@ -204,7 +204,7 @@ export default function CartMap({ session, onLogout, onLoginClick, isAdmin }) {
 
                 <button
                   className="cart-map-page__drawer-store-btn"
-                  onClick={() => navigate(`/merchant/${selectedMerchant.id}`)}
+                  onClick={() => navigate(`/viewMerchant/${selectedMerchant.id}`)}
                 >
                   View Store →
                 </button>
