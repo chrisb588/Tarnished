@@ -6,6 +6,7 @@ import ProfileForm from "../../components/ProfileForm/ProfileForm";
 import "./EditProfile.css";
 import { getProfile, updateProfile } from "../../api/profile";
 import { MapPicker } from "../../components/MapPicker";
+import { useLanguage } from "../../context/languageContext";
 
 export default function EditProfile({ onSave, onLogout }) {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function EditProfile({ onSave, onLogout }) {
   const [location, setLocation] = useState(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [mapClearKey, setMapClearKey] = useState(0);
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     id: "",
@@ -36,7 +38,7 @@ export default function EditProfile({ onSave, onLogout }) {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) {
-          setError("User details cannot be retrieved");
+          setError(t("error_user_not_found"));
           return;
         }
         userId = user.id;
@@ -73,16 +75,17 @@ export default function EditProfile({ onSave, onLogout }) {
     e.preventDefault();
     setError("");
 
-    if (!formData.stallName.trim()) return setError("Stall Name is required");
+    if (!formData.stallName.trim())
+      return setError(t("error_stall_name_required"));
     if (!formData.marketLocation.trim())
-      return setError("Market Location is required");
+      return setError(t("error_market_location_required"));
     if (!formData.phoneNumber.trim())
-      return setError("Phone Number is required");
+      return setError(t("error_phone_required"));
     if (formData.schedule.length === 0)
-      return setError("Please select at least one operating day");
+      return setError(t("error_schedule_required"));
     for (const entry of formData.schedule) {
       if (!entry.start_time || !entry.end_time)
-        return setError(`Please enter operating hours for all selected days`);
+        return setError(t("error_hours_required"));
       if (entry.start_time >= entry.end_time)
         return setError(
           `Opening time must be earlier than closing time for ${entry.day}`,
@@ -120,7 +123,7 @@ export default function EditProfile({ onSave, onLogout }) {
     <div className="edit-profile">
       <VendorHeader onLogout={onLogout} />
       <div className="edit-profile__container">
-        <h1 className="edit-profile__title">Edit your Profile</h1>
+        <h1 className="edit-profile__title">{t("edit_profile_title")}</h1>
         {/* ... subtitle ... */}
 
         {profileLoaded && (
@@ -140,7 +143,7 @@ export default function EditProfile({ onSave, onLogout }) {
                   setMapClearKey((k) => k + 1);
                 }}
               >
-                Clear pin
+                {t("clear_pin")}
               </button>
             )}
           </div>
