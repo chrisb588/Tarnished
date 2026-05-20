@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import { supabase } from '../../lib/supabaseClient';
+import { useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
 
-import './ChangePassword.css'
+import "./ChangePassword.css";
+import { useLanguage } from "../../context/languageContext";
 
 export default function ChangePassword() {
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
+  const { t } = useLanguage();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirm) {
-      alert("Passwords do not match.");
+      alert(t("passwords_no_match"));
       return;
     }
     setLoading(true);
@@ -26,33 +28,31 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className='password-root-wrapper'>
-      <div
-      className='password-div'>
-        <h1>Set Your Password</h1>
-        <p>This is your first login. Please set a new password before continuing.</p>
-        <form onSubmit={handleSubmit}
-        className='change-pass-form'>
-          <label for="newpass">New Password</label>
+    <div className="password-root-wrapper">
+      <div className="password-div">
+        <h1>{t("change_pass_title")}</h1>
+        <p>{t("change_pass_sub")}</p>
+        <form onSubmit={handleSubmit} className="change-pass-form">
+          <label for="newpass">{t("new_password")}</label>
           <input
             type="password"
             id="newpass"
-            placeholder="New password"
+            placeholder={t("new_password_placeholder")}
             value={password}
             required
             onChange={(e) => setPassword(e.target.value)}
           />
-          <label for="confirmpass">Confirm Password</label>
+          <label for="confirmpass">{t("confirm_password")}</label>
           <input
             type="password"
-            placeholder="Confirm password"
+            placeholder={t("confirm_password_placeholder")}
             id="confirmpass"
             value={confirm}
             required
             onChange={(e) => setConfirm(e.target.value)}
           />
           <button disabled={loading}>
-            {loading ? "Saving..." : "Set Password"}
+            {loading ? t("saving") : t("set_password")}
           </button>
         </form>
       </div>
