@@ -89,6 +89,7 @@ export default function AppHeader({
   const location = useLocation();
   const isDashboard = location.pathname.startsWith("/dashboard");
   const { lang, setLang } = useLanguage();
+  const { t } = useLanguage();
 
   return (
     <header className="app-header">
@@ -117,7 +118,7 @@ export default function AppHeader({
               <input
                 type="text"
                 className="app-header__search-input"
-                placeholder="Search products…"
+                placeholder={t("header_search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
@@ -134,7 +135,7 @@ export default function AppHeader({
           )}
 
           <Link to="/map" className="app-header__nav-link">
-            Vendor Map
+            {t("header_vendor_map")}
           </Link>
 
           {isAdmin && (
@@ -152,13 +153,13 @@ export default function AppHeader({
                     to="/dashboard"
                     className={`app-header__nav-link${isDashboard ? " app-header__nav-link--active" : ""}`}
                   >
-                    My Listings
+                    {t("header_my_listings")}
                   </Link>
                 )}
               </nav>
               {/* Nav */}
               <nav className="app-header__cta">
-                {session && <Link to="/create">Add New Listing</Link>}
+                {session && <Link to="/create">{t("header_add_listing")}</Link>}
               </nav>
               <Link
                 to={`/merchant/${session?.user?.id ?? ""}`}
@@ -180,7 +181,7 @@ export default function AppHeader({
             </>
           ) : onLoginClick ? (
             <button className="app-header__cta" onClick={onLoginClick}>
-              Log in to Sell
+              {t("header_login")}
             </button>
           ) : null}
         </div>
