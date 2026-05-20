@@ -1,221 +1,241 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import ListingForm from '../../components/ListingForm/ListingForm';
-import { supabase } from '../../lib/supabaseClient';
-import { createListing, updateListing, deleteListing, getListingById } from '../../api/listings';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import ListingForm from "../../components/ListingForm/ListingForm";
+import { supabase } from "../../lib/supabaseClient";
+import {
+  createListing,
+  updateListing,
+  deleteListing,
+  getListingById,
+} from "../../api/listings";
 
-import './CreateListing.css'
+import "./CreateListing.css";
+import { useLanguage } from "../../context/languageContext";
 
 function getWindowFromExpiresAt(expiresAt) {
-  if (!expiresAt) return 'ends_today';
+  if (!expiresAt) return "ends_today";
   const hours = (new Date(expiresAt) - new Date()) / (1000 * 60 * 60);
-  if (hours <= 24) return 'ends_today';
-  if (hours <= 48) return '1_day';
-  if (hours <= 72) return '2_days';
-  return '3_days';
+  if (hours <= 24) return "ends_today";
+  if (hours <= 48) return "1_day";
+  if (hours <= 72) return "2_days";
+  return "3_days";
 }
 
 function calculateExpiresAt(window) {
   const now = new Date();
   switch (window) {
-    case 'ends_today': {
+    case "ends_today": {
       const endOfDay = new Date(now);
       endOfDay.setHours(23, 59, 59, 999);
       return endOfDay.toISOString();
     }
-    case '1_day': return new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
-    case '2_days': return new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString();
-    case '3_days': return new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
-    default: return null;
+    case "1_day":
+      return new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    case "2_days":
+      return new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString();
+    case "3_days":
+      return new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    default:
+      return null;
   }
 }
 
-const validateForm = (formData) => {
-    console.log(formData)
-    const requiredFields = ["name", "quantity", "unit", "originalprice", "image"]
-    const isMissingFields = requiredFields.some(field => formData[field] === "" || formData[field] === null);
-    
-    if (Number(formData.quantity) == 0){
-        alert("Quantity can't be 0!")
-        return false
-    }
+const validateForm = (formData, t) => {
+  console.log(formData);
+  const requiredFields = ["name", "quantity", "unit", "originalprice", "image"];
+  const isMissingFields = requiredFields.some(
+    (field) => formData[field] === "" || formData[field] === null,
+  );
 
-    if (Number(formData.originalprice) == 0){
-        alert("Original price can't be 0!")
-        return false
-    }
+  if (Number(formData.quantity) == 0) {
+    alert(t("quantity_zero"));
+    return false;
+  }
 
-    if (formData.discountedprice !== null && Number(formData.discountedprice) >= Number(formData.originalprice)) {
-        alert("Discounted price can't be higher than or equal to original price!")
-        return false;
-    }
+  if (Number(formData.originalprice) == 0) {
+    alert(t("price_zero"));
+    return false;
+  }
 
-    if (isMissingFields) {
-        alert("All fields are required! Please check your inputs.");
-        return false;
-    }        
+  if (
+    formData.discountedprice !== null &&
+    Number(formData.discountedprice) >= Number(formData.originalprice)
+  ) {
+    alert(t("discounted_price_invalid"));
+    return false;
+  }
 
-    return true
-}
+  if (isMissingFields) {
+    alert(t("fields_required"));
+    return false;
+  }
 
-export default function CreateListing(){
-    const { id } = useParams();
-    const isCreating = !id;
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const navigate = useNavigate()
+  return true;
+};
 
-    const [formData, setFormData] = useState({
-        image: null,
-        name: "",
-        quantity: null,
-        unit: "kg",
-        type: "vegetable",
-        originalprice: null,
-        discountedprice: null,
-        availabilityWindow: 'ends_today',
-    });
+export default function CreateListing() {
+  const { id } = useParams();
+  const isCreating = !id;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { t } = useLanguage();
 
-    const [merchantId, setMerchantId] = useState(null);
-    const [existingImagePath, setExistingImagePath] = useState(null);
+  const [formData, setFormData] = useState({
+    image: null,
+    name: "",
+    quantity: null,
+    unit: "kg",
+    type: "vegetable",
+    originalprice: null,
+    discountedprice: null,
+    availabilityWindow: "ends_today",
+  });
 
-    useEffect(() => {
-        const init = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) setMerchantId(user.id);
+  const [merchantId, setMerchantId] = useState(null);
+  const [existingImagePath, setExistingImagePath] = useState(null);
 
-            if (id) {
-                const listing = await getListingById(id);
-                if (listing) {
-                    setFormData({
-                        name: listing.name,
-                        quantity: listing.quantity,
-                        unit: listing.unit,
-                        type: listing.type ?? "vegetable",
-                        originalprice: listing.original_price,
-                        discountedprice: listing.discounted_price,
-                        image: listing.image,
-                        availabilityWindow: getWindowFromExpiresAt(listing.expires_at),
-                    });
-                    setExistingImagePath(listing.image);
-                }
-            }
-        };
-        init();
-    }, [id]);
+  useEffect(() => {
+    const init = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) setMerchantId(user.id);
 
-    const handleChange = (e) => {
-        const { name, value, type } = e.target;
-        let finalValue = value
-
-        if (type === 'number') {
-            finalValue = value === "" ? "" : parseFloat(value);
-            
-            if (finalValue < 0) finalValue = 0;
+      if (id) {
+        const listing = await getListingById(id);
+        if (listing) {
+          setFormData({
+            name: listing.name,
+            quantity: listing.quantity,
+            unit: listing.unit,
+            type: listing.type ?? "vegetable",
+            originalprice: listing.original_price,
+            discountedprice: listing.discounted_price,
+            image: listing.image,
+            availabilityWindow: getWindowFromExpiresAt(listing.expires_at),
+          });
+          setExistingImagePath(listing.image);
         }
-
-        setFormData((prev) => ({ 
-            ...prev, 
-            [name]: finalValue 
-        }));
+      }
     };
+    init();
+  }, [id]);
 
-    const handleFileUpload = (e) => {
-        const file = e.target.files[0]
-                
-        if (file) {
-            setFormData((prev) => ({
-                ...prev,
-                image: file
-            }))
-        }
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    let finalValue = value;
+
+    if (type === "number") {
+      finalValue = value === "" ? "" : parseFloat(value);
+
+      if (finalValue < 0) finalValue = 0;
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateForm(formData)) return;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: finalValue,
+    }));
+  };
 
-        setIsSubmitting(true);
-        try {
-            const expiresAt = calculateExpiresAt(formData.availabilityWindow);
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
 
-            if (isCreating) {
-                await createListing(
-                    merchantId,
-                    formData.name,
-                    formData.originalprice,
-                    formData.discountedprice,
-                    formData.image,
-                    formData.unit,
-                    formData.quantity,
-                    formData.type,
-                    expiresAt,
-                );
-            } else {
-                await updateListing(
-                    id,
-                    merchantId,
-                    formData.name,
-                    formData.originalprice,
-                    formData.discountedprice,
-                    formData.image instanceof File ? formData.image : existingImagePath,
-                    formData.unit,
-                    formData.quantity,
-                    formData.type,
-                    expiresAt,
-                );
-            }
-            navigate('/dashboard');
-        } catch (error) {
-            console.error("Failed:", error.message);
-            alert("Error: " + error.message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+      }));
+    }
+  };
 
-    const handleDelete = async (e) => {
-        e.preventDefault();
-        if (!confirm("Are you sure you want to delete this listing?")) return;
-        await deleteListing(id);
-        navigate('/dashboard');
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm(formData)) return;
 
+    setIsSubmitting(true);
+    try {
+      const expiresAt = calculateExpiresAt(formData.availabilityWindow);
 
-    return (
-        <div className='main-container'>
-            <form className='main-body'>
-                <Link to="/dashboard" className="back-button">
-                    <p>← Back</p>
-                </Link>
+      if (isCreating) {
+        await createListing(
+          merchantId,
+          formData.name,
+          formData.originalprice,
+          formData.discountedprice,
+          formData.image,
+          formData.unit,
+          formData.quantity,
+          formData.type,
+          expiresAt,
+        );
+      } else {
+        await updateListing(
+          id,
+          merchantId,
+          formData.name,
+          formData.originalprice,
+          formData.discountedprice,
+          formData.image instanceof File ? formData.image : existingImagePath,
+          formData.unit,
+          formData.quantity,
+          formData.type,
+          expiresAt,
+        );
+      }
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Failed:", error.message);
+      alert(t("error_prefix") + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-                <div className="create-preface">
-                    <h1>Create New Listing</h1>
-                    <p>Add a new product to your stall.</p>
-                </div>
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    if (!confirm(t("confirm_delete_listing"))) return;
+    await deleteListing(id);
+    navigate("/dashboard");
+  };
 
-                <ListingForm 
-                formData={formData} 
-                setFormData={setFormData} 
-                handleChange={handleChange}
-                handleFileUpload={handleFileUpload}/>
+  return (
+    <div className="main-container">
+      <form className="main-body">
+        <Link to="/dashboard" className="back-button">
+          <p>{t("back")}</p>
+        </Link>
 
-                {isCreating ? (
-                    <div className='button-div'>
-                        <button
-                            className='create-button'
-                            onClick={handleSubmit}>
-                            Create Listing
-                        </button>
-                    </div>
-                ) : (
-                    <>
-                        <div className='button-div'>
-                            <button className='save-edit-button' onClick={handleSubmit}>Save Listing</button>
-                            <button className='delete-button' onClick={handleDelete}>Delete Listing</button>
-                        </div>
-                    </>
-                )}
-            </form>
+        <div className="create-preface">
+          <h1>{t("create_listing_title")}</h1>
+          <p>{t("create_listing_sub")}</p>
         </div>
-    );
+
+        <ListingForm
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          handleFileUpload={handleFileUpload}
+        />
+
+        {isCreating ? (
+          <div className="button-div">
+            <button className="create-button" onClick={handleSubmit}>
+              {t("create_listing_btn")}
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="button-div">
+              <button className="save-edit-button" onClick={handleSubmit}>
+                {t("save_listing_btn")}
+              </button>
+              <button className="delete-button" onClick={handleDelete}>
+                {t("delete_listing_btn")}
+              </button>
+            </div>
+          </>
+        )}
+      </form>
+    </div>
+  );
 }
