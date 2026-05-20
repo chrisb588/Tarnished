@@ -66,13 +66,14 @@ describe('CartMap pin click', () => {
     // Wait for map to load
     const pin = await screen.findByTestId('pin-merchant-1');
     fireEvent.click(pin);
-    // Drawer should be visible with the merchant name
-    await waitFor(() => {
-      expect(screen.getByText('Test Stall')).toBeInTheDocument();
-    });
     // Drawer should have the --visible class
-    const drawer = document.querySelector('.cart-map-page__drawer');
-    expect(drawer).toHaveClass('cart-map-page__drawer--visible');
+    await waitFor(() => {
+      const drawer = document.querySelector('.cart-map-page__drawer');
+      expect(drawer).toHaveClass('cart-map-page__drawer--visible');
+    });
+    // Drawer should show the merchant name
+    const drawerName = document.querySelector('.cart-map-page__drawer-name');
+    expect(drawerName).toHaveTextContent('Test Stall');
   });
 
   it('onPinClick handler is called with the correct merchant', async () => {

@@ -60,7 +60,7 @@
 .cart-map-page__overlay {
     position: absolute;
     inset: 0;
-    z-index: 10;
+    z-index: 1100;
 }
 
 /* DRAWER */
@@ -73,7 +73,7 @@
     border-radius: 18px 18px 0 0;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
     padding: 16px 20px 28px;
-    z-index: 20;
+    z-index: 1200;
     transition: bottom 0.3s ease;
     max-height: 60%;
     overflow-y: auto;
