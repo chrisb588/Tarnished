@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { getListingById } from '../../api/listings';
 import { getProfile } from '../../api/profile';
 import { supabase } from '../../lib/supabaseClient';
+import { useCart } from '../../contexts/CartContext';
 import AppHeader from '../../components/AppHeader/AppHeader.jsx';
 import './ViewListing.css';
 
@@ -24,6 +25,8 @@ export default function ViewListing({ session, onLogout, onLoginClick, isAdmin }
   const [isOwner, setIsOwner] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { cartItems, addToCart, updateQuantity } = useCart();
+  const [cartQty, setCartQty] = useState(1);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -45,6 +48,22 @@ export default function ViewListing({ session, onLogout, onLoginClick, isAdmin }
     };
     fetchListing();
   }, [id]);
+
+  const cartItem = listing ? cartItems.find((item) => item.listingId === listing.id) : null;
+  const inCart = !!cartItem;
+
+  useEffect(() => {
+    if (cartItem) setCartQty(cartItem.quantity);
+  }, [cartItem?.quantity, listing?.id]);
+
+  function handleCartAction() {
+    if (!listing) return;
+    if (inCart) {
+      updateQuantity(listing.id, cartQty);
+    } else {
+      addToCart(listing, { id: listing.merchant_id, name: merchant?.name ?? listing.merchant_name }, cartQty);
+    }
+  }
 
   if (isLoading) return (
     <div className="vl-container">
@@ -154,6 +173,38 @@ export default function ViewListing({ session, onLogout, onLoginClick, isAdmin }
                 </div>
               )}
             </div>
+
+            {/* ── CART ACTION ── */}
+            {!isOwner && (
+              <div className="vl-cart-action">
+                <div className="vl-cart-action__stepper">
+                  <button
+                    className="vl-cart-action__stepper-btn"
+                    disabled={listing.is_sold_out}
+                    onClick={() => setCartQty((q) => Math.max(1, q - 1))}
+                    aria-label="decrease quantity"
+                  >
+                    −
+                  </button>
+                  <span className="vl-cart-action__qty">{cartQty}</span>
+                  <button
+                    className="vl-cart-action__stepper-btn"
+                    disabled={listing.is_sold_out}
+                    onClick={() => setCartQty((q) => q + 1)}
+                    aria-label="increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+                <button
+                  className={`vl-cart-action__add-btn${listing.is_sold_out ? ' vl-cart-action__add-btn--disabled' : ''}`}
+                  disabled={listing.is_sold_out}
+                  onClick={handleCartAction}
+                >
+                  {listing.is_sold_out ? 'Sold Out' : inCart ? 'Update Cart' : 'Add to Cart'}
+                </button>
+              </div>
+            )}
 
             {listing.description && (
               <div className="vl-info__section">

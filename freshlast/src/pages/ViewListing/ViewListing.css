@@ -395,6 +395,75 @@
   color: #6b7280;
 }
 
+/* CART ACTION */
+.vl-cart-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.vl-cart-action__stepper {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.vl-cart-action__stepper-btn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #374151;
+    transition: background 0.15s;
+    line-height: 1;
+}
+
+.vl-cart-action__stepper-btn:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+
+.vl-cart-action__stepper-btn:disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.vl-cart-action__qty {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    min-width: 32px;
+    text-align: center;
+}
+
+.vl-cart-action__add-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #111827;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.vl-cart-action__add-btn:hover:not(:disabled) {
+    background: #16a34a;
+}
+
+.vl-cart-action__add-btn--disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .vl-content {
