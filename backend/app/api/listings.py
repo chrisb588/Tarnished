@@ -100,13 +100,6 @@ async def get_all_listings():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
-# Get all listings
-@router.get("/listings/all")
-async def get_all_listings():
-    data = supabase.table("listing").select("*").execute()
-    return data.data
-
-
 # Get listings by merchant
 @router.get("", tags=["Listings"])
 async def get_listings(merchant_id: UUID):

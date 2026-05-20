@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { vi } from 'vitest'
 import ViewListing from './ViewListing'
+import { CartProvider } from '../../contexts/CartContext'
 
 vi.mock('react-leaflet', () => ({
   MapContainer: ({ children }) => <div data-testid="map-container">{children}</div>,
@@ -37,11 +38,13 @@ const baseListing = { id: '1', name: 'Test Item', type: 'Food', quantity: 5, uni
 
 function renderViewListing() {
   return render(
-    <MemoryRouter initialEntries={['/viewListing/1']}>
-      <Routes>
-        <Route path="/viewListing/:id" element={<ViewListing />} />
-      </Routes>
-    </MemoryRouter>
+    <CartProvider>
+      <MemoryRouter initialEntries={['/viewListing/1']}>
+        <Routes>
+          <Route path="/viewListing/:id" element={<ViewListing />} />
+        </Routes>
+      </MemoryRouter>
+    </CartProvider>
   )
 }
 

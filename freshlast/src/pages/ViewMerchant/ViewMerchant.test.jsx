@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { vi } from 'vitest'
 import ViewMerchant from './ViewMerchant'
+import { CartProvider } from '../../contexts/CartContext'
 import { getProfile } from '../../api/profile'
 import { getListingsByMerchant } from '../../api/listings'
 
@@ -72,9 +73,11 @@ const baseListings = [
 
 function renderViewMerchant() {
   return render(
-    <MemoryRouter>
-      <ViewMerchant />
-    </MemoryRouter>
+    <CartProvider>
+      <MemoryRouter>
+        <ViewMerchant />
+      </MemoryRouter>
+    </CartProvider>
   )
 }
 
@@ -85,17 +88,17 @@ describe('ViewMerchant renders', () => {
     getListingsByMerchant.mockResolvedValue(baseListings)
   })
 
-  it('shows "Loading listings..." on initial render before data resolves', () => {
+  it('shows a loading state on initial render before data resolves', () => {
     getListingsByMerchant.mockReturnValue(new Promise(() => {}))
     renderViewMerchant()
-    expect(screen.getByText('Loading listings...')).toBeInTheDocument()
+    expect(screen.getByText('Loading merchant profile...')).toBeInTheDocument()
   })
 
   it('shows "No products found" when getListingsByMerchant resolves to []', async () => {
     getListingsByMerchant.mockResolvedValue([])
     renderViewMerchant()
     await waitFor(() =>
-      expect(screen.getByText('No products found')).toBeInTheDocument()
+      expect(screen.getByText('No products found.')).toBeInTheDocument()
     )
   })
 
@@ -120,7 +123,8 @@ describe('ViewMerchant back button', () => {
   it('clicking "← Back" calls navigate(-1)', async () => {
     const user = userEvent.setup()
     renderViewMerchant()
-    await user.click(screen.getByText("← Back"))
+    const backBtn = await screen.findByRole('button', { name: /back/i })
+    await user.click(backBtn)
     expect(mockNavigate).toHaveBeenCalledWith(-1)
   })
 })
