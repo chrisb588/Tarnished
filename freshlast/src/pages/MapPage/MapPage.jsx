@@ -1,37 +1,44 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getAllMerchants } from '../../api/profile';
-import { getListingsByMerchant } from '../../api/listings';
-import AppHeader from '../../components/AppHeader/AppHeader';
-import VendorMap from '../../components/VendorMap/VendorMap';
-import './MapPage.css';
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAllMerchants } from "../../api/profile";
+import { getListingsByMerchant } from "../../api/listings";
+import AppHeader from "../../components/AppHeader/AppHeader";
+import VendorMap from "../../components/VendorMap/VendorMap";
+import "./MapPage.css";
+import { useLanguage } from "../../context/languageContext";
 
-function MapListingCard({ listing, onClick }) {
+function MapListingCard({ listing, onClick, t }) {
   const isSoldOut = listing.is_sold_out;
   const original = Number(listing.original_price);
   const discounted = Number(listing.discounted_price);
   const hasDiscount = original > 0 && discounted > 0 && original > discounted;
-  const discountPct = hasDiscount ? Math.round(((original - discounted) / original) * 100) : 0;
+  const discountPct = hasDiscount
+    ? Math.round(((original - discounted) / original) * 100)
+    : 0;
   const displayPrice = hasDiscount ? discounted : original;
 
   return (
     <button
-      className={`map-listing-card${isSoldOut ? ' map-listing-card--sold-out' : ''}`}
-      style={{ backgroundImage: listing.image ? `url(${listing.image})` : 'none' }}
+      className={`map-listing-card${isSoldOut ? " map-listing-card--sold-out" : ""}`}
+      style={{
+        backgroundImage: listing.image ? `url(${listing.image})` : "none",
+      }}
       onClick={onClick}
     >
       {!isSoldOut && hasDiscount && (
         <span className="map-listing-card__discount">-{discountPct}%</span>
       )}
       {isSoldOut && (
-        <span className="map-listing-card__sold-out">Sold Out</span>
+        <span className="map-listing-card__sold-out">{t("sold_out")}</span>
       )}
       <div className="map-listing-card__footer">
         <span className="map-listing-card__name">{listing.name}</span>
         <div className="map-listing-card__price-row">
           <span className="map-listing-card__price">₱{displayPrice}</span>
           {hasDiscount && (
-            <span className="map-listing-card__price-original">₱{original}</span>
+            <span className="map-listing-card__price-original">
+              ₱{original}
+            </span>
           )}
         </div>
       </div>
@@ -57,19 +64,20 @@ function haversineKm(lat1, lng1, lat2, lng2) {
 
 function formatDays(operatingDays) {
   if (!operatingDays?.length) return null;
-  return operatingDays.map((s) => s.day).join(' · ');
+  return operatingDays.map((s) => s.day).join(" · ");
 }
 
 export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
   const [merchants, setMerchants] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
   const [userLocatedByGps, setUserLocatedByGps] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedMerchant, setSelectedMerchant] = useState(null);
   const [merchantListings, setMerchantListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const mapRef = useRef(null);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     let cancelled = false;
@@ -78,7 +86,8 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
       .then((data) => {
         if (cancelled) return;
         const withCoords = (Array.isArray(data) ? data : []).filter(
-          (m) => m.latitude && m.longitude && m.latitude !== 0 && m.longitude !== 0
+          (m) =>
+            m.latitude && m.longitude && m.latitude !== 0 && m.longitude !== 0,
         );
         setMerchants(withCoords);
       })
@@ -97,7 +106,7 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
         if (cancelled) return;
         setUserLocation({ lat: DEFAULT_LAT, lng: DEFAULT_LNG });
         setUserLocatedByGps(false);
-      }
+      },
     );
 
     return () => {
@@ -122,20 +131,25 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
       .catch(() => {
         if (!cancelled) setMerchantListings([]);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [selectedMerchant]);
 
-  const effectiveLocation = userLocation ?? { lat: DEFAULT_LAT, lng: DEFAULT_LNG };
+  const effectiveLocation = userLocation ?? {
+    lat: DEFAULT_LAT,
+    lng: DEFAULT_LNG,
+  };
 
   const dropdownResults =
     searchQuery.length >= 1
       ? merchants.filter((m) =>
-          m.name.toLowerCase().includes(searchQuery.toLowerCase())
+          m.name.toLowerCase().includes(searchQuery.toLowerCase()),
         )
       : [];
 
   function handleDropdownSelect(merchant) {
-    setSearchQuery('');
+    setSearchQuery("");
     setSelectedMerchant(merchant);
     mapRef.current?.flyTo(merchant.latitude, merchant.longitude, 17);
   }
@@ -160,7 +174,7 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
             placeholder="Search a store name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Escape' && setSearchQuery('')}
+            onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
           />
           {dropdownResults.length > 0 && (
             <ul className="map-page__dropdown">
@@ -175,7 +189,7 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
 
         <div className="map-page__map">
           {isLoading ? (
-            <div className="map-page__loading">Loading map...</div>
+            <div className="map-page__loading">{t("map_loading")}</div>
           ) : (
             <VendorMap
               ref={mapRef}
@@ -192,7 +206,9 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
           <div className="map-page__overlay" onClick={dismissCard} />
         )}
 
-        <div className={`map-page__card${selectedMerchant ? ' map-page__card--visible' : ''}`}>
+        <div
+          className={`map-page__card${selectedMerchant ? " map-page__card--visible" : ""}`}
+        >
           {selectedMerchant && (
             <>
               <div className="map-page__card-handle" />
@@ -206,7 +222,9 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
               <div className="map-page__card-name">{selectedMerchant.name}</div>
               <div className="map-page__card-tags">
                 {selectedMerchant.category?.map((c) => (
-                  <span key={c} className="map-page__card-tag">{c}</span>
+                  <span key={c} className="map-page__card-tag">
+                    {c}
+                  </span>
                 ))}
                 {formatDays(selectedMerchant.operating_days) && (
                   <span className="map-page__card-tag">
@@ -218,31 +236,34 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
                     effectiveLocation.lat,
                     effectiveLocation.lng,
                     selectedMerchant.latitude,
-                    selectedMerchant.longitude
+                    selectedMerchant.longitude,
                   )}
                 </span>
               </div>
               <div>
                 <h4 className="map-page__card-photo-title">
-                  Stall Photo:
+                  {t("stall_photo")}
                 </h4>
               </div>
               <div className="map-page__card-photo">
                 {selectedMerchant.location_photo ? (
                   <img
                     src={selectedMerchant.location_photo}
-                    alt={`${selectedMerchant.name ?? 'Stall'} photo`}
+                    alt={`${selectedMerchant.name ?? "Stall"} photo`}
                   />
                 ) : (
                   <span className="map-page__card-photo-placeholder">
-                    {selectedMerchant.name?.trim()?.charAt(0)?.toUpperCase() ?? '?'}
+                    {selectedMerchant.name?.trim()?.charAt(0)?.toUpperCase() ??
+                      "?"}
                   </span>
                 )}
               </div>
               {merchantListings.length > 0 && (
                 <>
                   <div>
-                    <h4 className="map-page__card-photo-title">Latest Deals:</h4>
+                    <h4 className="map-page__card-photo-title">
+                      {t("latest_deals")}:
+                    </h4>
                   </div>
                   <div className="map-page__card-listings">
                     {merchantListings.map((l) => (
@@ -259,7 +280,7 @@ export default function MapPage({ session, onLogout, onLoginClick, isAdmin }) {
                 className="map-page__card-cta"
                 onClick={() => navigate(`/merchant/${selectedMerchant.id}`)}
               >
-                View Store
+                {t("view_store")}
               </button>
             </>
           )}
