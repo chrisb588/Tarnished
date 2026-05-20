@@ -17,6 +17,7 @@ export default function ListingForm({
 }) {
   const [previewURL, setPreviewURL] = useState(null);
   const [hasDiscount, setHasDiscount] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (
@@ -68,8 +69,8 @@ export default function ListingForm({
   return (
     <div className="create-container">
       <div className="info-preface">
-        <h4>Product photo</h4>
-        <p>Please add a photo for your product</p>
+        <h4>{t("lf_photo_title")}</h4>
+        <p>{t("lf_photo_sub")}</p>
       </div>
       <div className={`img-container ${previewURL ? "has-image" : "is-empty"}`}>
         <label htmlFor="image-input" style={{ cursor: "pointer" }}>
@@ -84,23 +85,23 @@ export default function ListingForm({
         ></input>
       </div>
       <div className="info-preface">
-        <h4>Product Details</h4>
-        <p>Enter details about your product</p>
+        <h4>{t("lf_details_title")}</h4>
+        <p>{t("lf_details_sub")}</p>
       </div>
       <div className="descriptionInput">
-        <label htmlFor="productName">Product Name</label>
+        <label htmlFor="productName">{t("lf_product_name")}</label>
         <input
           type="text"
           name="name"
           id="productName"
-          placeholder="e.g. Cabbage, Carrot, etc."
+          placeholder={t("lf_product_name_placeholder")}
           value={formData.name}
           onChange={handleChange}
           required
         />
         <div className="quantityDiv">
           <div className="quantityWrapper">
-            <label htmlFor="quantity">Quantity</label>
+            <label htmlFor="quantity">{t("lf_quantity")}</label>
             <input
               type="number"
               name="quantity"
@@ -115,7 +116,7 @@ export default function ListingForm({
             />
           </div>
           <div className="unitWrapper">
-            <label htmlFor="unit">Unit</label>
+            <label htmlFor="unit">{t("lf_unit")}</label>
             <select
               name="unit"
               id="unit"
@@ -128,7 +129,7 @@ export default function ListingForm({
             </select>
           </div>
           <div className="categoryWrapper">
-            <label htmlFor="type">Product Type</label>
+            <label htmlFor="type">{t("lf_product_type")}</label>
             <select
               name="type"
               id="type"
@@ -136,20 +137,20 @@ export default function ListingForm({
               onChange={handleChange}
               required
             >
-              <option value="vegetable">Vegetables</option>
-              <option value="fruit">Fruit</option>
-              <option value="chicken">Chicken</option>
-              <option value="pork">Pork</option>
-              <option value="beef">Beef</option>
-              <option value="seafood">Seafood</option>
-              <option value="rice">Rice</option>
+              <option value="vegetable">{t("lf_type_vegetable")}</option>
+              <option value="fruit">{t("lf_type_fruit")}</option>
+              <option value="chicken">{t("lf_type_chicken")}</option>
+              <option value="pork">{t("lf_type_pork")}</option>
+              <option value="beef">{t("lf_type_beef")}</option>
+              <option value="seafood">{t("lf_type_seafood")}</option>
+              <option value="rice">{t("lf_type_rice")}</option>
             </select>
           </div>
         </div>
       </div>
       <div className="info-preface">
-        <h4>Pricing</h4>
-        <p>Enter your original and discounted prices</p>
+        <h4>{t("lf_pricing_title")}</h4>
+        <p>{t("lf_pricing_sub")}</p>
       </div>
       <div className="discountedCheck">
         <input
@@ -158,13 +159,11 @@ export default function ListingForm({
           checked={hasDiscount}
           onChange={handleDiscountToggle}
         />
-        <label htmlFor="discountedCheck">
-          Does your product have a discount?
-        </label>
+        <label htmlFor="discountedCheck">{t("lf_has_discount")}</label>
       </div>
       <div className="priceInput">
         <div className="pricing">
-          <label htmlFor="originalprice">Original Price</label>
+          <label htmlFor="originalprice">{t("lf_original_price")}</label>
           <input
             type="number"
             value={formData.originalprice}
@@ -179,7 +178,7 @@ export default function ListingForm({
         </div>
         {hasDiscount && (
           <div className="pricing">
-            <label htmlFor="discountedprice">Discounted Price</label>
+            <label htmlFor="discountedprice">{t("lf_discounted_price")}</label>
             <input
               type="number"
               name="discountedprice"
@@ -196,11 +195,13 @@ export default function ListingForm({
       </div>
 
       <div className="info-preface">
-        <h4>Availability</h4>
-        <p>How long will this listing be available?</p>
+        <h4>{t("lf_availability_title")}</h4>
+        <p>{t("lf_availability_sub")}</p>
       </div>
       <div className="descriptionInput">
-        <label htmlFor="availabilityWindow">Availability Window</label>
+        <label htmlFor="availabilityWindow">
+          {t("lf_availability_window")}
+        </label>
         <select
           name="availabilityWindow"
           id="availabilityWindow"
@@ -208,10 +209,10 @@ export default function ListingForm({
           onChange={handleChange}
           required
         >
-          <option value="ends_today">Ends Today</option>
-          <option value="1_day">1 Day</option>
-          <option value="2_days">2 Days</option>
-          <option value="3_days">3 Days</option>
+          <option value="ends_today">{t("lf_ends_today")}</option>
+          <option value="1_day">{t("lf_1_day")}</option>
+          <option value="2_days">{t("lf_2_days")}</option>
+          <option value="3_days">{t("lf_3_days")}</option>
         </select>
       </div>
     </div>
