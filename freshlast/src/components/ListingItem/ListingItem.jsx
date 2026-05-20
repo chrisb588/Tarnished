@@ -1,9 +1,14 @@
-import { useNavigate } from 'react-router-dom';
-import './ListingItem.css';
+import { useNavigate } from "react-router-dom";
+import "./ListingItem.css";
+import { useLanguage } from "../../context/languageContext";
 
 function formatDate(dateStr) {
   if (!dateStr) return null;
-  return new Date(dateStr).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+  return new Date(dateStr).toLocaleDateString("en-PH", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function getExpiryLabel(expiresAt) {
@@ -16,10 +21,16 @@ function getExpiryLabel(expiresAt) {
   return { text: `${days}d left`, urgent: false };
 }
 
-export default function ListingItem({ listing, showEdit = false, onSelect, onSoldOut }) {
+export default function ListingItem({
+  listing,
+  showEdit = false,
+  onSelect,
+  onSoldOut,
+}) {
   const navigate = useNavigate();
   const expiry = getExpiryLabel(listing.expires_at);
   const isSoldOut = listing.is_sold_out;
+  const { t } = useLanguage();
 
   const original = Number(listing.original_price);
   const discounted = Number(listing.discounted_price);
@@ -40,39 +51,55 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
     <article
       className={`
     listing-card
-    ${isSoldOut ? ' listing-card--sold-out' : ''}
-    ${hasDiscount ? ' listing-card--sale' : ''}
+    ${isSoldOut ? " listing-card--sold-out" : ""}
+    ${hasDiscount ? " listing-card--sale" : ""}
   `}
       onClick={onSelect ? () => onSelect(listing) : undefined}
-      role={onSelect ? 'button' : undefined}
+      role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
     >
       {/* IMAGE */}
       <div className="listing-card__image">
-        {listing.image
-          ? <img src={listing.image} alt={listing.name} loading="lazy" />
-          : <div className="listing-card__placeholder">🥬</div>
-        }
+        {listing.image ? (
+          <img src={listing.image} alt={listing.name} loading="lazy" />
+        ) : (
+          <div className="listing-card__placeholder">🥬</div>
+        )}
 
         {/* top-left: discount */}
         {!isSoldOut && (
-          <span className={`listing-card__discount${!hasDiscount ? ' listing-card__discount--none' : ''}`}>
-            {hasDiscount ? `-${discountPct}%` : 'No Discount'}
+          <span
+            className={`listing-card__discount${!hasDiscount ? " listing-card__discount--none" : ""}`}
+          >
+            {hasDiscount ? `-${discountPct}%` : t("li_no_discount")}
           </span>
         )}
 
         {/* top-right: status */}
         {isSoldOut ? (
-          <span className="listing-card__status listing-card__status--soldout">Sold Out</span>
+          <span className="listing-card__status listing-card__status--soldout">
+            {t("li_sold_out")}
+          </span>
         ) : listing.category ? (
           <span className="listing-card__status">{listing.category}</span>
         ) : null}
 
         {/* bottom: expiry overlay */}
         {expiry && !isSoldOut && (
-          <span className={`listing-card__expiry${expiry.urgent ? ' listing-card__expiry--urgent' : ''}`}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+          <span
+            className={`listing-card__expiry${expiry.urgent ? " listing-card__expiry--urgent" : ""}`}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
             </svg>
             {expiry.text}
           </span>
@@ -84,8 +111,19 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
         <h3 className="listing-card__name">{listing.name}</h3>
         {listing.merchant_name && (
           <p className="listing-card__vendor">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9l2-5h14l2 5" /><path d="M3 9v11h18V9" /><path d="M3 9h18" />
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 9l2-5h14l2 5" />
+              <path d="M3 9v11h18V9" />
+              <path d="M3 9h18" />
             </svg>
             {listing.merchant_name}
           </p>
@@ -94,20 +132,26 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
         <div className="listing-card__price-row">
           <span className="listing-card__price">₱{displayPrice}</span>
           {hasDiscount && (
-            <span className="listing-card__price-original">₱{listing.original_price}</span>
+            <span className="listing-card__price-original">
+              ₱{listing.original_price}
+            </span>
           )}
         </div>
 
         <div className="listing-card__meta">
           {listing.quantity && (
-            <span className="listing-card__chip">{listing.quantity} {listing.unit}</span>
+            <span className="listing-card__chip">
+              {listing.quantity} {listing.unit}
+            </span>
           )}
           {listing.type && (
             <span className="listing-card__chip">{listing.type}</span>
           )}
         </div>
         {formatDate(listing.created_at) && (
-          <p className="listing-card__date">Listed {formatDate(listing.created_at)}</p>
+          <p className="listing-card__date">
+            {t("li_listed")} {formatDate(listing.created_at)}
+          </p>
         )}
       </div>
 
@@ -116,16 +160,22 @@ export default function ListingItem({ listing, showEdit = false, onSelect, onSol
         <div className="listing-card__actions">
           <button
             className="listing-card__btn listing-card__btn--ghost"
-            onClick={(e) => { e.stopPropagation(); navigate(`/edit/${listing.id}`); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/edit/${listing.id}`);
+            }}
           >
-            Edit
+            {t("li_edit")}
           </button>
           {onSoldOut && !isSoldOut && (
             <button
               className="listing-card__btn listing-card__btn--danger"
-              onClick={(e) => { e.stopPropagation(); onSoldOut(listing); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSoldOut(listing);
+              }}
             >
-              Mark Sold Out
+              {t("li_mark_sold_out")}
             </button>
           )}
         </div>
