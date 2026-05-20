@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { IoLogOut } from "react-icons/io5";
 import "./AppHeader.css";
 import { useLocation } from "react-router-dom";
+import { useLanguage } from "../../context/languageContext";
 
 const SearchIcon = () => (
   <svg
@@ -87,6 +88,7 @@ export default function AppHeader({
 }) {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith("/dashboard");
+  const { lang, setLang } = useLanguage();
 
   return (
     <header className="app-header">
@@ -101,6 +103,11 @@ export default function AppHeader({
             <span className="app-header__brand-color-secondary">Last</span>
           </span>
         </Link>
+
+        {/* Language switch */}
+        <button onClick={() => setLang(lang === "en" ? "ceb" : "en")}>
+          {lang === "en" ? "Cebuano" : "English"}
+        </button>
 
         {/* Actions */}
         <div className="app-header__actions">
