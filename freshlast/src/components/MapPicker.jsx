@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { useState, useEffect, useCallback } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { useLanguage } from "../context/languageContext";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -37,12 +38,19 @@ function LocationMarker({ position, onLocationChange }) {
 }
 
 export function MapPicker({ initialLat, initialLng, onLocationChange }) {
-  const hasInitial = initialLat != null && initialLat !== 0 && initialLng != null && initialLng !== 0;
+  const hasInitial =
+    initialLat != null &&
+    initialLat !== 0 &&
+    initialLng != null &&
+    initialLng !== 0;
+  const { t } = useLanguage();
 
   const [resolvedCenter, setResolvedCenter] = useState(
-    hasInitial ? [initialLat, initialLng] : null
+    hasInitial ? [initialLat, initialLng] : null,
   );
-  const [markerPos, setMarkerPos] = useState(hasInitial ? [initialLat, initialLng] : null);
+  const [markerPos, setMarkerPos] = useState(
+    hasInitial ? [initialLat, initialLng] : null,
+  );
 
   useEffect(() => {
     if (hasInitial) return;
@@ -53,7 +61,7 @@ export function MapPicker({ initialLat, initialLng, onLocationChange }) {
       () => {
         setResolvedCenter([DEFAULT_LAT, DEFAULT_LNG]);
       },
-      { timeout: 8000 }
+      { timeout: 8000 },
     );
   }, []);
 
@@ -62,24 +70,40 @@ export function MapPicker({ initialLat, initialLng, onLocationChange }) {
       setMarkerPos([lat, lng]);
       onLocationChange?.({ lat, lng });
     },
-    [onLocationChange]
+    [onLocationChange],
   );
 
   if (!resolvedCenter) {
     return (
-      <div style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6', borderRadius: '8px' }}>
-        Locating you…
+      <div
+        style={{
+          height: "300px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#f3f4f6",
+          borderRadius: "8px",
+        }}
+      >
+        {t("locating")}
       </div>
     );
   }
 
   return (
-    <MapContainer center={resolvedCenter} zoom={15} style={{ height: '300px', width: '100%' }}>
+    <MapContainer
+      center={resolvedCenter}
+      zoom={15}
+      style={{ height: "300px", width: "100%" }}
+    >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="© OpenStreetMap contributors"
       />
-      <LocationMarker position={markerPos} onLocationChange={handleLocationChange} />
+      <LocationMarker
+        position={markerPos}
+        onLocationChange={handleLocationChange}
+      />
     </MapContainer>
   );
 }
