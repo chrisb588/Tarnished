@@ -1,14 +1,15 @@
-import { useState } from 'react';
-import { supabase } from '../../lib/supabaseClient'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { supabase } from "../../lib/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
-import './AuthForm.css'
+import "./AuthForm.css";
 
 export default function AuthForm({ onSuccess, onClose }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,7 +21,10 @@ export default function AuthForm({ onSuccess, onClose }) {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
       alert(error.message);
@@ -33,11 +37,11 @@ export default function AuthForm({ onSuccess, onClose }) {
   return (
     <div>
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h1 className='sign-in-label'>Sign in</h1>
+        <h1 className="sign-in-label">{t("sign_in")}</h1>
         <p>email address</p>
         <input
           type="email"
-          placeholder="Your email"
+          placeholder={t("email_placeholder")}
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
@@ -45,23 +49,30 @@ export default function AuthForm({ onSuccess, onClose }) {
         <p>password</p>
         <input
           type="password"
-          placeholder="Your password"
+          placeholder={t("password_placeholder")}
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
         />
         <div className="forgot-password-container">
           <button type="button" className="forgot-password">
-            forgot your password?
+            {t("forgot_password")}
           </button>
         </div>
 
         <button disabled={loading} className="auth-buttons">
-          {loading ? "Processing..." : "Log In"}
+          {loading ? t("processing") : t("log_in")}
         </button>
 
-        <button type="button" className="admin-login" onClick={() => { onClose?.(); navigate('/adminLoginPage'); }}>
-          Logging in as an administrator?
+        <button
+          type="button"
+          className="admin-login"
+          onClick={() => {
+            onClose?.();
+            navigate("/adminLoginPage");
+          }}
+        >
+          {t("admin_login")}
         </button>
       </form>
     </div>
