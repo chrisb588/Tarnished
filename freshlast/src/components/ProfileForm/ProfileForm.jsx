@@ -1,17 +1,8 @@
 import { useRef, useEffect } from "react";
 import "./ProfileForm.css";
+import { useLanguage } from "../../context/languageContext";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-const CATEGORIES = [
-  "Fruit",
-  "Vegetable",
-  "Beef",
-  "Chicken",
-  "Pork",
-  "Seafood",
-  "Rice",
-];
 
 const DAY_FULL_NAMES = {
   Mon: "Monday",
@@ -34,6 +25,18 @@ export default function ProfileForm({
   isLoading,
   onSubmit,
 }) {
+  const { t } = useLanguage();
+
+  const CATEGORIES = [
+    t("lf_type_fruit"),
+    t("lf_type_vegetable"),
+    t("lf_type_beef"),
+    t("lf_type_chicken"),
+    t("lf_type_pork"),
+    t("lf_type_seafood"),
+    t("lf_type_rice"),
+  ];
+
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -129,7 +132,7 @@ export default function ProfileForm({
               className="edit-profile__label edit-profile__label--required"
               htmlFor="emailAddress"
             >
-              Email Address
+              {t("pf_email")}
             </label>
             <input
               id="emailAddress"
@@ -146,7 +149,7 @@ export default function ProfileForm({
       {/* Stall Photo */}
       <div className="edit-profile__field">
         <label className="edit-profile__label edit-profile__label--required">
-          Stall Photo
+          {t("pf_stall_photo")}
         </label>
         <div
           className="edit-profile__photo-box"
@@ -161,7 +164,7 @@ export default function ProfileForm({
           ) : (
             <div className="edit-profile__photo-placeholder">
               <span className="edit-profile__photo-icon">🖼️</span>
-              <span>Click to upload photo</span>
+              <span>{t("pf_click_to_upload")}</span>
             </div>
           )}
         </div>
@@ -180,7 +183,7 @@ export default function ProfileForm({
           className="edit-profile__label edit-profile__label--required"
           htmlFor="stallName"
         >
-          Stall Name
+          {t("pf_stall_name")}
         </label>
         <input
           id="stallName"
@@ -198,7 +201,7 @@ export default function ProfileForm({
           className="edit-profile__label edit-profile__label--required"
           htmlFor="marketLocation"
         >
-          Market Location / Section
+          {t("pf_market_location")}
         </label>
         <input
           id="marketLocation"
@@ -216,7 +219,7 @@ export default function ProfileForm({
           className="edit-profile__label edit-profile__label--required"
           htmlFor="phoneNumber"
         >
-          Phone Number
+          {t("pf_phone")}
         </label>
         <input
           id="phoneNumber"
@@ -253,14 +256,14 @@ export default function ProfileForm({
       <div className="edit-profile__field">
         <div className="edit-profile__days-header">
           <label className="edit-profile__label edit-profile__label--required">
-            What are you selling?
+            {t("pf_what_selling")}
           </label>
           <button
             type="button"
             className="edit-profile__select-all-btn"
             onClick={toggleAllCategories}
           >
-            {allCategoriesSelected ? "Unselect All" : "Select All"}
+            {allCategoriesSelected ? t("pf_unselect_all") : t("pf_select_all")}
           </button>
         </div>
         <div className="edit-profile__days">
@@ -281,14 +284,14 @@ export default function ProfileForm({
       <div className="edit-profile__field">
         <div className="edit-profile__days-header">
           <label className="edit-profile__label edit-profile__label--required">
-            Operating Days
+            {t("pf_operating_days")}
           </label>
           <button
             type="button"
             className="edit-profile__select-all-btn"
             onClick={toggleAllDays}
           >
-            {allDaysSelected ? "Unselect All" : "Select All"}
+            {allDaysSelected ? t("pf_unselect_all") : t("pf_select_all")}
           </button>
         </div>
         <div className="edit-profile__days">
@@ -309,7 +312,7 @@ export default function ProfileForm({
       {formData.schedule.map(({ day, start_time, end_time }) => (
         <div key={day} className="edit-profile__field">
           <label className="edit-profile__label edit-profile__label--required">
-            {DAY_FULL_NAMES[day]} Operating Hours
+            {DAY_FULL_NAMES[day]} {t("pf_operating_hours")}
           </label>
           <div className="edit-profile__hours">
             <input
@@ -339,11 +342,11 @@ export default function ProfileForm({
       >
         {isLoading
           ? isCreating
-            ? "Creating..."
-            : "Saving..."
+            ? t("pf_creating")
+            : t("pf_saving")
           : isCreating
-            ? "Create Profile"
-            : "Save Profile"}
+            ? t("pf_create_profile")
+            : t("pf_save_profile")}
       </button>
     </form>
   );
