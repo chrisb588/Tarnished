@@ -62,20 +62,28 @@
 .auth-buttons {
   width: 100%;
   padding: 14px;
-  background-color: #ea580c;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   margin-bottom: 16px;
-  transition: background-color 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
 }
 
 .auth-buttons:hover:not(:disabled) {
-  background-color: #c2410c;
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.3);
+  transform: translateY(-1px);
+}
+
+.auth-buttons:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(234, 88, 12, 0.15);
 }
 
 .auth-buttons:disabled {
@@ -84,17 +92,70 @@
 }
 
 .admin-login {
-  background: none;
-  border: none;
-  font-size: 13px;
-  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 14px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
   text-align: center;
   font-family: inherit;
-  padding: 0;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .admin-login:hover {
+  background: #e5e7eb;
   color: #111827;
+  border-color: #d1d5db;
+}
+
+.admin-login:active {
+  background: #d1d5db;
+}
+
+/* ── SHOW/HIDE PASSWORD TOGGLE ── */
+.password-input-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.password-input-container input {
+  margin-bottom: 0 !important;
+  padding-right: 44px !important;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.15s ease;
+}
+
+.toggle-password-btn:hover {
+  color: #111827;
+  background-color: #f3f4f6;
+}
+
+.toggle-password-btn:active {
+  background-color: #e5e7eb;
 }

@@ -6,6 +6,7 @@ import "./ViewMerchant.css";
 import { supabase } from "../../lib/supabaseClient.jsx";
 import { getProfile } from "../../api/profile";
 import { getListingsByMerchant } from "../../api/listings";
+import VendorMap from "../../components/VendorMap/VendorMap.jsx";
 
 function StarIcon({
   size = 16,
@@ -125,8 +126,8 @@ export default function ViewMerchant({
           category: data.category || [],
           location_photo: data.location_photo || "",
           coords:
-            data.latitude && data.longitude
-              ? { lat: data.latitude, lng: data.longitude }
+            data.latitude && data.longitude && Number(data.latitude) !== 0 && Number(data.longitude) !== 0
+              ? { lat: Number(data.latitude), lng: Number(data.longitude) }
               : null,
         });
       } else {
@@ -356,6 +357,27 @@ export default function ViewMerchant({
                   </div>
                 </div>
               </div>
+
+              {merchantData.coords && (
+                <div className="vm-merchant-map-box">
+                  <h4 className="schedule-title">Stall Location:</h4>
+                  <div className="vm-merchant-map">
+                    <VendorMap
+                      merchants={[{
+                        id: merchantData.id,
+                        name: merchantData.stallName || "Unnamed Stall",
+                        latitude: merchantData.coords.lat,
+                        longitude: merchantData.coords.lng,
+                        category: merchantData.category,
+                      }]}
+                      userLocation={merchantData.coords}
+                      showUserLocationPin={false}
+                      selectedMerchantId={merchantData.id}
+                      onPinClick={() => {}}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="vm-merchant-card__buttons">
