@@ -6,7 +6,7 @@
 }
 
 .vl-status {
-  padding: 80px;
+  padding: 40px;
   text-align: center;
   color: #6b7280;
   font-size: 16px;
@@ -38,15 +38,15 @@
 .vl-main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px 80px;
+  padding: 20px 24px 48px;
 }
 
 /* ── CONTENT GRID ── */
 .vl-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-bottom: 48px;
+  gap: 28px;
+  margin-bottom: 20px;
 }
 
 /* ── IMAGE ── */
@@ -58,7 +58,7 @@
 
 .vl-images__main {
   width: 100%;
-  height: 420px;
+  height: 360px;
   border-radius: 16px;
   overflow: hidden;
   background-color: #e8e8e0;
@@ -82,13 +82,13 @@
 .vl-info {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .vl-info__header {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .vl-info__badge {
@@ -103,7 +103,7 @@
 }
 
 .vl-info__name {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
   color: #000;
   margin: 0;
@@ -137,16 +137,16 @@
 .vl-info__cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 .vl-info__card {
   background-color: #f9f9f7;
-  padding: 14px 16px;
+  padding: 10px 14px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .vl-info__card-label {
@@ -207,7 +207,7 @@
   background: #fff;
   border: 1px solid #e5e5e0;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
 }
 
 .vl-seller__header {
@@ -277,18 +277,18 @@
 .vl-merchant-details {
   background: #fff;
   border-radius: 16px;
-  padding: 28px;
+  padding: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 .vl-merchant-details__section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .vl-merchant-details__label {
@@ -324,7 +324,7 @@
 
 /* ── BACK ── */
 .vl-back {
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 }
 
 .vl-back__btn {
@@ -400,7 +400,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-top: 16px;
+    margin-top: 8px;
 }
 
 .vl-cart-action__stepper {
