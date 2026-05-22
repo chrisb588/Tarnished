@@ -189,8 +189,8 @@ export default function CreateListing(){
                 </Link>
 
                 <div className="create-preface">
-                    <h1>Create New Listing</h1>
-                    <p>Add a new product to your stall.</p>
+                    <h1>{isCreating ? 'Create New Listing' : 'Edit Listing'}</h1>
+                    <p>{isCreating ? 'Add a new product to your stall.' : 'Update the details of your listing.'}</p>
                 </div>
 
                 <ListingForm 

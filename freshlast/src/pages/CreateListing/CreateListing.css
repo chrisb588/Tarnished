@@ -102,8 +102,8 @@
 }
 
 .delete-button {
-  flex: 0 0 auto;
-  padding: 0.85rem 1.25rem;
+  flex: 1;
+  padding: 0.85rem;
   background-color: #dc2626;
   color: #ffffff;
   border: none;
@@ -115,7 +115,8 @@
 }
 
 .delete-button:hover {
-  background-color: #b91c1c;
+  opacity: 0.85;
+  background-color: #dc2626;
 }
 
 @media only screen and (max-width: 450px) {
