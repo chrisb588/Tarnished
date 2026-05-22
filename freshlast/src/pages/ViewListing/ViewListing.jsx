@@ -27,6 +27,7 @@ export default function ViewListing({ session, onLogout, onLoginClick, isAdmin }
   const [error, setError] = useState(null);
   const { cartItems, addToCart, updateQuantity } = useCart();
   const [cartQty, setCartQty] = useState(1);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -122,7 +123,10 @@ export default function ViewListing({ session, onLogout, onLoginClick, isAdmin }
 
           {/* ── LEFT: Image ── */}
           <div className="vl-images">
-            <div className="vl-images__main">
+            <div 
+              className={`vl-images__main ${listing.image ? 'vl-images__main--clickable' : ''}`}
+              onClick={() => listing.image && setShowImageModal(true)}
+            >
               {listing.image
                 ? <img src={listing.image} alt={listing.name} className="vl-images__main-img" />
                 : <div className="vl-images__placeholder">📷</div>
@@ -327,6 +331,16 @@ export default function ViewListing({ session, onLogout, onLoginClick, isAdmin }
           © 2024 FreshLast Marketplace. All rights reserved.
         </div>
       </footer>
+
+      {/* ── IMAGE LIGHTBOX MODAL ── */}
+      {showImageModal && listing.image && (
+        <div className="vl-lightbox" onClick={() => setShowImageModal(false)}>
+          <button className="vl-lightbox__close" onClick={() => setShowImageModal(false)} aria-label="Close modal">×</button>
+          <div className="vl-lightbox__content" onClick={(e) => e.stopPropagation()}>
+            <img src={listing.image} alt={listing.name} className="vl-lightbox__img" />
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -21,8 +21,12 @@
   position: relative;
   height: 240px;
   background:
-    linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)),
-    url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1600&auto=format&fit=crop');
+    linear-gradient(rgba(15, 30, 20, 0.55), rgba(15, 30, 20, 0.55)),
+<<<<<<< Updated upstream
+    url("../../assets/carbon-market-3842.webp");
+=======
+    url('../../assets/carbon-market-3842.webp');
+>>>>>>> Stashed changes
   background-size: cover;
   background-position: center;
   display: flex;
