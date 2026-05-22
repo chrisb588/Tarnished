@@ -15,6 +15,7 @@ import ViewMerchant from "./pages/ViewMerchant/ViewMerchant";
 import AdminLoginPage from "./pages/AdminLoginPage/AdminLoginPage";
 import MapPage from "./pages/MapPage/MapPage";
 import CartMap from "./pages/CartMap/CartMap";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import "./App.css";
 import { adminLogin, getAdminToken, verifyAdminToken, adminLogout } from "./api/admin";
 import AuthModal from "./components/AuthModal/AuthModal";
@@ -64,7 +65,7 @@ export default function App() {
         .verifyOtp({ token_hash, type: type || "email" })
         .then(({ error }) => {
           if (error) setAuthError(error.message);
-          else window.history.replaceState({}, document.title, "/");
+          else window.history.replaceState({}, document.title, type === 'recovery' ? '/reset-password' : '/');
         })
         .finally(() => setVerifying(false));
     }
@@ -195,6 +196,7 @@ export default function App() {
         />
         <Route path="/changePass" element={<ChangePassword />} />
         <Route path="/adminLoginPage" element={<AdminLoginPage />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/viewMerchant/:id" element={<ViewMerchant />} />
         <Route
           path="/admin"

@@ -9,6 +9,8 @@ export default function AuthForm({ onSuccess, onClose }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [view, setView] = useState('login');
+  const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
@@ -30,6 +32,62 @@ export default function AuthForm({ onSuccess, onClose }) {
     }
     setLoading(false);
   };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) {
+      alert(error.message);
+    } else {
+      setResetSent(true);
+    }
+  };
+
+  if (view === 'forgot') {
+    return (
+      <div>
+        {resetSent ? (
+          <div className="auth-form">
+            <h1 className="sign-in-label">Check your email</h1>
+            <p>A password reset link has been sent to <strong>{email}</strong>.</p>
+            <button
+              type="button"
+              className="forgot-password"
+              onClick={() => { setView('login'); setResetSent(false); }}
+            >
+              Back to login
+            </button>
+          </div>
+        ) : (
+          <form className="auth-form" onSubmit={handleForgotPassword}>
+            <h1 className="sign-in-label">Reset password</h1>
+            <p>email address</p>
+            <input
+              type="email"
+              placeholder="Your email"
+              value={email}
+              required
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button disabled={loading} className="auth-buttons">
+              {loading ? "Sending..." : "Send reset email"}
+            </button>
+            <button
+              type="button"
+              className="forgot-password"
+              onClick={() => setView('login')}
+            >
+              Back to login
+            </button>
+          </form>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -74,7 +132,7 @@ export default function AuthForm({ onSuccess, onClose }) {
           </button>
         </div>
         <div className="forgot-password-container">
-          <button type="button" className="forgot-password">
+          <button type="button" className="forgot-password" onClick={() => setView('forgot')}>
             forgot your password?
           </button>
         </div>
