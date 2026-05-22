@@ -22,7 +22,11 @@
   height: 240px;
   background:
     linear-gradient(rgba(15, 30, 20, 0.55), rgba(15, 30, 20, 0.55)),
+<<<<<<< Updated upstream
     url("../../assets/carbon-market-3842.webp");
+=======
+    url('../../assets/carbon-market-3842.webp');
+>>>>>>> Stashed changes
   background-size: cover;
   background-position: center;
   display: flex;
